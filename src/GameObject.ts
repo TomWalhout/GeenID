@@ -2,7 +2,7 @@ class GameObject {
     protected position: Vector;
     protected velocity: Vector;
     protected animation: Animate;
-
+    protected ctx: CanvasRenderingContext2D;
     constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number) {
         this.position = pos;
         this.velocity = vel;

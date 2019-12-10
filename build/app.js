@@ -33,35 +33,6 @@ class Animate {
         this.animationSpeed = speed;
     }
 }
-class Game {
-    constructor(canvasId) {
-        this.loop = () => {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.aniTest.update();
-            requestAnimationFrame(this.loop);
-        };
-        this.canvas = canvasId;
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        document.documentElement.style.overflow = 'hidden';
-        this.ctx = this.canvas.getContext("2d");
-        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 10);
-        this.loop();
-    }
-    writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
-        this.ctx.font = `${fontSize}px Minecraft`;
-        this.ctx.fillStyle = color;
-        this.ctx.textAlign = alignment;
-        this.ctx.fillText(text, xCoordinate, yCoordinate);
-    }
-    randomNumber(min, max) {
-        return Math.round(Math.random() * (max - min) + min);
-    }
-}
-let init = function () {
-    const game = new Game(document.getElementById("canvas"));
-};
-window.addEventListener("load", init);
 class GameObject {
     constructor(pos, vel, ctx, path, frames, speed) {
         this.position = pos;
@@ -89,6 +60,46 @@ class GameObject {
         this.pos.y += this.velocity.y;
     }
 }
+class Boss extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        super(pos, vel, ctx, path, frames, speed);
+    }
+    update() {
+        this.vel.x = Math.random() - .5;
+        this.vel.y = Math.random() - .5;
+        super.update();
+    }
+}
+class Game {
+    constructor(canvasId) {
+        this.loop = () => {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.aniTest3.update();
+            requestAnimationFrame(this.loop);
+        };
+        this.canvas = canvasId;
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        document.documentElement.style.overflow = 'hidden';
+        this.ctx = this.canvas.getContext("2d");
+        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 10);
+        this.aniTest3 = new Boss(new Vector(100, 100), new Vector(0, 0), this.ctx, "./yup.png", 1, 10);
+        this.loop();
+    }
+    writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
+        this.ctx.font = `${fontSize}px Minecraft`;
+        this.ctx.fillStyle = color;
+        this.ctx.textAlign = alignment;
+        this.ctx.fillText(text, xCoordinate, yCoordinate);
+    }
+    randomNumber(min, max) {
+        return Math.round(Math.random() * (max - min) + min);
+    }
+}
+let init = function () {
+    const game = new Game(document.getElementById("canvas"));
+};
+window.addEventListener("load", init);
 class KeyboardListener {
     constructor() {
         this.keyDown = (ev) => {
@@ -141,6 +152,19 @@ class Vector {
     }
     set y(value) {
         this.ypos = value;
+    }
+}
+class Codebeam extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        super(pos, vel, ctx, path, frames, speed);
+    }
+    draw() {
+    }
+    writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
+        this.ctx.font = `${fontSize}px Minecraft`;
+        this.ctx.fillStyle = color;
+        this.ctx.textAlign = alignment;
+        this.ctx.fillText(text, xCoordinate, yCoordinate);
     }
 }
 //# sourceMappingURL=app.js.map

@@ -5,7 +5,7 @@ class Game {
     private readonly ctx: CanvasRenderingContext2D;
     private aniTest: GameObject;
     private aniTest2: GameObject;
-    private aniTest3: Animate;
+    private aniTest3: GameObject;
 
     public constructor(canvasId: HTMLCanvasElement) {
         // Construct all of the canvas
@@ -16,12 +16,13 @@ class Game {
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
         this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 10);
+        this.aniTest3 = new Boss(new Vector(100, 100), new Vector(0, 0), this.ctx, "./yup.png", 1, 10);
         this.loop();
     }
 
     private loop = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.aniTest.update();
+        this.aniTest3.update();
         requestAnimationFrame(this.loop);
     }
 
