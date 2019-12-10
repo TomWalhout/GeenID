@@ -37,7 +37,7 @@ class Animate {
                 if (this.currentFrame < this.noOfFrames) {
                     this.currentFrame += 1;
                 } else {
-                    this.currentFrame = 1;
+                    this.currentFrame = 0;
                 }
             }
 

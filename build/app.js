@@ -24,7 +24,7 @@ class Animate {
                     this.currentFrame += 1;
                 }
                 else {
-                    this.currentFrame = 1;
+                    this.currentFrame = 0;
                 }
             }
             this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width, this.frameHeight);
