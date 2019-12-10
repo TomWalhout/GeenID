@@ -37,7 +37,7 @@ class Animate {
                 if (this.currentFrame < this.noOfFrames) {
                     this.currentFrame += 1;
                 } else {
-                    this.currentFrame = 1;
+                    this.currentFrame = 0;
                 }
             }
 
@@ -63,3 +63,4 @@ class Animate {
 // omg pascal meemer
 // Tom weet niet wat een rar is
 // ja dat klopt
+// allemaal koppen dicht
