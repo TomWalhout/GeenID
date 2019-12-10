@@ -23,7 +23,7 @@ class Game {
         this.Player = new Player(new Vector(200, 200), new Vector(0,0), this.ctx, './frog down.png', 20, 1)
 
         this.currentScreen = new LoadingScreen(this);
-
+        this.input = new UserInput();
         this.loop();
     }
 

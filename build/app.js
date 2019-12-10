@@ -56,6 +56,7 @@ class Game {
         this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
         this.Player = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog down.png', 20, 1);
         this.currentScreen = new LoadingScreen(this);
+        this.input = new UserInput();
         this.loop();
     }
     writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
@@ -216,13 +217,13 @@ class LoadingScreen extends GameScreen {
 class Player extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed) {
         super(pos, vel, ctx, path, frames, speed);
-        this.keyboardListener = new KeyboardListener;
+        this.UserInput = new UserInput;
     }
     walk(canvas) {
-        if (this.keyboardListener.isKeyDown(KeyboardListener.KEY_RIGHT)) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT)) {
             this.pos.x++;
         }
-        else if (this.keyboardListener.isKeyDown(KeyboardListener.KEY_LEFT)) {
+        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT)) {
             this.pos.x--;
         }
         if (this.pos.y <= 300) {
@@ -233,7 +234,7 @@ class Player extends GameObject {
         }
     }
     jump(canvas) {
-        if (this.keyboardListener.isKeyDown(KeyboardListener.KEY_UP)) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP)) {
             this.pos.y -= 5;
         }
     }

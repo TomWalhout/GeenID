@@ -2,18 +2,18 @@
 
 class Player extends GameObject {
 
-    private keyboardListener: KeyboardListener;
+    private UserInput: UserInput;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number) {
         super(pos, vel, ctx, path, frames, speed)
 
-        this.keyboardListener = new KeyboardListener;
+        this.UserInput = new UserInput;
     }
 
     public walk(canvas: HTMLCanvasElement) {
-        if (this.keyboardListener.isKeyDown(KeyboardListener.KEY_RIGHT)) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT)) {
             this.pos.x++
-        } else if (this.keyboardListener.isKeyDown(KeyboardListener.KEY_LEFT)) {
+        } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT)) {
             this.pos.x--
         }
         if (this.pos.y <= 300) {
@@ -23,10 +23,8 @@ class Player extends GameObject {
         }
     }
 
-
-
     public jump(canvas: HTMLCanvasElement) {
-        if (this.keyboardListener.isKeyDown(KeyboardListener.KEY_UP)) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP)) {
             this.pos.y -= 5
         }
     }
