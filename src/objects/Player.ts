@@ -1,4 +1,4 @@
-/// <reference path="GameObject.ts"/>
+/// <reference path="./GameObject.ts"/>
 
 class Player extends GameObject {
 

@@ -33,43 +33,6 @@ class Animate {
         this.animationSpeed = speed;
     }
 }
-class GameObject {
-    constructor(pos, vel, ctx, path, frames, speed) {
-        this.position = pos;
-        this.velocity = vel;
-        this.animation = new Animate(ctx, path, frames, speed, this);
-    }
-    get pos() {
-        return this.position;
-    }
-    set pos(value) {
-        this.position = value;
-    }
-    get vel() {
-        return this.velocity;
-    }
-    set vel(value) {
-        this.velocity = value;
-    }
-    update() {
-        this.animation.draw();
-        this.move();
-    }
-    move() {
-        this.pos.x += this.velocity.x;
-        this.pos.y += this.velocity.y;
-    }
-}
-class Boss extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed) {
-        super(pos, vel, ctx, path, frames, speed);
-    }
-    update() {
-        this.vel.x = Math.random() - .5;
-        this.vel.y = Math.random() - .5;
-        super.update();
-    }
-}
 class Game {
     constructor(canvasId) {
         this.loop = () => {
@@ -78,10 +41,6 @@ class Game {
             this.currentScreen.move(this.canvas);
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.currentScreen.draw(this.ctx);
-            this.aniTest.update();
-            this.Player.update();
-            this.Player.walk(this.canvas);
-            this.Player.jump(this.canvas);
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
         };
@@ -90,9 +49,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
-        this.Player = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog down.png', 20, 1);
-        this.currentScreen = new LoadingScreen(this);
+        this.currentScreen = new BossScreen(this);
         this.input = new UserInput();
         this.loop();
     }
@@ -118,54 +75,6 @@ let init = function () {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
-class GameScreen {
-    constructor(game) {
-        this.frameCount = 0;
-        this.game = game;
-        this.center = new Vector(game.canvas.width / 2, game.canvas.height / 2);
-        this.previous_fps_tick = performance.now();
-    }
-    listen(input) {
-    }
-    move(canvas) {
-    }
-    collide() {
-    }
-    adjust(game) {
-    }
-    draw(ctx) {
-    }
-    drawDebugInfo(ctx) {
-        const time_diff = performance.now() - this.previous_fps_tick;
-        if (time_diff >= 1000) {
-            this.current_fps = this.fps_count;
-            this.fps_count = 0;
-            this.previous_fps_tick = performance.now();
-        }
-        else {
-            this.fps_count++;
-        }
-        const text = `${this.current_fps} FPS`;
-        ctx.font = `12px Courier`;
-        ctx.fillStyle = '#ffffb3';
-        ctx.fillText(text, this.game.canvas.width - 100, this.game.canvas.height - 14);
-    }
-    increaseFrameCounter() {
-        this.frameCount++;
-    }
-    writeTextToCanvas(ctx, text, fontSize = 20, position, alignment = "center", color = "white") {
-        ctx.font = `${fontSize}px Minecraft`;
-        ctx.fillStyle = color;
-        ctx.textAlign = alignment;
-        ctx.fillText(text, position.x, position.y);
-    }
-    randomRoundedNumber(min, max) {
-        return Math.round(this.randomNumber(min, max));
-    }
-    randomNumber(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-}
 class KeyboardListener {
     constructor() {
         this.keyDown = (ev) => {
@@ -194,101 +103,6 @@ KeyboardListener.KEY_S = 83;
 KeyboardListener.KEY_D = 68;
 KeyboardListener.KEY_ENTER = 13;
 KeyboardListener.KEY_BACK = 8;
-class LevelScreen extends GameScreen {
-    constructor(game) {
-        super(game);
-        this.shouldSwitchToTitleScreen = false;
-    }
-    adjust(game) {
-        if (this.shouldSwitchToTitleScreen) {
-            game.switchScreen(new TitleScreen(game));
-        }
-    }
-    draw(ctx) {
-    }
-    drawDebugInfo(ctx) {
-    }
-    writeLifeImagesToLevelScreen(ctx) {
-    }
-}
-class LoadingScreen extends GameScreen {
-    constructor(game) {
-        super(game);
-    }
-    adjust(game) {
-        if (this.frameCount > 10) {
-            game.switchScreen(new StartScreen(this.game));
-        }
-    }
-    draw(ctx) {
-        this.writeTextToCanvas(ctx, "LOADING...", 140, this.center);
-    }
-}
-class Player extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed) {
-        super(pos, vel, ctx, path, frames, speed);
-        this.UserInput = new UserInput;
-    }
-    walk(canvas) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT)) {
-            this.pos.x++;
-        }
-        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT)) {
-            this.pos.x--;
-        }
-        if (this.pos.y <= 300) {
-            this.vel.y += 0.1;
-        }
-        else {
-            this.vel.y = 0;
-        }
-    }
-    jump(canvas) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP)) {
-            this.pos.y -= 5;
-        }
-    }
-}
-class StartScreen extends GameScreen {
-    constructor(game) {
-        super(game);
-        this.shouldStartLevel = false;
-    }
-    listen(input) {
-        if (input.isKeyDown(UserInput.KEY_ENTER)) {
-            this.shouldStartLevel = true;
-        }
-    }
-    adjust(game) {
-        if (this.shouldStartLevel) {
-            game.switchScreen(new LevelScreen(game));
-        }
-    }
-    draw(ctx) {
-        this.writeTextToCanvas(ctx, "PRESS ENTER TO PLAY", 40, new Vector(this.center.x, this.center.y - 20));
-    }
-}
-class TitleScreen extends GameScreen {
-    constructor(game) {
-        super(game);
-        this.shouldSwitchToStartScreen = false;
-    }
-    listen(input) {
-        if (input.isKeyDown(UserInput.KEY_BACK)) {
-            this.shouldSwitchToStartScreen = true;
-        }
-    }
-    adjust(game) {
-        if (this.shouldSwitchToStartScreen ||
-            this.frameCount > 10 * 60) {
-            game.switchScreen(new StartScreen(game));
-        }
-    }
-    draw(ctx) {
-        const x = this.game.canvas.width / 2;
-        let y = this.game.canvas.height / 2;
-    }
-}
 class UserInput {
     constructor() {
         this.inWindow = true;
@@ -358,17 +172,255 @@ class Vector {
         this.ypos = value;
     }
 }
-class Codebeam extends GameObject {
+class GameObject {
+    constructor(pos, vel, ctx, path, frames = 1, speed = 1) {
+        this.position = pos;
+        this.velocity = vel;
+        if (path) {
+            this.animation = new Animate(ctx, path, frames, speed, this);
+        }
+    }
+    get pos() {
+        return this.position;
+    }
+    set pos(value) {
+        this.position = value;
+    }
+    get vel() {
+        return this.velocity;
+    }
+    set vel(value) {
+        this.velocity = value;
+    }
+    update() {
+        if (this.animation) {
+            this.animation.draw();
+        }
+        this.move();
+    }
+    move() {
+        this.pos.x += this.velocity.x;
+        this.pos.y += this.velocity.y;
+    }
+}
+class Boss extends GameObject {
+    constructor(pos, vel, ctx, path, frames = 0, speed = 0) {
+        super(pos, vel, ctx, path, frames, speed);
+        this.attack = new Array;
+        for (let i = 0; i < 5; i++) {
+            this.attack[0] = new Codebeam(new Vector(100, 0), new Vector(0, .05), ctx);
+            this.attack[1] = new Codebeam(new Vector(300, 0), new Vector(0, .02), ctx);
+            this.attack[2] = new Codebeam(new Vector(200, 0), new Vector(0, .06), ctx);
+            this.attack[3] = new Codebeam(new Vector(400, 0), new Vector(0, .07), ctx);
+            this.attack[4] = new Codebeam(new Vector(500, 0), new Vector(0, .01), ctx);
+            this.attack[5] = new Codebeam(new Vector(600, 0), new Vector(0, .08), ctx);
+            this.attack[6] = new Codebeam(new Vector(700, 0), new Vector(0, .01), ctx);
+            this.attack[7] = new Codebeam(new Vector(800, 0), new Vector(0, .02), ctx);
+            this.attack[8] = new Codebeam(new Vector(900, 0), new Vector(0, .01), ctx);
+            this.attack[9] = new Codebeam(new Vector(1000, 0), new Vector(0, .02), ctx);
+            this.attack[10] = new Codebeam(new Vector(1100, 0), new Vector(0, .04), ctx);
+            this.attack[11] = new Codebeam(new Vector(1200, 0), new Vector(0, .01), ctx);
+            this.attack[12] = new Codebeam(new Vector(1300, 0), new Vector(0, .1), ctx);
+            this.attack[13] = new Codebeam(new Vector(1400, 0), new Vector(0, .01), ctx);
+        }
+    }
+    update() {
+        this.vel.x = Math.random() - .5;
+        this.vel.y = Math.random() - .5;
+        this.attack.forEach(element => {
+            element.update();
+        });
+        super.update();
+    }
+}
+class Player extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed) {
         super(pos, vel, ctx, path, frames, speed);
+        this.UserInput = new UserInput;
+    }
+    walk(canvas) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT)) {
+            this.pos.x++;
+        }
+        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT)) {
+            this.pos.x--;
+        }
+        if (this.pos.y <= 300) {
+            this.vel.y += 0.1;
+        }
+        else {
+            this.vel.y = 0;
+        }
+    }
+    jump(canvas) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP)) {
+            this.pos.y -= 5;
+        }
+    }
+}
+class Codebeam extends GameObject {
+    constructor(pos, vel, ctx, path = "", frames = 0, speed = 0) {
+        super(pos, vel, ctx, path, frames, speed);
+        this.ctx = ctx;
+        this.rays = new Array;
+        for (let j = 0; j < Math.floor(Math.random() * 5 + 1); j++) {
+            this.rays[j] = new Array;
+            for (let i = 0; i < Math.floor(Math.random() * 20 + 1); i++) {
+                this.rays[j][i] = Math.random().toString(36).replace(/[^a-z]+/g, '').charAt(0);
+                console.log(this.rays[j][i] + " " + j + " " + i);
+            }
+        }
     }
     draw() {
+        for (let j = 0; j < this.rays.length - 1; j++) {
+            for (let i = 0; i < this.rays[j].length - 1; i++) {
+                this.rays[j][i] = Math.random().toString(36).replace(/[^a-z]+/g, '').charAt(0);
+                this.writeTextToCanvas(this.rays[j][i], 20, j * 20 + this.pos.x, i * 20 + this.pos.y * 20, 'center', '#00FF00');
+            }
+        }
+    }
+    update() {
+        this.draw();
+        super.update();
     }
     writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
         this.ctx.font = `${fontSize}px Minecraft`;
         this.ctx.fillStyle = color;
         this.ctx.textAlign = alignment;
         this.ctx.fillText(text, xCoordinate, yCoordinate);
+    }
+}
+class GameScreen {
+    constructor(game) {
+        this.frameCount = 0;
+        this.game = game;
+        this.center = new Vector(game.canvas.width / 2, game.canvas.height / 2);
+        this.previous_fps_tick = performance.now();
+    }
+    listen(input) {
+    }
+    move(canvas) {
+    }
+    collide() {
+    }
+    adjust(game) {
+    }
+    draw(ctx) {
+    }
+    drawDebugInfo(ctx) {
+        const time_diff = performance.now() - this.previous_fps_tick;
+        if (time_diff >= 1000) {
+            this.current_fps = this.fps_count;
+            this.fps_count = 0;
+            this.previous_fps_tick = performance.now();
+        }
+        else {
+            this.fps_count++;
+        }
+        const text = `${this.current_fps} FPS`;
+        ctx.font = `12px Courier`;
+        ctx.fillStyle = '#ffffb3';
+        ctx.fillText(text, this.game.canvas.width - 100, this.game.canvas.height - 14);
+    }
+    increaseFrameCounter() {
+        this.frameCount++;
+    }
+    writeTextToCanvas(ctx, text, fontSize = 20, position, alignment = "center", color = "white") {
+        ctx.font = `${fontSize}px Minecraft`;
+        ctx.fillStyle = color;
+        ctx.textAlign = alignment;
+        ctx.fillText(text, position.x, position.y);
+    }
+    randomRoundedNumber(min, max) {
+        return Math.round(this.randomNumber(min, max));
+    }
+    randomNumber(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+}
+class BossScreen extends GameScreen {
+    constructor(game) {
+        super(game);
+        this.shouldSwitchToTitleScreen = false;
+        this.boss = new Boss(new Vector(100, 100), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", 4, 20);
+        this.player = new Player(new Vector(100, 100), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
+    }
+    adjust(game) {
+        if (this.shouldSwitchToTitleScreen) {
+            game.switchScreen(new TitleScreen(game));
+        }
+    }
+    draw(ctx) {
+    }
+}
+class LevelScreen extends GameScreen {
+    constructor(game) {
+        super(game);
+        this.shouldSwitchToTitleScreen = false;
+    }
+    adjust(game) {
+        if (this.shouldSwitchToTitleScreen) {
+            game.switchScreen(new TitleScreen(game));
+        }
+    }
+    draw(ctx) {
+    }
+    drawDebugInfo(ctx) {
+    }
+    writeLifeImagesToLevelScreen(ctx) {
+    }
+}
+class LoadingScreen extends GameScreen {
+    constructor(game) {
+        super(game);
+    }
+    adjust(game) {
+        if (this.frameCount > 10) {
+            game.switchScreen(new StartScreen(this.game));
+        }
+    }
+    draw(ctx) {
+        this.writeTextToCanvas(ctx, "LOADING...", 140, this.center);
+    }
+}
+class StartScreen extends GameScreen {
+    constructor(game) {
+        super(game);
+        this.shouldStartLevel = false;
+    }
+    listen(input) {
+        if (input.isKeyDown(UserInput.KEY_ENTER)) {
+            this.shouldStartLevel = true;
+        }
+    }
+    adjust(game) {
+        if (this.shouldStartLevel) {
+            game.switchScreen(new LevelScreen(game));
+        }
+    }
+    draw(ctx) {
+        this.writeTextToCanvas(ctx, "PRESS ENTER TO PLAY", 40, new Vector(this.center.x, this.center.y - 20));
+    }
+}
+class TitleScreen extends GameScreen {
+    constructor(game) {
+        super(game);
+        this.shouldSwitchToStartScreen = false;
+    }
+    listen(input) {
+        if (input.isKeyDown(UserInput.KEY_BACK)) {
+            this.shouldSwitchToStartScreen = true;
+        }
+    }
+    adjust(game) {
+        if (this.shouldSwitchToStartScreen ||
+            this.frameCount > 10 * 60) {
+            game.switchScreen(new StartScreen(game));
+        }
+    }
+    draw(ctx) {
+        const x = this.game.canvas.width / 2;
+        let y = this.game.canvas.height / 2;
     }
 }
 //# sourceMappingURL=app.js.map

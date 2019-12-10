@@ -1,11 +1,36 @@
-class Codebeam extends GameObject {
+/// <reference path="../GameObject.ts"/>
 
-    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number) {
+class Codebeam extends GameObject {
+    private char: string[];
+    private rays: Array<Array<string>>;
+    protected ctx: CanvasRenderingContext2D;
+    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string = "", frames: number = 0, speed: number = 0) {
         super(pos, vel, ctx, path, frames, speed);
+        this.ctx = ctx;
+
+        //init the new rays 2d array
+        this.rays = new Array;
+        for (let j = 0; j < Math.floor(Math.random() * 5 + 1); j++) {
+            this.rays[j] = new Array;
+            for (let i = 0; i < Math.floor(Math.random() * 20 + 1); i++) {
+                this.rays[j][i] = Math.random().toString(36).replace(/[^a-z]+/g, '').charAt(0);
+                console.log(this.rays[j][i] + " " + j + " " + i);
+            }
+        }
     }
 
     public draw() {
+        for (let j = 0; j < this.rays.length - 1; j++) {
+            for (let i = 0; i < this.rays[j].length - 1; i++) {
+                this.rays[j][i] = Math.random().toString(36).replace(/[^a-z]+/g, '').charAt(0);
+                this.writeTextToCanvas(this.rays[j][i], 20, j * 20 + this.pos.x, i * 20 + this.pos.y * 20, 'center', '#00FF00');
+            }
+        }
+    }
 
+    public update() {
+        this.draw();
+        super.update();
     }
 
     public writeTextToCanvas(

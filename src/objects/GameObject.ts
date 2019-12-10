@@ -3,10 +3,12 @@ class GameObject {
     protected velocity: Vector;
     protected animation: Animate;
     protected ctx: CanvasRenderingContext2D;
-    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number) {
+    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path?: string, frames: number = 1, speed: number = 1) {
         this.position = pos;
         this.velocity = vel;
-        this.animation = new Animate(ctx, path, frames, speed, this);
+        if (path) {
+            this.animation = new Animate(ctx, path, frames, speed, this);
+        }
     }
 
     public get pos(): Vector {
@@ -24,7 +26,9 @@ class GameObject {
     }
 
     public update() {
-        this.animation.draw();
+        if (this.animation) {
+            this.animation.draw();
+        }
         this.move();
     }
 
