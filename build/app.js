@@ -86,8 +86,7 @@ class Game {
             this.currentScreen.draw(this.ctx);
             this.aniTest.update();
             this.Player.update();
-            this.Player.walk(this.canvas);
-            this.Player.jump(this.canvas);
+            this.Player.playerMove(this.canvas);
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
         };
@@ -97,7 +96,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
         this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
-        this.Player = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog down.png', 20, 1);
+        this.Player = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog side.png', 20, 1);
         this.currentScreen = new LoadingScreen(this);
         this.input = new UserInput();
         this.loop();
@@ -235,23 +234,22 @@ class Player extends GameObject {
         super(pos, vel, ctx, path, frames, speed);
         this.UserInput = new UserInput;
     }
-    walk(canvas) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && this.pos.x + this.animation.imageWidth > canvas.width) {
-            this.pos.x + 5;
+    playerMove(canvas) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
+            this.pos.x += 5;
         }
         else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
-            this.pos.x - 5;
+            this.pos.x -= 5;
         }
         if (this.pos.y + this.animation.imageHeight >= canvas.height) {
             this.vel.y = 0;
+            this.pos.y = canvas.height - this.animation.imageHeight;
         }
         else {
-            this.vel.y += 0.1;
+            this.vel.y += 0.15;
         }
-    }
-    jump(canvas) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP)) {
-            this.pos.y -= 5;
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
+            this.vel.y -= 5;
         }
     }
 }
