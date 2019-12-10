@@ -3,11 +3,10 @@ class Animate {
         this.ctx = ctx;
         this.img = this.loadImage(path);
         this.noOfFrames = noOfFrames;
-        this.currentFrame = 1;
+        this.currentFrame = 0;
         this.aniSpeed = anispeed;
         this.counter = 0;
         this.object = object;
-        this.x = Math.random() * 500;
     }
     loadImage(path) {
         const image = new Image();
@@ -55,21 +54,11 @@ class Game {
         this.currentScreen = new LoadingScreen(this);
         this.loop();
     }
-    drawit(img) {
-        this.ctx.drawImage(img, 200, 200);
-    }
     writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
         this.ctx.font = `${fontSize}px Minecraft`;
         this.ctx.fillStyle = color;
         this.ctx.textAlign = alignment;
         this.ctx.fillText(text, xCoordinate, yCoordinate);
-    }
-    loadImage(source, callback) {
-        const imageElement = new Image();
-        imageElement.addEventListener("load", () => {
-            callback.apply(this, [imageElement]);
-        });
-        imageElement.src = source;
     }
     randomNumber(min, max) {
         return Math.round(Math.random() * (max - min) + min);
@@ -98,6 +87,12 @@ class GameObject {
     }
     set pos(value) {
         this.position = value;
+    }
+    get vel() {
+        return this.velocity;
+    }
+    set vel(value) {
+        this.velocity = value;
     }
     update() {
         this.animation.draw();
@@ -212,6 +207,14 @@ class LoadingScreen extends GameScreen {
     }
     draw(ctx) {
         this.writeTextToCanvas(ctx, "LOADING...", 140, this.center);
+    }
+}
+class Player extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        super(pos, vel, ctx, path, frames, speed);
+    }
+    walk() {
+        this.pos.x++;
     }
 }
 class StartScreen extends GameScreen {

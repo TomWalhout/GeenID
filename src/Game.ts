@@ -4,7 +4,7 @@ class Game {
     public readonly canvas: HTMLCanvasElement;
     public readonly ctx: CanvasRenderingContext2D;
     private aniTest: GameObject;
-    private aniTest2: Animate;
+    private aniTest2: GameObject;
     private aniTest3: Animate;
     public readonly input: UserInput;
 
@@ -26,9 +26,6 @@ class Game {
         this.loop();
     }
 
-    private drawit(img: HTMLImageElement) {
-        this.ctx.drawImage(img, 200, 200);
-    }
     private loop = () => {
 
         // Increase the frame counter
@@ -80,42 +77,6 @@ class Game {
         this.ctx.fillStyle = color;
         this.ctx.textAlign = alignment;
         this.ctx.fillText(text, xCoordinate, yCoordinate);
-    }
-
-
-    /**
-     * Loads an image file into the DOM and writes it to the canvas. After the
-     * image is loaded and ready to be drawn to the canvas, the specified
-     * callback method will be invoked. the method will be called with the
-     * loaded imageElement as a parameter.
-     *
-     * The callback method MUST be a method of this class with a header like:
-     *
-     *   private yourMethodNameHere(img: HTMLImageElement)
-     *
-     * In the body of that callback you can draw the image to the canvas
-     * context like:
-     *
-     *   this.ctx.drawImage(img, someX, someY);
-     *
-     * This is the simplest way to draw images, because the browser must and
-     * shall wait until the image is completely loaded into memory.
-     *
-     * @param {string} source - the name of the image file
-     * @param {Function} callback - method that is invoked after the image is loaded
-     */
-    private loadImage(source: string, callback: Function) {
-        const imageElement = new Image();
-
-        // We must wait until the image file is loaded into the element
-        // We add an event listener
-        // We'll be using an arrow function for this, just because we must.
-        imageElement.addEventListener("load", () => {
-            callback.apply(this, [imageElement]);
-        });
-
-        // Now, set the src to start loading the image
-        imageElement.src = source;
     }
 
     /**
