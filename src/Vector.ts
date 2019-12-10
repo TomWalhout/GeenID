@@ -1,7 +1,7 @@
 class Vector {
     private xpos: number;
     private ypos: number;
-    constructor(xpos: number, ypos: number) {
+    constructor(xpos = 0, ypos = 0) {
         this.xpos = xpos;
         this.ypos = ypos;
     }

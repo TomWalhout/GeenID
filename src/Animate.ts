@@ -34,7 +34,7 @@ class Animate {
             this.frameHeight = this.img.height / this.noOfFrames;
             if (this.counter >= this.animationSpeed) {
                 this.counter = 0;
-                if (this.currentFrame < this.noOfFrames) {
+                if (this.currentFrame < this.noOfFrames-1) {
                     this.currentFrame += 1;
                 } else {
                     this.currentFrame = 0;

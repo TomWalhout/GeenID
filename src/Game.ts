@@ -1,11 +1,14 @@
 class Game {
     // Global attributes for canvas
     // Readonly attributes are read-only. They can only be initialized in the constructor
-    private readonly canvas: HTMLCanvasElement;
-    private readonly ctx: CanvasRenderingContext2D;
+    public readonly canvas: HTMLCanvasElement;
+    public readonly ctx: CanvasRenderingContext2D;
     private aniTest: GameObject;
     private aniTest2: Animate;
     private aniTest3: Animate;
+    public readonly input: UserInput;
+
+    private currentScreen: GameScreen;
 
     public constructor(canvasId: HTMLCanvasElement) {
         // Construct all of the canvas
@@ -17,6 +20,9 @@ class Game {
         this.ctx = this.canvas.getContext("2d");
         this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
         // this.loadImage("./Frog Down.png", this.drawit);
+
+        this.currentScreen = new LoadingScreen(this);
+
         this.loop();
     }
 
@@ -24,10 +30,29 @@ class Game {
         this.ctx.drawImage(img, 200, 200);
     }
     private loop = () => {
+
+        // Increase the frame counter
+        this.currentScreen.increaseFrameCounter();
+
+        // Let the current screen listen to the user input
+        this.currentScreen.listen(this.input);
+
+        // Let the current screen move its objects around the canvas
+        this.currentScreen.move(this.canvas);
+
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Let the current screen draw itself on the rendering context
+        this.currentScreen.draw(this.ctx);
+
         this.aniTest.update();
         requestAnimationFrame(this.loop);
+
+        // Let the current screen adjust itself
+        this.currentScreen.adjust(this);
     }
+
+    
 
     // -------- Title screen methods -------------------------------------
 
@@ -100,6 +125,15 @@ class Game {
      */
     public randomNumber(min: number, max: number): number {
         return Math.round(Math.random() * (max - min) + min);
+    }
+
+    public switchScreen(newScreen: GameScreen) {
+        if (newScreen == null) {
+            throw new Error("newScreen cannot be null");
+        }
+        if (newScreen != this.currentScreen) {
+            this.currentScreen = newScreen;
+        }
     }
 }
 
