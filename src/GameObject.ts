@@ -1,7 +1,7 @@
 class GameObject {
-    private position: Vector;
-    private velocity: Vector;
-    private animation: Animate;
+    protected position: Vector;
+    protected velocity: Vector;
+    protected animation: Animate;
 
     constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number) {
         this.position = pos;
@@ -14,6 +14,13 @@ class GameObject {
     }
     public set pos(value: Vector) {
         this.position = value;
+    }
+
+    public get vel(): Vector {
+        return this.velocity
+    }
+    public set vel(value: Vector) {
+        this.velocity = value;
     }
 
     public update() {

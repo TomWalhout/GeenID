@@ -4,7 +4,7 @@ class Game {
     private readonly canvas: HTMLCanvasElement;
     private readonly ctx: CanvasRenderingContext2D;
     private aniTest: GameObject;
-    private aniTest2: Animate;
+    private aniTest2: Player;
     private aniTest3: Animate;
 
     public constructor(canvasId: HTMLCanvasElement) {
@@ -17,6 +17,7 @@ class Game {
         this.ctx = this.canvas.getContext("2d");
         this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./Frog Down.png", 19, 1);
         // this.loadImage("./Frog Down.png", this.drawit);
+        this.aniTest2 = new Player(new Vector(200, 200), new Vector(0,0), this.ctx, './frog down.png', 20, 1)
         this.loop();
     }
 
@@ -26,7 +27,10 @@ class Game {
     private loop = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.aniTest.update();
+        this.aniTest2.update();
+        this.aniTest2.walk();
         requestAnimationFrame(this.loop);
+
     }
 
     // -------- Title screen methods -------------------------------------

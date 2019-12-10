@@ -39,6 +39,8 @@ class Game {
         this.loop = () => {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.aniTest.update();
+            this.aniTest2.update();
+            this.aniTest2.walk();
             requestAnimationFrame(this.loop);
         };
         this.canvas = canvasId;
@@ -47,6 +49,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
         this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./Frog Down.png", 19, 1);
+        this.aniTest2 = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog down.png', 20, 1);
         this.loop();
     }
     drawit(img) {
@@ -85,6 +88,12 @@ class GameObject {
     set pos(value) {
         this.position = value;
     }
+    get vel() {
+        return this.velocity;
+    }
+    set vel(value) {
+        this.velocity = value;
+    }
     update() {
         this.animation.draw();
         this.move();
@@ -92,6 +101,14 @@ class GameObject {
     move() {
         this.pos.x += this.velocity.x;
         this.pos.y += this.velocity.y;
+    }
+}
+class Player extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        super(pos, vel, ctx, path, frames, speed);
+    }
+    walk() {
+        this.pos.x++;
     }
 }
 class Vector {
