@@ -1,11 +1,14 @@
 class Game {
     // Global attributes for canvas
     // Readonly attributes are read-only. They can only be initialized in the constructor
-    private readonly canvas: HTMLCanvasElement;
-    private readonly ctx: CanvasRenderingContext2D;
+    public readonly canvas: HTMLCanvasElement;
+    public readonly ctx: CanvasRenderingContext2D;
     private aniTest: GameObject;
-    private aniTest2: GameObject;
-    private aniTest3: GameObject;
+    private Player: Player;
+    private aniTest3: Animate;
+    public readonly input: UserInput;
+
+    private currentScreen: GameScreen;
 
     public constructor(canvasId: HTMLCanvasElement) {
         // Construct all of the canvas
@@ -15,16 +18,47 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
-        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 10);
-        this.aniTest3 = new Boss(new Vector(100, 100), new Vector(0, 0), this.ctx, "./yup.png", 1, 10);
+        this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
+        // this.loadImage("./Frog Down.png", this.drawit);
+        this.Player = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog down.png', 20, 1)
+
+        this.currentScreen = new LoadingScreen(this);
+        this.input = new UserInput();
         this.loop();
     }
 
     private loop = () => {
+
+        // Increase the frame counter
+        this.currentScreen.increaseFrameCounter();
+
+        // Let the current screen listen to the user input
+        this.currentScreen.listen(this.input);
+
+        // Let the current screen move its objects around the canvas
+        this.currentScreen.move(this.canvas);
+
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.aniTest3.update();
+
+        // Let the current screen draw itself on the rendering context
+        this.currentScreen.draw(this.ctx);
+
+        this.aniTest.update();
+        this.Player.update();
+        this.Player.walk(this.canvas);
+        this.Player.jump(this.canvas)
         requestAnimationFrame(this.loop);
+
+        // Let the current screen adjust itself
+        this.currentScreen.adjust(this);
     }
+
+
+
+    // -------- Title screen methods -------------------------------------
+
+
+    // -------Generic canvas methods ----------------------------------
 
     /**
      * Writes text to the canvas
@@ -56,6 +90,15 @@ class Game {
      */
     public randomNumber(min: number, max: number): number {
         return Math.round(Math.random() * (max - min) + min);
+    }
+
+    public switchScreen(newScreen: GameScreen) {
+        if (newScreen == null) {
+            throw new Error("newScreen cannot be null");
+        }
+        if (newScreen != this.currentScreen) {
+            this.currentScreen = newScreen;
+        }
     }
 }
 
