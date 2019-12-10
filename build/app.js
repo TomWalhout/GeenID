@@ -3,11 +3,10 @@ class Animate {
         this.ctx = ctx;
         this.img = this.loadImage(path);
         this.noOfFrames = noOfFrames;
-        this.currentFrame = 1;
+        this.currentFrame = 0;
         this.aniSpeed = anispeed;
         this.counter = 0;
         this.object = object;
-        this.x = Math.random() * 500;
     }
     loadImage(path) {
         const image = new Image();
@@ -20,11 +19,11 @@ class Animate {
             this.frameHeight = this.img.height / this.noOfFrames;
             if (this.counter >= this.animationSpeed) {
                 this.counter = 0;
-                if (this.currentFrame < this.noOfFrames) {
+                if (this.currentFrame < this.noOfFrames - 1) {
                     this.currentFrame += 1;
                 }
                 else {
-                    this.currentFrame = 1;
+                    this.currentFrame = 0;
                 }
             }
             this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width, this.frameHeight);
@@ -46,24 +45,14 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
+        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 10);
         this.loop();
-    }
-    drawit(img) {
-        this.ctx.drawImage(img, 200, 200);
     }
     writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
         this.ctx.font = `${fontSize}px Minecraft`;
         this.ctx.fillStyle = color;
         this.ctx.textAlign = alignment;
         this.ctx.fillText(text, xCoordinate, yCoordinate);
-    }
-    loadImage(source, callback) {
-        const imageElement = new Image();
-        imageElement.addEventListener("load", () => {
-            callback.apply(this, [imageElement]);
-        });
-        imageElement.src = source;
     }
     randomNumber(min, max) {
         return Math.round(Math.random() * (max - min) + min);
