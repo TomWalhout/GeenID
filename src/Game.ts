@@ -1,11 +1,14 @@
 class Game {
     // Global attributes for canvas
     // Readonly attributes are read-only. They can only be initialized in the constructor
-    private readonly canvas: HTMLCanvasElement;
-    private readonly ctx: CanvasRenderingContext2D;
+    public readonly canvas: HTMLCanvasElement;
+    public readonly ctx: CanvasRenderingContext2D;
     private aniTest: GameObject;
     private Player: Player;
     private aniTest3: Animate;
+    public readonly input: UserInput;
+
+    private currentScreen: GameScreen;
 
     public constructor(canvasId: HTMLCanvasElement) {
         // Construct all of the canvas
@@ -18,21 +21,39 @@ class Game {
         this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
         // this.loadImage("./Frog Down.png", this.drawit);
         this.Player = new Player(new Vector(200, 200), new Vector(0,0), this.ctx, './frog down.png', 20, 1)
+
+        this.currentScreen = new LoadingScreen(this);
+
         this.loop();
     }
 
-    private drawit(img: HTMLImageElement) {
-        this.ctx.drawImage(img, 200, 200);
-    }
     private loop = () => {
+
+        // Increase the frame counter
+        this.currentScreen.increaseFrameCounter();
+
+        // Let the current screen listen to the user input
+        this.currentScreen.listen(this.input);
+
+        // Let the current screen move its objects around the canvas
+        this.currentScreen.move(this.canvas);
+
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Let the current screen draw itself on the rendering context
+        this.currentScreen.draw(this.ctx);
+
         this.aniTest.update();
         this.Player.update();
         this.Player.walk(this.canvas);    
         this.Player.jump(this.canvas)
         requestAnimationFrame(this.loop);
 
+        // Let the current screen adjust itself
+        this.currentScreen.adjust(this);
     }
+
+    
 
     // -------- Title screen methods -------------------------------------
 
@@ -62,42 +83,6 @@ class Game {
         this.ctx.fillText(text, xCoordinate, yCoordinate);
     }
 
-
-    /**
-     * Loads an image file into the DOM and writes it to the canvas. After the
-     * image is loaded and ready to be drawn to the canvas, the specified
-     * callback method will be invoked. the method will be called with the
-     * loaded imageElement as a parameter.
-     *
-     * The callback method MUST be a method of this class with a header like:
-     *
-     *   private yourMethodNameHere(img: HTMLImageElement)
-     *
-     * In the body of that callback you can draw the image to the canvas
-     * context like:
-     *
-     *   this.ctx.drawImage(img, someX, someY);
-     *
-     * This is the simplest way to draw images, because the browser must and
-     * shall wait until the image is completely loaded into memory.
-     *
-     * @param {string} source - the name of the image file
-     * @param {Function} callback - method that is invoked after the image is loaded
-     */
-    private loadImage(source: string, callback: Function) {
-        const imageElement = new Image();
-
-        // We must wait until the image file is loaded into the element
-        // We add an event listener
-        // We'll be using an arrow function for this, just because we must.
-        imageElement.addEventListener("load", () => {
-            callback.apply(this, [imageElement]);
-        });
-
-        // Now, set the src to start loading the image
-        imageElement.src = source;
-    }
-
     /**
      * Renders a random number between min and max
      * @param {number} min - minimal time
@@ -105,6 +90,15 @@ class Game {
      */
     public randomNumber(min: number, max: number): number {
         return Math.round(Math.random() * (max - min) + min);
+    }
+
+    public switchScreen(newScreen: GameScreen) {
+        if (newScreen == null) {
+            throw new Error("newScreen cannot be null");
+        }
+        if (newScreen != this.currentScreen) {
+            this.currentScreen = newScreen;
+        }
     }
 }
 
