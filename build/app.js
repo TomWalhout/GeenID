@@ -32,6 +32,12 @@ class Animate {
     set aniSpeed(speed) {
         this.animationSpeed = speed;
     }
+    get imageHeight() {
+        return this.img.height / this.noOfFrames;
+    }
+    get imageWidth() {
+        return this.img.width;
+    }
 }
 class Game {
     constructor(canvasId) {
@@ -220,17 +226,17 @@ class Player extends GameObject {
         this.UserInput = new UserInput;
     }
     walk(canvas) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT)) {
-            this.pos.x++;
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && this.pos.x + this.animation.imageWidth > canvas.width) {
+            this.pos.x + 5;
         }
-        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT)) {
-            this.pos.x--;
+        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
+            this.pos.x - 5;
         }
-        if (this.pos.y <= 300) {
-            this.vel.y += 0.1;
+        if (this.pos.y + this.animation.imageHeight >= canvas.height) {
+            this.vel.y = 0;
         }
         else {
-            this.vel.y = 0;
+            this.vel.y += 0.1;
         }
     }
     jump(canvas) {
