@@ -15,7 +15,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
-        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
+        this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
         // this.loadImage("./Frog Down.png", this.drawit);
         this.loop();
     }

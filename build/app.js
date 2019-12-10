@@ -24,7 +24,7 @@ class Animate {
                     this.currentFrame += 1;
                 }
                 else {
-                    this.currentFrame = 1;
+                    this.currentFrame = 0;
                 }
             }
             this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width, this.frameHeight);
@@ -46,7 +46,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
+        this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
         this.loop();
     }
     drawit(img) {
@@ -94,6 +94,34 @@ class GameObject {
         this.pos.y += this.velocity.y;
     }
 }
+class KeyboardListener {
+    constructor() {
+        this.keyDown = (ev) => {
+            this.keyCodeStates[ev.keyCode] = true;
+        };
+        this.keyUp = (ev) => {
+            this.keyCodeStates[ev.keyCode] = false;
+        };
+        this.keyCodeStates = new Array();
+        window.addEventListener("keydown", this.keyDown);
+        window.addEventListener("keyup", this.keyUp);
+    }
+    isKeyDown(keyCode) {
+        return this.keyCodeStates[keyCode] === true;
+    }
+}
+KeyboardListener.KEY_ESC = 27;
+KeyboardListener.KEY_SPACE = 32;
+KeyboardListener.KEY_LEFT = 37;
+KeyboardListener.KEY_UP = 38;
+KeyboardListener.KEY_RIGHT = 39;
+KeyboardListener.KEY_DOWN = 40;
+KeyboardListener.KEY_W = 87;
+KeyboardListener.KEY_A = 65;
+KeyboardListener.KEY_S = 83;
+KeyboardListener.KEY_D = 68;
+KeyboardListener.KEY_ENTER = 13;
+KeyboardListener.KEY_BACK = 8;
 class Vector {
     constructor(xpos, ypos) {
         this.xpos = xpos;
