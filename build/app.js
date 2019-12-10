@@ -39,6 +39,43 @@ class Animate {
         return this.img.width;
     }
 }
+class GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        this.position = pos;
+        this.velocity = vel;
+        this.animation = new Animate(ctx, path, frames, speed, this);
+    }
+    get pos() {
+        return this.position;
+    }
+    set pos(value) {
+        this.position = value;
+    }
+    get vel() {
+        return this.velocity;
+    }
+    set vel(value) {
+        this.velocity = value;
+    }
+    update() {
+        this.animation.draw();
+        this.move();
+    }
+    move() {
+        this.pos.x += this.velocity.x;
+        this.pos.y += this.velocity.y;
+    }
+}
+class Boss extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        super(pos, vel, ctx, path, frames, speed);
+    }
+    update() {
+        this.vel.x = Math.random() - .5;
+        this.vel.y = Math.random() - .5;
+        super.update();
+    }
+}
 class Game {
     constructor(canvasId) {
         this.loop = () => {
@@ -87,33 +124,6 @@ let init = function () {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
-class GameObject {
-    constructor(pos, vel, ctx, path, frames, speed) {
-        this.position = pos;
-        this.velocity = vel;
-        this.animation = new Animate(ctx, path, frames, speed, this);
-    }
-    get pos() {
-        return this.position;
-    }
-    set pos(value) {
-        this.position = value;
-    }
-    get vel() {
-        return this.velocity;
-    }
-    set vel(value) {
-        this.velocity = value;
-    }
-    update() {
-        this.animation.draw();
-        this.move();
-    }
-    move() {
-        this.pos.x += this.velocity.x;
-        this.pos.y += this.velocity.y;
-    }
-}
 class GameScreen {
     constructor(game) {
         this.frameCount = 0;
@@ -352,6 +362,19 @@ class Vector {
     }
     set y(value) {
         this.ypos = value;
+    }
+}
+class Codebeam extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        super(pos, vel, ctx, path, frames, speed);
+    }
+    draw() {
+    }
+    writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
+        this.ctx.font = `${fontSize}px Minecraft`;
+        this.ctx.fillStyle = color;
+        this.ctx.textAlign = alignment;
+        this.ctx.fillText(text, xCoordinate, yCoordinate);
     }
 }
 //# sourceMappingURL=app.js.map
