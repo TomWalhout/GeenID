@@ -62,3 +62,4 @@ class Animate {
 // Lol .rar
 // omg pascal meemer
 // Tom weet niet wat een rar is
+// ja dat klopt
