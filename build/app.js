@@ -1,12 +1,12 @@
 class Animate {
-    constructor(canvas, ctx, path, noOfFrames, anispeed, object = 0) {
-        this.canvas = canvas;
+    constructor(ctx, path, noOfFrames, anispeed, object) {
         this.ctx = ctx;
         this.img = this.loadImage(path);
         this.noOfFrames = noOfFrames;
         this.currentFrame = 1;
         this.aniSpeed = anispeed;
         this.counter = 0;
+        this.object = object;
         this.x = Math.random() * 500;
     }
     loadImage(path) {
@@ -26,8 +26,7 @@ class Animate {
                 this.currentFrame = 0;
             }
         }
-        console.log(this.counter);
-        this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.x, this.x, this.img.width, this.frameHeight);
+        this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width, this.frameHeight);
     }
     set aniSpeed(speed) {
         this.animationSpeed = speed;
@@ -37,9 +36,7 @@ class Game {
     constructor(canvasId) {
         this.loop = () => {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.aniTest.draw();
-            this.aniTest2.draw();
-            this.aniTest3.draw();
+            this.aniTest.update();
             requestAnimationFrame(this.loop);
         };
         this.canvas = canvasId;
@@ -47,9 +44,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.aniTest = new Animate(this.canvas, this.ctx, "./Frog Down.png", 20, 5);
-        this.aniTest2 = new Animate(this.canvas, this.ctx, "./Frog Side.png", 20, 10);
-        this.aniTest3 = new Animate(this.canvas, this.ctx, "./Frog Death.png", 5, 1);
+        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./Frog Down.png", 20, 1);
         this.loop();
     }
     drawit(img) {
@@ -76,4 +71,43 @@ let init = function () {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
+class GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        this.position = pos;
+        this.velocity = vel;
+        this.animation = new Animate(ctx, path, frames, speed, this);
+    }
+    get pos() {
+        return this.position;
+    }
+    set pos(value) {
+        this.position = value;
+    }
+    update() {
+        this.animation.draw();
+        this.move();
+    }
+    move() {
+        this.pos.x += this.velocity.x;
+        this.pos.y += this.velocity.y;
+    }
+}
+class Vector {
+    constructor(xpos, ypos) {
+        this.xpos = xpos;
+        this.ypos = ypos;
+    }
+    get x() {
+        return this.xpos;
+    }
+    set x(value) {
+        this.xpos = value;
+    }
+    get y() {
+        return this.ypos;
+    }
+    set y(value) {
+        this.ypos = value;
+    }
+}
 //# sourceMappingURL=app.js.map

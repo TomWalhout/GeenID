@@ -3,7 +3,7 @@ class Game {
     // Readonly attributes are read-only. They can only be initialized in the constructor
     private readonly canvas: HTMLCanvasElement;
     private readonly ctx: CanvasRenderingContext2D;
-    private aniTest: Animate;
+    private aniTest: GameObject;
     private aniTest2: Animate;
     private aniTest3: Animate;
 
@@ -15,10 +15,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
-        // Init the animator
-        this.aniTest = new Animate(this.canvas, this.ctx, "./Frog Down.png", 20, 5);
-        this.aniTest2 = new Animate(this.canvas, this.ctx, "./Frog Side.png", 20, 10);
-        this.aniTest3 = new Animate(this.canvas, this.ctx, "./Frog Death.png", 5, 1);
+        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./Frog Down.png", 19, 1);
         // this.loadImage("./Frog Down.png", this.drawit);
         this.loop();
     }
@@ -28,9 +25,7 @@ class Game {
     }
     private loop = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.aniTest.draw();
-        this.aniTest2.draw();
-        this.aniTest3.draw();
+        this.aniTest.update();
         requestAnimationFrame(this.loop);
     }
 
