@@ -58,5 +58,10 @@ class Animate {
     private set aniSpeed(speed: number) {
         this.animationSpeed = speed;
     }
-
+    public get imageHeight() {
+        return this.img.height / this.noOfFrames;
+    }
+    public get imageWidth() {
+        return this.img.width;
+    }
 }

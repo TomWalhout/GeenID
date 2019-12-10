@@ -32,6 +32,12 @@ class Animate {
     set aniSpeed(speed) {
         this.animationSpeed = speed;
     }
+    get imageHeight() {
+        return this.img.height / this.noOfFrames;
+    }
+    get imageWidth() {
+        return this.img.width;
+    }
 }
 class Game {
     constructor(canvasId) {
@@ -41,6 +47,12 @@ class Game {
             this.currentScreen.move(this.canvas);
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.currentScreen.draw(this.ctx);
+<<<<<<< HEAD
+=======
+            this.aniTest.update();
+            this.Player.update();
+            this.Player.playerMove(this.canvas);
+>>>>>>> edfd0089dd7c237d8b40025fba588160251c2689
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
         };
@@ -49,7 +61,13 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
+<<<<<<< HEAD
         this.currentScreen = new BossScreen(this);
+=======
+        this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
+        this.Player = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog side.png', 20, 1);
+        this.currentScreen = new LoadingScreen(this);
+>>>>>>> edfd0089dd7c237d8b40025fba588160251c2689
         this.input = new UserInput();
         this.loop();
     }
@@ -383,6 +401,33 @@ class LoadingScreen extends GameScreen {
         this.writeTextToCanvas(ctx, "LOADING...", 140, this.center);
     }
 }
+<<<<<<< HEAD
+=======
+class Player extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        super(pos, vel, ctx, path, frames, speed);
+        this.UserInput = new UserInput;
+    }
+    playerMove(canvas) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
+            this.pos.x += 5;
+        }
+        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
+            this.pos.x -= 5;
+        }
+        if (this.pos.y + this.animation.imageHeight >= canvas.height) {
+            this.vel.y = 0;
+            this.pos.y = canvas.height - this.animation.imageHeight;
+        }
+        else {
+            this.vel.y += 0.15;
+        }
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
+            this.vel.y -= 5;
+        }
+    }
+}
+>>>>>>> edfd0089dd7c237d8b40025fba588160251c2689
 class StartScreen extends GameScreen {
     constructor(game) {
         super(game);

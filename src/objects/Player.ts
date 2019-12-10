@@ -10,22 +10,24 @@ class Player extends GameObject {
         this.UserInput = new UserInput;
     }
 
-    public walk(canvas: HTMLCanvasElement) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT)) {
-            this.pos.x++
-        } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT)) {
-            this.pos.x--
+    public playerMove(canvas: HTMLCanvasElement) {        
+        // Walk
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
+            this.pos.x += 5
+        } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
+            this.pos.x -= 5
         }
-        if (this.pos.y <= 300) {
-            this.vel.y += 0.1
-        } else {
+        // Gravity
+        if (this.pos.y + this.animation.imageHeight >= canvas.height) {
             this.vel.y = 0
+            this.pos.y = canvas.height - this.animation.imageHeight
+        } else {
+            this.vel.y += 0.15
+        }
+        // Jump
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
+        this.vel.y -= 5
         }
     }
 
-    public jump(canvas: HTMLCanvasElement) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP)) {
-            this.pos.y -= 5
-        }
-    }
 }
