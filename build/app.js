@@ -21,8 +21,7 @@ class Animate {
                 this.counter = 0;
                 if (this.currentFrame < this.noOfFrames - 1) {
                     this.currentFrame += 1;
-                }
-                else {
+                } else {
                     this.currentFrame = 0;
                 }
             }
@@ -38,6 +37,8 @@ class Game {
         this.loop = () => {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.aniTest.update();
+            this.aniTest2.update();
+            this.aniTest2.walk();
             requestAnimationFrame(this.loop);
         };
         this.canvas = canvasId;
@@ -45,7 +46,8 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 10);
+        this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
+        this.aniTest2 = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog down.png', 20, 1);
         this.loop();
     }
     writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
@@ -58,7 +60,7 @@ class Game {
         return Math.round(Math.random() * (max - min) + min);
     }
 }
-let init = function () {
+let init = function() {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
@@ -74,6 +76,12 @@ class GameObject {
     set pos(value) {
         this.position = value;
     }
+    get vel() {
+        return this.velocity;
+    }
+    set vel(value) {
+        this.velocity = value;
+    }
     update() {
         this.animation.draw();
         this.move();
@@ -81,6 +89,42 @@ class GameObject {
     move() {
         this.pos.x += this.velocity.x;
         this.pos.y += this.velocity.y;
+    }
+}
+class KeyboardListener {
+    constructor() {
+        this.keyDown = (ev) => {
+            this.keyCodeStates[ev.keyCode] = true;
+        };
+        this.keyUp = (ev) => {
+            this.keyCodeStates[ev.keyCode] = false;
+        };
+        this.keyCodeStates = new Array();
+        window.addEventListener("keydown", this.keyDown);
+        window.addEventListener("keyup", this.keyUp);
+    }
+    isKeyDown(keyCode) {
+        return this.keyCodeStates[keyCode] === true;
+    }
+}
+KeyboardListener.KEY_ESC = 27;
+KeyboardListener.KEY_SPACE = 32;
+KeyboardListener.KEY_LEFT = 37;
+KeyboardListener.KEY_UP = 38;
+KeyboardListener.KEY_RIGHT = 39;
+KeyboardListener.KEY_DOWN = 40;
+KeyboardListener.KEY_W = 87;
+KeyboardListener.KEY_A = 65;
+KeyboardListener.KEY_S = 83;
+KeyboardListener.KEY_D = 68;
+KeyboardListener.KEY_ENTER = 13;
+KeyboardListener.KEY_BACK = 8;
+class Player extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        super(pos, vel, ctx, path, frames, speed);
+    }
+    walk() {
+        this.pos.x++;
     }
 }
 class Vector {
