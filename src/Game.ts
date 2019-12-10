@@ -4,7 +4,7 @@ class Game {
     private readonly canvas: HTMLCanvasElement;
     private readonly ctx: CanvasRenderingContext2D;
     private aniTest: GameObject;
-    private aniTest2: Player;
+    private Player: Player;
     private aniTest3: Animate;
 
     public constructor(canvasId: HTMLCanvasElement) {
@@ -17,7 +17,7 @@ class Game {
         this.ctx = this.canvas.getContext("2d");
         this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
         // this.loadImage("./Frog Down.png", this.drawit);
-        this.aniTest2 = new Player(new Vector(200, 200), new Vector(0,0), this.ctx, './frog down.png', 20, 1)
+        this.Player = new Player(new Vector(200, 200), new Vector(0,0), this.ctx, './frog down.png', 20, 1)
         this.loop();
     }
 
@@ -27,8 +27,9 @@ class Game {
     private loop = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.aniTest.update();
-        this.aniTest2.update();
-        this.aniTest2.walk();
+        this.Player.update();
+        this.Player.walk(this.canvas);    
+        this.Player.jump(this.canvas)
         requestAnimationFrame(this.loop);
 
     }

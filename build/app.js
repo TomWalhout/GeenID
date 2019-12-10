@@ -20,7 +20,7 @@ class Animate {
             this.frameHeight = this.img.height / this.noOfFrames;
             if (this.counter >= this.animationSpeed) {
                 this.counter = 0;
-                if (this.currentFrame < this.noOfFrames) {
+                if (this.currentFrame < this.noOfFrames - 1) {
                     this.currentFrame += 1;
                 }
                 else {
@@ -39,8 +39,9 @@ class Game {
         this.loop = () => {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.aniTest.update();
-            this.aniTest2.update();
-            this.aniTest2.walk();
+            this.Player.update();
+            this.Player.walk(this.canvas);
+            this.Player.jump(this.canvas);
             requestAnimationFrame(this.loop);
         };
         this.canvas = canvasId;
@@ -49,7 +50,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
         this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
-        this.aniTest2 = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog down.png', 20, 1);
+        this.Player = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog down.png', 20, 1);
         this.loop();
     }
     drawit(img) {
@@ -134,9 +135,26 @@ KeyboardListener.KEY_BACK = 8;
 class Player extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed) {
         super(pos, vel, ctx, path, frames, speed);
+        this.keyboardListener = new KeyboardListener;
     }
-    walk() {
-        this.pos.x++;
+    walk(canvas) {
+        if (this.keyboardListener.isKeyDown(KeyboardListener.KEY_RIGHT)) {
+            this.pos.x++;
+        }
+        else if (this.keyboardListener.isKeyDown(KeyboardListener.KEY_LEFT)) {
+            this.pos.x--;
+        }
+        if (this.pos.y <= 300) {
+            this.vel.y += 0.1;
+        }
+        else {
+            this.vel.y = 0;
+        }
+    }
+    jump(canvas) {
+        if (this.keyboardListener.isKeyDown(KeyboardListener.KEY_UP)) {
+            this.pos.y -= 5;
+        }
     }
 }
 class Vector {
