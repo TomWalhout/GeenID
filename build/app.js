@@ -15,18 +15,20 @@ class Animate {
         return image;
     }
     draw() {
-        this.counter++;
-        this.frameHeight = this.img.height / this.noOfFrames;
-        if (this.counter > this.animationSpeed) {
-            this.counter = 0;
-            if (this.currentFrame < this.noOfFrames) {
-                this.currentFrame += 1;
+        if (this.img.naturalHeight > 0) {
+            this.counter++;
+            this.frameHeight = this.img.height / this.noOfFrames;
+            if (this.counter >= this.animationSpeed) {
+                this.counter = 0;
+                if (this.currentFrame < this.noOfFrames) {
+                    this.currentFrame += 1;
+                }
+                else {
+                    this.currentFrame = 1;
+                }
             }
-            else {
-                this.currentFrame = 0;
-            }
+            this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width, this.frameHeight);
         }
-        this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width, this.frameHeight);
     }
     set aniSpeed(speed) {
         this.animationSpeed = speed;
@@ -44,7 +46,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./Frog Down.png", 20, 1);
+        this.aniTest = new GameObject(new Vector(200, 300), new Vector(0, 0), this.ctx, "./Frog Down.png", 19, 1);
         this.loop();
     }
     drawit(img) {
