@@ -11,15 +11,15 @@ class Player extends GameObject {
     }
 
     public walk(canvas: HTMLCanvasElement) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT)) {
-            this.pos.x++
-        } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT)) {
-            this.pos.x--
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && this.pos.x + this.animation.imageWidth > canvas.width) {
+            this.pos.x + 5
+        } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
+            this.pos.x - 5
         }
-        if (this.pos.y <= 300) {
-            this.vel.y += 0.1
-        } else {
+        if (this.pos.y + this.animation.imageHeight >= canvas.height) {
             this.vel.y = 0
+        } else {
+            this.vel.y += 0.1
         }
     }
 
