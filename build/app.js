@@ -185,6 +185,7 @@ class GameObject {
         this.position = pos;
         this.velocity = vel;
         this.exist = true;
+        this.scale = scale;
         if (path) {
             this.animation = new Animate(ctx, path, frames, speed, this, scale);
         }
@@ -217,11 +218,10 @@ class GameObject {
         this.pos.y += this.velocity.y;
     }
     box() {
-        return [this.pos.x, this.pos.x + this.animation.imageWidth, this.pos.y, this.pos.y + this.animation.imageHeight];
+        return [this.pos.x, this.pos.x + this.animation.imageWidth * this.scale, this.pos.y, this.pos.y + this.animation.imageHeight * this.scale];
     }
     drawBox() {
         let box = this.box();
-        this.ctx.fillStyle = "Red";
         this.ctx.beginPath();
         this.ctx.moveTo(box[0], box[2]);
         this.ctx.lineTo(box[0], box[3]);
@@ -229,6 +229,7 @@ class GameObject {
         this.ctx.lineTo(box[1], box[2]);
         this.ctx.lineTo(box[0], box[2]);
         this.ctx.closePath();
+        this.ctx.strokeStyle = "red";
         this.ctx.stroke();
     }
 }
@@ -337,6 +338,7 @@ class Codebeam extends GameObject {
                 this.writeTextToCanvas(this.rays[j][i], 20, j * 20 + this.pos.x, i * 20 + this.pos.y * 20, 'center', '#00FF00');
             }
         }
+        this.drawBox();
     }
     update() {
         this.draw();
@@ -361,6 +363,23 @@ class GameScreen {
     move(canvas) {
     }
     collide() {
+    }
+    collides(a, b) {
+        let xoverlap = false;
+        let yoverlap = false;
+        if (a[0] < b[0] && a[1] > b[0]) {
+            xoverlap = true;
+        }
+        if (a[0] > b[0] && a[0] < b[1]) {
+            xoverlap = true;
+        }
+        if (a[2] < b[2] && a[3] > b[2] && a[3] < b[3]) {
+            yoverlap = true;
+        }
+        if (a[2] > b[2] && a[2] < b[3]) {
+            yoverlap = true;
+        }
+        return xoverlap && yoverlap;
     }
     adjust(game) {
     }
@@ -401,8 +420,8 @@ class BossScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
-        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
+        this.boss = new Boss(new Vector(100, 100), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -415,24 +434,9 @@ class BossScreen extends GameScreen {
         this.player.update();
     }
     collide() {
-        let a = this.player.box();
-        let b = this.boss.box();
-        let xoverlap = false;
-        let yoverlap = false;
-        if (a[0] < b[0] && a[1] > b[0]) {
-            xoverlap = true;
-        }
-        if (a[0] > b[0] && a[0] < b[1]) {
-            xoverlap = true;
-        }
-        if (a[2] < b[2] && a[3] > b[2] && a[3] < b[3]) {
-            yoverlap = true;
-        }
-        if (a[2] > b[2] && a[2] < b[3]) {
-            yoverlap = true;
-        }
-        if (xoverlap && yoverlap) {
-            console.log("goisejgoiaerhgaehgerzhguiaerhgfoiaerhgoiaerhgaerhguaehrgu");
+        let player = this.player.box();
+        let boss = this.boss.box();
+        if (this.collides(player, boss)) {
         }
     }
 }

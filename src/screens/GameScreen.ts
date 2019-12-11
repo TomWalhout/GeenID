@@ -65,6 +65,28 @@ class GameScreen {
 
     }
 
+    public collides(a: Array<number>, b: Array<number>) {
+        let xoverlap = false;
+        let yoverlap = false;
+        if (a[0] < b[0] && a[1] > b[0]) {
+            //there is x-overlap
+            xoverlap = true;
+        }
+        if (a[0] > b[0] && a[0] < b[1]) {
+            //xoverlap
+            xoverlap = true;
+        }
+        if (a[2] < b[2] && a[3] > b[2] && a[3] < b[3]) {
+            //there is x-overlap
+            yoverlap = true;
+        }
+        if (a[2] > b[2] && a[2] < b[3]) {
+            //xoverlap
+            yoverlap = true;
+        }
+        return xoverlap && yoverlap;
+    }
+
     /**
      * Let this screen adjust its state and/or let the game switch to a new 
      * screen to show.
