@@ -7,7 +7,8 @@ class Animate {
     private currentFrame: number;
     private object: any;
     private counter: number;
-    constructor(ctx: CanvasRenderingContext2D, path: string, noOfFrames: number, anispeed: number, object: GameObject) {
+    private scale: number;
+    constructor(ctx: CanvasRenderingContext2D, path: string, noOfFrames: number, anispeed: number, object: GameObject, scale: number = 1) {
         this.ctx = ctx;
         // Load the image into the img var
         this.img = this.loadImage(path);
@@ -18,7 +19,7 @@ class Animate {
         this.counter = 0;
         //daddy object
         this.object = object;
-        // Calc how tall a single frame is
+        this.scale = scale;
     }
 
     private loadImage(path: string): HTMLImageElement {
@@ -34,11 +35,11 @@ class Animate {
             this.frameHeight = this.img.height / this.noOfFrames;
             if (this.counter >= this.animationSpeed) {
                 this.counter = 0;
-                if (this.currentFrame < this.noOfFrames -1) {
+                if (this.currentFrame < this.noOfFrames - 1) {
                     this.currentFrame += 1;
                 } else {
                     this.currentFrame = 0;
-                    
+
                 }
             }
 
@@ -50,8 +51,8 @@ class Animate {
                 this.frameHeight,
                 this.object.pos.x,
                 this.object.pos.y,
-                this.img.width,
-                this.frameHeight
+                this.img.width * this.scale,
+                this.frameHeight * this.scale
             )
         }
     }

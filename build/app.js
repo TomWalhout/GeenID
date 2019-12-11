@@ -1,5 +1,5 @@
 class Animate {
-    constructor(ctx, path, noOfFrames, anispeed, object) {
+    constructor(ctx, path, noOfFrames, anispeed, object, scale = 1) {
         this.ctx = ctx;
         this.img = this.loadImage(path);
         this.noOfFrames = noOfFrames;
@@ -7,6 +7,7 @@ class Animate {
         this.aniSpeed = anispeed;
         this.counter = 0;
         this.object = object;
+        this.scale = scale;
     }
     loadImage(path) {
         const image = new Image();
@@ -26,7 +27,7 @@ class Animate {
                     this.currentFrame = 0;
                 }
             }
-            this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width, this.frameHeight);
+            this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width * this.scale, this.frameHeight * this.scale);
         }
     }
     set aniSpeed(speed) {
@@ -45,6 +46,7 @@ class Game {
             this.currentScreen.increaseFrameCounter();
             this.currentScreen.listen(this.input);
             this.currentScreen.move(this.canvas);
+            this.currentScreen.collide();
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.currentScreen.draw(this.ctx);
             requestAnimationFrame(this.loop);
@@ -179,11 +181,15 @@ class Vector {
     }
 }
 class GameObject {
-    constructor(pos, vel, ctx, path, frames = 1, speed = 1) {
+    constructor(pos, vel, ctx, path, frames = 1, speed = 1, scale = 1) {
         this.position = pos;
         this.velocity = vel;
+        this.exist = true;
         if (path) {
-            this.animation = new Animate(ctx, path, frames, speed, this);
+            this.animation = new Animate(ctx, path, frames, speed, this, scale);
+        }
+        else {
+            this.animation = new Animate(ctx, "", 1, 1, this);
         }
     }
     get pos() {
@@ -199,35 +205,67 @@ class GameObject {
         this.velocity = value;
     }
     update() {
-        if (this.animation) {
-            this.animation.draw();
+        if (this.exist) {
+            if (this.animation) {
+                this.animation.draw();
+            }
+            this.move();
         }
-        this.move();
     }
     move() {
         this.pos.x += this.velocity.x;
         this.pos.y += this.velocity.y;
     }
+    box() {
+        return [this.pos.x, this.pos.x + this.animation.imageWidth, this.pos.y, this.pos.y + this.animation.imageHeight];
+    }
+    drawBox() {
+        let box = this.box();
+        this.ctx.fillStyle = "Red";
+        this.ctx.beginPath();
+        this.ctx.moveTo(box[0], box[2]);
+        this.ctx.lineTo(box[0], box[3]);
+        this.ctx.lineTo(box[1], box[3]);
+        this.ctx.lineTo(box[1], box[2]);
+        this.ctx.lineTo(box[0], box[2]);
+        this.ctx.closePath();
+        this.ctx.stroke();
+    }
 }
 class Boss extends GameObject {
-    constructor(pos, vel, ctx, path, frames = 0, speed = 0) {
-        super(pos, vel, ctx, path, frames, speed);
+    constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
+        super(pos, vel, ctx, path, frames, speed, scale);
         this.attackTimer = 0;
         this.ctx = ctx;
+        this.screen = screen;
+        this.Attack();
     }
     update() {
         this.vel.x = Math.random() - .5;
         this.vel.y = Math.random() - .5;
-        this.Attack();
-        this.currentAttack.forEach(element => {
-            element.update();
-        });
+        if (this.currentAttack) {
+            let inList = false;
+            this.currentAttack.forEach(element => {
+                element.update();
+            });
+        }
         super.update();
+        this.drawBox();
     }
     Attack() {
-        this.currentAttack = new Array;
-        for (let i = 1; i < 8; i++) {
-            this.currentAttack[i] = new Codebeam(new Vector(i * 100, 0), new Vector(0, .1 * i * Math.random()), this.ctx);
+        let chance = 0;
+        switch (chance) {
+            case 0:
+                this.currentAttack = new Array;
+                for (let i = 1; i < 8; i++) {
+                    this.currentAttack[i] = new Codebeam(new Vector(i * 100, 0), new Vector(0, .1 * i * Math.random()), this.ctx);
+                }
+                break;
+            case 1:
+                break;
+            default:
+                console.log("jammerjoh");
+                break;
         }
     }
 }
@@ -350,7 +388,7 @@ class BossScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.boss = new Boss(new Vector(100, 100), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", 4, 20);
+        this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
     }
     adjust(game) {
@@ -362,6 +400,27 @@ class BossScreen extends GameScreen {
     draw(ctx) {
         this.boss.update();
         this.player.update();
+    }
+    collide() {
+        let a = this.player.box();
+        let b = this.boss.box();
+        let xoverlap = false;
+        let yoverlap = false;
+        if (a[0] < b[0] && a[1] > b[0]) {
+            xoverlap = true;
+        }
+        if (a[0] > b[0] && a[0] < b[1]) {
+            xoverlap = true;
+        }
+        if (a[2] < b[2] && a[3] > b[2] && a[3] < b[3]) {
+            yoverlap = true;
+        }
+        if (a[2] > b[2] && a[2] < b[3]) {
+            yoverlap = true;
+        }
+        if (xoverlap && yoverlap) {
+            console.log("goisejgoiaerhgaehgerzhguiaerhgfoiaerhgoiaerhgaerhguaehrgu");
+        }
     }
 }
 class LevelScreen extends GameScreen {

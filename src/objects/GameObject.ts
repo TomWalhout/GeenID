@@ -3,11 +3,16 @@ class GameObject {
     protected velocity: Vector;
     protected animation: Animate;
     protected ctx: CanvasRenderingContext2D;
-    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path?: string, frames: number = 1, speed: number = 1) {
+    private classname: string;
+    private exist: boolean;
+    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path?: string, frames: number = 1, speed: number = 1, scale: number = 1) {
         this.position = pos;
         this.velocity = vel;
+        this.exist = true;
         if (path) {
-            this.animation = new Animate(ctx, path, frames, speed, this);
+            this.animation = new Animate(ctx, path, frames, speed, this, scale);
+        } else {
+            this.animation = new Animate(ctx, "", 1, 1, this)
         }
     }
 
@@ -26,14 +31,34 @@ class GameObject {
     }
 
     public update() {
-        if (this.animation) {
-            this.animation.draw();
+        if (this.exist) {
+            if (this.animation) {
+                this.animation.draw();
+            }
+            this.move();
         }
-        this.move();
     }
 
     private move() {
         this.pos.x += this.velocity.x;
         this.pos.y += this.velocity.y;
+    }
+
+
+    public box(): Array<number> {
+        return [this.pos.x, this.pos.x + this.animation.imageWidth, this.pos.y, this.pos.y + this.animation.imageHeight];
+    }
+
+    public drawBox() {
+        let box = this.box();
+        this.ctx.fillStyle = "Red";
+        this.ctx.beginPath();
+        this.ctx.moveTo(box[0], box[2]); //topleft
+        this.ctx.lineTo(box[0], box[3]); //bottomleft
+        this.ctx.lineTo(box[1], box[3]); //bottomright
+        this.ctx.lineTo(box[1], box[2]); //topright
+        this.ctx.lineTo(box[0], box[2]); //topleft
+        this.ctx.closePath();
+        this.ctx.stroke();
     }
 }
