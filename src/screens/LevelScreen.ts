@@ -6,6 +6,9 @@
  */
 class LevelScreen extends GameScreen {
 
+    private program1: Program;
+    private player: Player;
+
     private shouldSwitchToTitleScreen = false;
 
     /**
@@ -13,9 +16,11 @@ class LevelScreen extends GameScreen {
      *
      * @param game the game this screen belongs to
      */
-    public constructor(game: Game) {
+    public constructor(game: Game, ctx: CanvasRenderingContext2D) {
         super(game);
-        
+
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Side.png", 20, 1);
+        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1)
     }
 
 
@@ -30,6 +35,7 @@ class LevelScreen extends GameScreen {
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
+        this.player.playerMove(this.game.canvas);
     }
 
     /**
@@ -39,17 +45,8 @@ class LevelScreen extends GameScreen {
      * @param ctx the rendering context to draw on
      */
     public draw(ctx: CanvasRenderingContext2D) {
-
-    }
-
-    /**
-     * Let this screen draw debug info about itself and its gameobjects on the
-     * given rendering context.
-     *
-     * @param ctx the rendering context to draw on
-     */
-    public drawDebugInfo(ctx: CanvasRenderingContext2D) {
-
+        this.program1.update();
+        this.player.update();
     }
 
     /**
@@ -59,7 +56,6 @@ class LevelScreen extends GameScreen {
      * @param {HTMLImageElement} img the loaded image object
      */
     private writeLifeImagesToLevelScreen(ctx: CanvasRenderingContext2D) {
-        
-    }
 
+    }
 }

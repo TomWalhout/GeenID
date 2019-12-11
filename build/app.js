@@ -55,7 +55,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new BossScreen(this);
+        this.currentScreen = new LevelScreen(this, this.ctx);
         this.input = new UserInput();
         this.loop();
     }
@@ -378,18 +378,21 @@ class BossScreen extends GameScreen {
     }
 }
 class LevelScreen extends GameScreen {
-    constructor(game) {
+    constructor(game, ctx) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Side.png", 20, 1);
+        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
+        this.player.playerMove(this.game.canvas);
     }
     draw(ctx) {
-    }
-    drawDebugInfo(ctx) {
+        this.program1.update();
+        this.player.update();
     }
     writeLifeImagesToLevelScreen(ctx) {
     }
@@ -415,11 +418,6 @@ class StartScreen extends GameScreen {
     listen(input) {
         if (input.isKeyDown(UserInput.KEY_ENTER)) {
             this.shouldStartLevel = true;
-        }
-    }
-    adjust(game) {
-        if (this.shouldStartLevel) {
-            game.switchScreen(new LevelScreen(game));
         }
     }
     draw(ctx) {
