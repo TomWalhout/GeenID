@@ -7,6 +7,7 @@
 class BossScreen extends GameScreen {
     private boss: Boss;
     private player: Player;
+    private enemy: Enemy;
     private shouldSwitchToTitleScreen = false;
 
     /**
@@ -18,6 +19,7 @@ class BossScreen extends GameScreen {
         super(game);
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
+        this.enemy = new Enemy(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Side.png", this, 20, 1);
         // add an mouse event listener
         document.addEventListener("click", this.mouseHandler);
     }
@@ -65,6 +67,7 @@ class BossScreen extends GameScreen {
     public draw(ctx: CanvasRenderingContext2D) {
         this.boss.update();
         this.player.update();
+        this.enemy.update();
     }
 
     /**
