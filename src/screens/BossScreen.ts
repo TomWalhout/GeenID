@@ -37,8 +37,7 @@ class BossScreen extends GameScreen {
         this.player.playerMove(this.game.canvas);
     }
 
-    private mouseHandler = (event: MouseEvent) => {
-        // console.log(`xPos ${event.clientX}, yPos ${event.clientY}`);
+    private mouseHandler = (event: MouseEvent) => {// console.log(`xPos ${event.clientX}, yPos ${event.clientY}`);
         //0 = x, 
         //1 = x + width, 
         //2 = y, 
