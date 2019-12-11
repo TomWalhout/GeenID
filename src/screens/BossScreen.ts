@@ -17,7 +17,7 @@ class BossScreen extends GameScreen {
     public constructor(game: Game) {
         super(game);
         this.boss = new Boss(new Vector(100, 100), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", 4, 20);
-        this.player = new Player(new Vector(100, 100), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
     }
 
 
@@ -32,6 +32,7 @@ class BossScreen extends GameScreen {
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
+        this.player.playerMove(this.game.canvas);
     }
 
     /**
@@ -41,7 +42,8 @@ class BossScreen extends GameScreen {
      * @param ctx the rendering context to draw on
      */
     public draw(ctx: CanvasRenderingContext2D) {
-
+        this.boss.update();
+        this.player.update();
     }
 
 }

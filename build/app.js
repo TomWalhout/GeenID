@@ -47,12 +47,6 @@ class Game {
             this.currentScreen.move(this.canvas);
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.currentScreen.draw(this.ctx);
-<<<<<<< HEAD
-=======
-            this.aniTest.update();
-            this.Player.update();
-            this.Player.playerMove(this.canvas);
->>>>>>> edfd0089dd7c237d8b40025fba588160251c2689
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
         };
@@ -61,13 +55,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-<<<<<<< HEAD
         this.currentScreen = new BossScreen(this);
-=======
-        this.aniTest = new GameObject(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
-        this.Player = new Player(new Vector(200, 200), new Vector(0, 0), this.ctx, './frog side.png', 20, 1);
-        this.currentScreen = new LoadingScreen(this);
->>>>>>> edfd0089dd7c237d8b40025fba588160251c2689
         this.input = new UserInput();
         this.loop();
     }
@@ -224,31 +212,23 @@ class GameObject {
 class Boss extends GameObject {
     constructor(pos, vel, ctx, path, frames = 0, speed = 0) {
         super(pos, vel, ctx, path, frames, speed);
-        this.attack = new Array;
-        for (let i = 0; i < 5; i++) {
-            this.attack[0] = new Codebeam(new Vector(100, 0), new Vector(0, .05), ctx);
-            this.attack[1] = new Codebeam(new Vector(300, 0), new Vector(0, .02), ctx);
-            this.attack[2] = new Codebeam(new Vector(200, 0), new Vector(0, .06), ctx);
-            this.attack[3] = new Codebeam(new Vector(400, 0), new Vector(0, .07), ctx);
-            this.attack[4] = new Codebeam(new Vector(500, 0), new Vector(0, .01), ctx);
-            this.attack[5] = new Codebeam(new Vector(600, 0), new Vector(0, .08), ctx);
-            this.attack[6] = new Codebeam(new Vector(700, 0), new Vector(0, .01), ctx);
-            this.attack[7] = new Codebeam(new Vector(800, 0), new Vector(0, .02), ctx);
-            this.attack[8] = new Codebeam(new Vector(900, 0), new Vector(0, .01), ctx);
-            this.attack[9] = new Codebeam(new Vector(1000, 0), new Vector(0, .02), ctx);
-            this.attack[10] = new Codebeam(new Vector(1100, 0), new Vector(0, .04), ctx);
-            this.attack[11] = new Codebeam(new Vector(1200, 0), new Vector(0, .01), ctx);
-            this.attack[12] = new Codebeam(new Vector(1300, 0), new Vector(0, .1), ctx);
-            this.attack[13] = new Codebeam(new Vector(1400, 0), new Vector(0, .01), ctx);
-        }
+        this.attackTimer = 0;
+        this.ctx = ctx;
     }
     update() {
         this.vel.x = Math.random() - .5;
         this.vel.y = Math.random() - .5;
-        this.attack.forEach(element => {
+        this.Attack();
+        this.currentAttack.forEach(element => {
             element.update();
         });
         super.update();
+    }
+    Attack() {
+        this.currentAttack = new Array;
+        for (let i = 1; i < 8; i++) {
+            this.currentAttack[i] = new Codebeam(new Vector(i * 100, 0), new Vector(0, .1 * i * Math.random()), this.ctx);
+        }
     }
 }
 class Player extends GameObject {
@@ -256,23 +236,22 @@ class Player extends GameObject {
         super(pos, vel, ctx, path, frames, speed);
         this.UserInput = new UserInput;
     }
-    walk(canvas) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT)) {
-            this.pos.x++;
+    playerMove(canvas) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
+            this.pos.x += 5;
         }
-        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT)) {
-            this.pos.x--;
+        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
+            this.pos.x -= 5;
         }
-        if (this.pos.y <= 300) {
-            this.vel.y += 0.1;
+        if (this.pos.y + this.animation.imageHeight >= canvas.height) {
+            this.vel.y = 0;
+            this.pos.y = canvas.height - this.animation.imageHeight;
         }
         else {
-            this.vel.y = 0;
+            this.vel.y += 0.15;
         }
-    }
-    jump(canvas) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP)) {
-            this.pos.y -= 5;
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
+            this.vel.y -= 5;
         }
     }
 }
@@ -280,14 +259,25 @@ class Codebeam extends GameObject {
     constructor(pos, vel, ctx, path = "", frames = 0, speed = 0) {
         super(pos, vel, ctx, path, frames, speed);
         this.ctx = ctx;
+        this.attackTimer = 0;
+        this.waveTimer = 0;
         this.rays = new Array;
-        for (let j = 0; j < Math.floor(Math.random() * 5 + 1); j++) {
+        this.init();
+    }
+    init() {
+        for (let j = 0; j < Math.floor(Math.random() * 10 + 1); j++) {
             this.rays[j] = new Array;
-            for (let i = 0; i < Math.floor(Math.random() * 20 + 1); i++) {
+            for (let i = 0; i < Math.floor(Math.random() * 25 + 5); i++) {
                 this.rays[j][i] = Math.random().toString(36).replace(/[^a-z]+/g, '').charAt(0);
-                console.log(this.rays[j][i] + " " + j + " " + i);
             }
         }
+    }
+    respawn() {
+        if (this.waveTimer >= 60) {
+            this.init();
+            this.waveTimer = 0;
+        }
+        this.waveTimer++;
     }
     draw() {
         for (let j = 0; j < this.rays.length - 1; j++) {
@@ -361,14 +351,17 @@ class BossScreen extends GameScreen {
         super(game);
         this.shouldSwitchToTitleScreen = false;
         this.boss = new Boss(new Vector(100, 100), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", 4, 20);
-        this.player = new Player(new Vector(100, 100), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
+        this.player.playerMove(this.game.canvas);
     }
     draw(ctx) {
+        this.boss.update();
+        this.player.update();
     }
 }
 class LevelScreen extends GameScreen {
@@ -401,33 +394,6 @@ class LoadingScreen extends GameScreen {
         this.writeTextToCanvas(ctx, "LOADING...", 140, this.center);
     }
 }
-<<<<<<< HEAD
-=======
-class Player extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed) {
-        super(pos, vel, ctx, path, frames, speed);
-        this.UserInput = new UserInput;
-    }
-    playerMove(canvas) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
-            this.pos.x += 5;
-        }
-        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
-            this.pos.x -= 5;
-        }
-        if (this.pos.y + this.animation.imageHeight >= canvas.height) {
-            this.vel.y = 0;
-            this.pos.y = canvas.height - this.animation.imageHeight;
-        }
-        else {
-            this.vel.y += 0.15;
-        }
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
-            this.vel.y -= 5;
-        }
-    }
-}
->>>>>>> edfd0089dd7c237d8b40025fba588160251c2689
 class StartScreen extends GameScreen {
     constructor(game) {
         super(game);

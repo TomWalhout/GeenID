@@ -10,7 +10,7 @@ class Player extends GameObject {
         this.UserInput = new UserInput;
     }
 
-    public playerMove(canvas: HTMLCanvasElement) {        
+    public playerMove(canvas: HTMLCanvasElement) {
         // Walk
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
             this.pos.x += 5
@@ -26,7 +26,7 @@ class Player extends GameObject {
         }
         // Jump
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
-        this.vel.y -= 5
+            this.vel.y -= 5
         }
     }
 
