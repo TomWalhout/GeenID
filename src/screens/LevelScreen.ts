@@ -49,6 +49,27 @@ class LevelScreen extends GameScreen {
         this.player.update();
     }
 
+
+
+    public collide() {
+        let player = this.player.box();
+        let program1 = this.program1.box();
+        if (this.collides(player, program1)) {
+            // console.log('bam');
+
+            
+        }
+        let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
+        let playerbottom = [player[0], player[1], player[3], player[3]]
+        // console.log(upperbox);
+        if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
+            this.player.vel.y = 0;
+            console.log(" eojiehfieh")
+            this.player.standing = true;
+        } else {
+            this.player.standing = false;
+        }
+    }
     /**
      * Uses the loaded life image to remaining lives of the player on the rop
      * left of the screen.

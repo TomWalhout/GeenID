@@ -5,6 +5,7 @@ class Player extends GameObject {
     private UserInput: UserInput;
     private hasSword: boolean;
     protected scale: number;
+    protected standsOnGround: boolean;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
         super(pos, vel, ctx, path, frames, speed, scale)
@@ -12,6 +13,7 @@ class Player extends GameObject {
         this.UserInput = new UserInput;
         this.hasSword = false;
         this.scale = scale
+        this.standsOnGround = false;
     }
 
     public playerMove(canvas: HTMLCanvasElement) {
@@ -25,12 +27,14 @@ class Player extends GameObject {
         if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
             this.vel.y = 0
             this.pos.y = canvas.height - this.animation.imageHeight * this.scale
+            this.standsOnGround = true;
         } else {
             this.vel.y += 0.15
+            this.standsOnGround = false;
         }
         // Jump
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
-            this.vel.y -= 5
+            this.vel.y -= 15
         }
         // Attack
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
@@ -41,5 +45,14 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA')
             this.hasSword = true;
         }
+        console.log(this.standsOnGround)
+    }
+
+    public get standing(): boolean {
+        return this.standsOnGround;
+    }
+
+    public set standing(value: boolean) {
+        this.standsOnGround = value;
     }
 }
