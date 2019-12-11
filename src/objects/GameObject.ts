@@ -5,7 +5,7 @@ class GameObject {
     protected ctx: CanvasRenderingContext2D;
     private classname: string;
     private exist: boolean;
-    private scale: number;
+    protected scale: number;
     constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path?: string, frames: number = 1, speed: number = 1, scale: number = 1) {
         this.position = pos;
         this.velocity = vel;

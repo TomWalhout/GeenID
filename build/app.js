@@ -278,7 +278,7 @@ class Player extends GameObject {
         this.scale = scale;
     }
     playerMove(canvas) {
-        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
             this.pos.x += 5;
         }
         else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
@@ -304,8 +304,8 @@ class Player extends GameObject {
     }
 }
 class Program extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed) {
-        super(pos, vel, ctx, path, frames, speed);
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
     }
 }
 class Codebeam extends GameObject {
@@ -455,8 +455,8 @@ class LevelScreen extends GameScreen {
     constructor(game, ctx) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 15);
-        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1);
+        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
+        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
