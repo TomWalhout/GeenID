@@ -181,4 +181,8 @@ class GameScreen {
     }
 
 
+    public createHitbox(left: number, right: number, up: number, down: number) {
+        return [left, right, up, down];
+    }
+
 }

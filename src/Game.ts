@@ -26,7 +26,6 @@ class Game {
         this.currentScreen.increaseFrameCounter();
 
         // Let the current screen listen to the user input
-        this.currentScreen.listen(this.input);
 
         // Let the current screen move its objects around the canvas
         this.currentScreen.move(this.canvas);
@@ -36,6 +35,7 @@ class Game {
 
         // Let the current screen draw itself on the rendering context
         this.currentScreen.draw(this.ctx);
+        this.currentScreen.listen(this.input);
 
         requestAnimationFrame(this.loop);
 

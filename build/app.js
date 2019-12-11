@@ -44,11 +44,11 @@ class Game {
     constructor(canvasId) {
         this.loop = () => {
             this.currentScreen.increaseFrameCounter();
-            this.currentScreen.listen(this.input);
             this.currentScreen.move(this.canvas);
             this.currentScreen.collide();
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.currentScreen.draw(this.ctx);
+            this.currentScreen.listen(this.input);
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
         };
@@ -350,7 +350,6 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA');
             this.hasSword = true;
         }
-        console.log(this.standsOnGround);
     }
     get standing() {
         return this.standsOnGround;
@@ -362,6 +361,26 @@ class Player extends GameObject {
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
         super(pos, vel, ctx, path, frames, speed, scale);
+        this.open = true;
+        this.setCloseButton(ctx);
+    }
+    setCloseButton(ctx) {
+        this.closeButton = new CloseButton(new Vector(this.pos.x + 880, this.pos.y), new Vector(0, 0), ctx, "./transparent.png", 1, 1, 0.5);
+    }
+    get isOpen() {
+        return this.open;
+    }
+    set isOpen(value) {
+        this.open = value;
+    }
+    get button() {
+        return this.closeButton;
+    }
+}
+class CloseButton extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
     }
 }
 class Codebeam extends GameObject {
@@ -472,6 +491,9 @@ class GameScreen {
     randomNumber(min, max) {
         return Math.random() * (max - min) + min;
     }
+    createHitbox(left, right, up, down) {
+        return [left, right, up, down];
+    }
 }
 class BossScreen extends GameScreen {
     constructor(game) {
@@ -515,6 +537,8 @@ class LevelScreen extends GameScreen {
         this.shouldSwitchToTitleScreen = false;
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
         this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms = [];
+        this.openPrograms[0] = this.program1;
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -523,23 +547,36 @@ class LevelScreen extends GameScreen {
         this.player.playerMove(this.game.canvas);
     }
     draw(ctx) {
-        this.program1.update();
+        for (let i = 0; i < this.openPrograms.length; i++) {
+            this.openPrograms[0].update();
+        }
         this.player.update();
     }
     collide() {
-        let player = this.player.box();
-        let program1 = this.program1.box();
-        if (this.collides(player, program1)) {
+        if (this.program1.isOpen) {
+            let player = this.player.box();
+            let program1 = this.program1.box();
+            if (this.collides(player, program1)) {
+            }
+            let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
+            let playerbottom = [player[0], player[1], player[3], player[3] + 2];
+            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
+                this.player.vel.y = 0;
+                this.player.standing = true;
+            }
+            else {
+                this.player.standing = false;
+            }
         }
-        let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
-        let playerbottom = [player[0], player[1], player[3], player[3]];
-        if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
-            this.player.vel.y = 0;
-            console.log(" eojiehfieh");
-            this.player.standing = true;
-        }
-        else {
-            this.player.standing = false;
+    }
+    listen(userinput) {
+        for (let i = 0; i < this.openPrograms.length; i++) {
+            this.openPrograms[i].button.drawBox();
+            if (this.openPrograms[i].button.clickedOn(userinput)) {
+                this.openPrograms[i].isOpen = false;
+                this.openPrograms.splice(i, 1);
+                i++;
+            }
         }
     }
     writeLifeImagesToLevelScreen(ctx) {
