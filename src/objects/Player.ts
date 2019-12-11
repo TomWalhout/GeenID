@@ -29,5 +29,4 @@ class Player extends GameObject {
             this.vel.y -= 5
         }
     }
-
 }
