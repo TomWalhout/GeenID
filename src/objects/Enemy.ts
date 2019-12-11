@@ -10,5 +10,17 @@ class Enemy extends GameObject {
         this.screen = screen;
     }
 
-    
+    public update() {
+        super.update();
+        this.drawBox();
+    }
+
+    public enemyMove(canvas: HTMLCanvasElement) {
+        this.vel.x = 0
+        if ((this.pos.x + this.animation.imageWidth) > canvas.width) {
+            this.vel.x -= 5
+        } else if ((this.pos.x + this.animation.imageWidth) < canvas.width) {
+            this.vel.x += 5
+        }
+    }
 }
