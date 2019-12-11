@@ -40,6 +40,7 @@ class Codebeam extends GameObject {
                 this.writeTextToCanvas(this.rays[j][i], 20, j * 20 + this.pos.x, i * 20 + this.pos.y * 20, 'center', '#00FF00');
             }
         }
+        this.drawBox();
     }
 
     public update() {

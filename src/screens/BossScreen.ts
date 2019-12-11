@@ -37,24 +37,23 @@ class BossScreen extends GameScreen {
         this.player.playerMove(this.game.canvas);
     }
 
-    private mouseHandler = (event: MouseEvent) => {
-        // console.log(`xPos ${event.clientX}, yPos ${event.clientY}`);
+    private mouseHandler = (event: MouseEvent) => {// console.log(`xPos ${event.clientX}, yPos ${event.clientY}`);
         //0 = x, 
         //1 = x + width, 
         //2 = y, 
         //3 = y + height
 
         let box = this.boss.box();
-            if  (
-                event.clientX >= box[0] &&
-                event.clientX < box[1] &&
-                event.clientY >= box[2] &&
-                event.clientY <= box[3]
-            ) {
-                console.log('YOU SHALL NOT PAAAAAS');
-            }
-        
-      };
+        if (
+            event.clientX >= box[0] &&
+            event.clientX < box[1] &&
+            event.clientY >= box[2] &&
+            event.clientY <= box[3]
+        ) {
+            console.log('YOU SHALL NOT PAAAAAS');
+        }
+
+    };
 
     /**
      * Let this screen draw itself and its gameobjects on the given rendering
@@ -71,28 +70,9 @@ class BossScreen extends GameScreen {
      * Check collisions
      */
     public collide() {
-        let a = this.player.box();
-        let b = this.boss.box();
-        let xoverlap: boolean = false;
-        let yoverlap: boolean = false;
-        if (a[0] < b[0] && a[1] > b[0]) {
-            //there is x-overlap
-            xoverlap = true;
-        }
-        if (a[0] > b[0] && a[0] < b[1]) {
-            //xoverlap
-            xoverlap = true;
-        }
-        if (a[2] < b[2] && a[3] > b[2] && a[3] < b[3]) {
-            //there is x-overlap
-            yoverlap = true;
-        }
-        if (a[2] > b[2] && a[2] < b[3]) {
-            //xoverlap
-            yoverlap = true;
-        }
-        if (xoverlap && yoverlap) {
-            console.log("goisejgoiaerhgaehgerzhguiaerhgfoiaerhgoiaerhgaerhguaehrgu");
+        let player = this.player.box();
+        let boss = this.boss.box();
+        if (this.collides(player, boss)) {
         }
     }
 
