@@ -235,6 +235,7 @@ class Player extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed) {
         super(pos, vel, ctx, path, frames, speed);
         this.UserInput = new UserInput;
+        this.hasSword = false;
     }
     playerMove(canvas) {
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
@@ -252,6 +253,13 @@ class Player extends GameObject {
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
             this.vel.y -= 5;
+        }
+        if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
+            console.log('Hiyaa!');
+        }
+        if (this.UserInput.isKeyDown(UserInput.KEY_ENTER) && this.hasSword == false) {
+            console.log('tadadADADAAAAAA');
+            this.hasSword = true;
         }
     }
 }
