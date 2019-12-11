@@ -16,11 +16,11 @@ class LevelScreen extends GameScreen {
      *
      * @param game the game this screen belongs to
      */
-    public constructor(game: Game, ctx: CanvasRenderingContext2D) {
+    public constructor(game: Game) {
         super(game);
 
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
-        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1, 0.7)
+        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7)
     }
 
 

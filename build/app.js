@@ -57,7 +57,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new BossScreen(this);
+        this.currentScreen = new LevelScreen(this);
         this.input = new UserInput();
         this.loop();
     }
@@ -491,11 +491,11 @@ class BossScreen extends GameScreen {
     }
 }
 class LevelScreen extends GameScreen {
-    constructor(game, ctx) {
+    constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
-        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
