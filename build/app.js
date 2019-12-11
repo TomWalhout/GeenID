@@ -271,10 +271,11 @@ class Boss extends GameObject {
     }
 }
 class Player extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed) {
-        super(pos, vel, ctx, path, frames, speed);
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
         this.UserInput = new UserInput;
         this.hasSword = false;
+        this.scale = scale;
     }
     playerMove(canvas) {
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
@@ -283,9 +284,9 @@ class Player extends GameObject {
         else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
             this.pos.x -= 5;
         }
-        if (this.pos.y + this.animation.imageHeight >= canvas.height) {
+        if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
             this.vel.y = 0;
-            this.pos.y = canvas.height - this.animation.imageHeight;
+            this.pos.y = canvas.height - this.animation.imageHeight * this.scale;
         }
         else {
             this.vel.y += 0.15;
@@ -430,7 +431,7 @@ class BossScreen extends GameScreen {
             }
         };
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
-        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1, 1);
         document.addEventListener("click", this.mouseHandler);
     }
     adjust(game) {
@@ -454,7 +455,7 @@ class LevelScreen extends GameScreen {
     constructor(game, ctx) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1);
+        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 15);
         this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1);
     }
     adjust(game) {
