@@ -20,4 +20,14 @@ class Vector {
     public set y(value: number) {
         this.ypos = value;
     }
+
+    public mirror_X(): Vector
+    {
+        return new Vector(this.x, this.y * -1);
+    }
+
+    public mirror_Y(): Vector
+    {
+        return new Vector(this.x * -1, this.y);
+    }
 }

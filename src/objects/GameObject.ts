@@ -41,7 +41,7 @@ class GameObject {
         }
     }
 
-    private move() {
+    public move() {
         this.pos.x += this.velocity.x;
         this.pos.y += this.velocity.y;
     }
