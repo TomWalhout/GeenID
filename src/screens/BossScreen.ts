@@ -39,10 +39,13 @@ class BossScreen extends GameScreen {
 
     private mouseHandler = (event: MouseEvent) => {
         // console.log(`xPos ${event.clientX}, yPos ${event.clientY}`);
-        
+        //0 = x, 
+        //1 = x + width, 
+        //2 = y, 
+        //3 = y + height
+
         let box = this.boss.box();
             if  (
-                //0 = x, 1 = x + w, 2 = y, 3 = y + h
                 event.clientX >= box[0] &&
                 event.clientX < box[1] &&
                 event.clientY >= box[2] &&

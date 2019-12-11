@@ -20,7 +20,7 @@ class Player extends GameObject {
             this.pos.x -= 5
         }
         // Gravity
-        if (this.pos.y + this.animation.imageHeight >= canvas.height) {
+        if (this.pos.y + this.animation.imageHeight>= canvas.height) {
             this.vel.y = 0
             this.pos.y = canvas.height - this.animation.imageHeight
         } else {

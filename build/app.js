@@ -57,7 +57,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new BossScreen(this);
+        this.currentScreen = new LevelScreen(this, this.ctx);
         this.input = new UserInput();
         this.loop();
     }
@@ -450,7 +450,7 @@ class LevelScreen extends GameScreen {
     constructor(game, ctx) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Side.png", 20, 1);
+        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1);
         this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1);
     }
     adjust(game) {
