@@ -57,7 +57,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new LevelScreen(this, this.ctx);
+        this.currentScreen = new BossScreen(this);
         this.input = new UserInput();
         this.loop();
     }
@@ -149,6 +149,15 @@ class UserInput {
     isKeyDown(keyCode) {
         return this.keyCodeStates[keyCode] == true;
     }
+    isMouseDown() {
+        return this.buttonDown;
+    }
+    mousePos() {
+        return this.position;
+    }
+    isInWindow() {
+        return this.inWindow;
+    }
 }
 UserInput.KEY_ESC = 27;
 UserInput.KEY_SPACE = 32;
@@ -231,6 +240,17 @@ class GameObject {
         this.ctx.closePath();
         this.ctx.strokeStyle = "red";
         this.ctx.stroke();
+    }
+    clickedOn(userinput) {
+        let box = this.box();
+        if (userinput.isMouseDown()) {
+            if (userinput.mousePos().x > box[0] && userinput.mousePos().x < box[1]) {
+                if (userinput.mousePos().y > box[2] && userinput.mousePos().y < box[3]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 class Boss extends GameObject {
@@ -421,18 +441,8 @@ class BossScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.mouseHandler = (event) => {
-            let box = this.boss.box();
-            if (event.clientX >= box[0] &&
-                event.clientX < box[1] &&
-                event.clientY >= box[2] &&
-                event.clientY <= box[3]) {
-                console.log('YOU SHALL NOT PAAAAAS');
-            }
-        };
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1, 1);
-        document.addEventListener("click", this.mouseHandler);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -443,6 +453,15 @@ class BossScreen extends GameScreen {
     draw(ctx) {
         this.boss.update();
         this.player.update();
+    }
+    listen(userinput) {
+        if (this.player.clickedOn(userinput)) {
+            console.log("omg");
+        }
+        ;
+        if (this.boss.clickedOn(userinput)) {
+            console.log("aiergjoiajgn");
+        }
     }
     collide() {
         let player = this.player.box();

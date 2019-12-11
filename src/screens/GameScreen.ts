@@ -22,7 +22,6 @@ class GameScreen {
     private previous_fps_tick: number;
     private fps_count: number;
     private current_fps: number;
-
     /**
      * Construct a new GameScreen object.
      * 

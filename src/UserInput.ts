@@ -4,12 +4,12 @@
 class UserInput {
 
     // Fields that hold the state of the mouse
-    private inWindow : boolean = true;
-    private position : Vector = new Vector();
-    private buttonDown : boolean = false;
+    private inWindow: boolean = true;
+    private position: Vector = new Vector();
+    private buttonDown: boolean = false;
 
     // Array that holds the state of all keys
-    private keyCodeStates : boolean[] = new Array<boolean>();
+    private keyCodeStates: boolean[] = new Array<boolean>();
 
     /**
      * Constructs a new KeyListener.
@@ -33,13 +33,23 @@ class UserInput {
      * @param {number} keyCode the keyCode to check
      * @returns {boolean} `true` when the specified key is currently down
      */
-    public isKeyDown(keyCode: number) : boolean
-    {
+    public isKeyDown(keyCode: number): boolean {
         return this.keyCodeStates[keyCode] == true;
     }
 
     // TODO add methods that expose the mouse state to the game
 
+    public isMouseDown() {
+        return this.buttonDown;
+    }
+
+    public mousePos() {
+        return this.position;
+    }
+
+    public isInWindow() {
+        return this.inWindow;
+    }
     //----------------- Event Handler (Arrow) methods -------------------------
 
     /*
@@ -63,7 +73,7 @@ class UserInput {
      * WARNING: DO NOT USE OR REMOVE THIS METHOD
      */
     private mouseMove = (ev: MouseEvent) => {
-       	this.position = new Vector(ev.clientX, ev.clientY);
+        this.position = new Vector(ev.clientX, ev.clientY);
     }
 
     /*
@@ -100,17 +110,17 @@ class UserInput {
 
     // Some convenient key codes already defined here. If you need a specific
     // keycode, see:https://keycode.info/
-    public static readonly KEY_ESC   = 27;
+    public static readonly KEY_ESC = 27;
     public static readonly KEY_SPACE = 32;
-    public static readonly KEY_LEFT  = 37;
-    public static readonly KEY_UP    = 38;
+    public static readonly KEY_LEFT = 37;
+    public static readonly KEY_UP = 38;
     public static readonly KEY_RIGHT = 39;
-    public static readonly KEY_DOWN  = 40;
-    public static readonly KEY_D     = 68;
-    public static readonly KEY_S     = 83;
-    public static readonly KEY_W     = 87;
-    public static readonly KEY_A     = 65;
-    public static readonly KEY_BACK  = 8;
+    public static readonly KEY_DOWN = 40;
+    public static readonly KEY_D = 68;
+    public static readonly KEY_S = 83;
+    public static readonly KEY_W = 87;
+    public static readonly KEY_A = 65;
+    public static readonly KEY_BACK = 8;
     public static readonly KEY_ENTER = 13;
 
 }
