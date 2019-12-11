@@ -5,6 +5,7 @@ class Game {
     public readonly ctx: CanvasRenderingContext2D;
     private aniTest: GameObject;
     private aniTest3: Animate;
+    private Player: Player;
     public readonly input: UserInput;
 
     private currentScreen: GameScreen;
@@ -17,9 +18,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
-        // this.aniTest = new Boss(new Vector(100, 100), new Vector(0, 0), this.ctx, "./urawizardgandalf2.png", 4, 20);
-
-        this.currentScreen = new LevelScreen(this, this.ctx);
+        this.currentScreen = new BossScreen(this);
         this.input = new UserInput();
         this.loop();
     }
@@ -35,6 +34,7 @@ class Game {
         // Let the current screen move its objects around the canvas
         this.currentScreen.move(this.canvas);
 
+        this.currentScreen.collide();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Let the current screen draw itself on the rendering context

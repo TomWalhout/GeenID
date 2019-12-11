@@ -2,7 +2,6 @@
  * Base class for all Game Screens.
  */
 class GameScreen {
-
     /**
      * Rerefence to the Game object to where this screen belongs to
      */
@@ -12,7 +11,7 @@ class GameScreen {
      * Conveniently holds the center of the canvas
      */
     protected center: Vector;
-    
+
     /**
      * Counts the number of frames that are already drawn while this screen is
      * the Game's current screen
