@@ -3,11 +3,13 @@
 class Player extends GameObject {
 
     private UserInput: UserInput;
+    private hasSword: boolean;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number) {
         super(pos, vel, ctx, path, frames, speed)
 
         this.UserInput = new UserInput;
+        this.hasSword = false;
     }
 
     public playerMove(canvas: HTMLCanvasElement) {
@@ -27,6 +29,15 @@ class Player extends GameObject {
         // Jump
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
             this.vel.y -= 5
+        }
+        // Attack
+        if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
+            console.log('Hiyaa!');
+        }
+        // test
+        if (this.UserInput.isKeyDown(UserInput.KEY_ENTER) && this.hasSword == false) {
+            console.log('tadadADADAAAAAA')
+            this.hasSword = true;
         }
     }
 }
