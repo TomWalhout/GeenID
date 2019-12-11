@@ -18,7 +18,8 @@ class BossScreen extends GameScreen {
         super(game);
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
-
+        // add an mouse event listener
+        document.addEventListener("click", this.mouseHandler);
     }
 
 
@@ -35,6 +36,22 @@ class BossScreen extends GameScreen {
         }
         this.player.playerMove(this.game.canvas);
     }
+
+    private mouseHandler = (event: MouseEvent) => {
+        // console.log(`xPos ${event.clientX}, yPos ${event.clientY}`);
+        
+        let box = this.boss.box();
+            if  (
+                //0 = x, 1 = x + w, 2 = y, 3 = y + h
+                event.clientX >= box[0] &&
+                event.clientX < box[1] &&
+                event.clientY >= box[2] &&
+                event.clientY <= box[3]
+            ) {
+                console.log('YOU SHALL NOT PAAAAAS');
+            }
+        
+      };
 
     /**
      * Let this screen draw itself and its gameobjects on the given rendering

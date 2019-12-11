@@ -401,8 +401,18 @@ class BossScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
+        this.mouseHandler = (event) => {
+            let box = this.boss.box();
+            if (event.clientX >= box[0] &&
+                event.clientX < box[1] &&
+                event.clientY >= box[2] &&
+                event.clientY <= box[3]) {
+                console.log('YOU SHALL NOT PAAAAAS');
+            }
+        };
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
+        document.addEventListener("click", this.mouseHandler);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {

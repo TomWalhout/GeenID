@@ -6,6 +6,8 @@
  */
 class LevelScreen extends GameScreen {
 
+    private boss: Boss;
+
     private shouldSwitchToTitleScreen = false;
 
     /**
@@ -15,7 +17,6 @@ class LevelScreen extends GameScreen {
      */
     public constructor(game: Game) {
         super(game);
-        
     }
 
 
@@ -58,8 +59,6 @@ class LevelScreen extends GameScreen {
      *
      * @param {HTMLImageElement} img the loaded image object
      */
-    private writeLifeImagesToLevelScreen(ctx: CanvasRenderingContext2D) {
-        
+    private writeLifeImagesToLevelScreen(ctx: CanvasRenderingContext2D) {     
     }
-
 }
