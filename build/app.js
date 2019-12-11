@@ -255,6 +255,11 @@ class Player extends GameObject {
         }
     }
 }
+class Program extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed) {
+        super(pos, vel, ctx, path, frames, speed);
+    }
+}
 class Codebeam extends GameObject {
     constructor(pos, vel, ctx, path = "", frames = 0, speed = 0) {
         super(pos, vel, ctx, path, frames, speed);
