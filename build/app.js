@@ -57,7 +57,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new BossScreen(this);
+        this.currentScreen = new LevelScreen(this, this.ctx);
         this.input = new UserInput();
         this.loop();
     }
@@ -420,8 +420,18 @@ class BossScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.boss = new Boss(new Vector(100, 100), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
-        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1);
+        this.mouseHandler = (event) => {
+            let box = this.boss.box();
+            if (event.clientX >= box[0] &&
+                event.clientX < box[1] &&
+                event.clientY >= box[2] &&
+                event.clientY <= box[3]) {
+                console.log('YOU SHALL NOT PAAAAAS');
+            }
+        };
+        this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1);
+        document.addEventListener("click", this.mouseHandler);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -441,18 +451,21 @@ class BossScreen extends GameScreen {
     }
 }
 class LevelScreen extends GameScreen {
-    constructor(game) {
+    constructor(game, ctx) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
+        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1);
+        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
+        this.player.playerMove(this.game.canvas);
     }
     draw(ctx) {
-    }
-    drawDebugInfo(ctx) {
+        this.program1.update();
+        this.player.update();
     }
     writeLifeImagesToLevelScreen(ctx) {
     }
@@ -478,11 +491,6 @@ class StartScreen extends GameScreen {
     listen(input) {
         if (input.isKeyDown(UserInput.KEY_ENTER)) {
             this.shouldStartLevel = true;
-        }
-    }
-    adjust(game) {
-        if (this.shouldStartLevel) {
-            game.switchScreen(new LevelScreen(game));
         }
     }
     draw(ctx) {

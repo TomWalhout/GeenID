@@ -35,11 +35,11 @@ class StartScreen extends GameScreen {
      * @param game the game object, conveniently added as a parameter so you
      *      can easily call the switchScreen() method if needed.
      */
-    public adjust(game: Game) {
-        if (this.shouldStartLevel) {
-            game.switchScreen(new LevelScreen(game));
-        }
-    }
+    // public adjust(game: Game) {
+    //     if (this.shouldStartLevel) {
+    //         game.switchScreen(new LevelScreen(game));
+    //     }
+    // }
 
     /**
      * Let this screen draw itself and its gameobjects on the given rendering

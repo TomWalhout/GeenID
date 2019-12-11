@@ -3,8 +3,6 @@ class Game {
     // Readonly attributes are read-only. They can only be initialized in the constructor
     public readonly canvas: HTMLCanvasElement;
     public readonly ctx: CanvasRenderingContext2D;
-    private aniTest: GameObject;
-    private Player: Player;
     public readonly input: UserInput;
 
     private currentScreen: GameScreen;
@@ -17,7 +15,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new BossScreen(this);
+        this.currentScreen = new LevelScreen(this, this.ctx);
         this.input = new UserInput();
         this.loop();
     }
