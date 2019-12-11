@@ -4,7 +4,7 @@ class Player extends GameObject {
 
     private UserInput: UserInput;
     private hasSword: boolean;
-    private scale: number;
+    protected scale: number;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
         super(pos, vel, ctx, path, frames, speed, scale)
@@ -16,13 +16,13 @@ class Player extends GameObject {
 
     public playerMove(canvas: HTMLCanvasElement) {
         // Walk
-        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + this.animation.imageWidth) < canvas.width) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
             this.pos.x += 5
         } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
             this.pos.x -= 5
         }
         // Gravity
-        if (this.pos.y + (this.animation.imageHeight * this.scale)>= canvas.height) {
+        if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
             this.vel.y = 0
             this.pos.y = canvas.height - this.animation.imageHeight * this.scale
         } else {
