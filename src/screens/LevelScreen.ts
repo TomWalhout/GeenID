@@ -16,11 +16,11 @@ class LevelScreen extends GameScreen {
      *
      * @param game the game this screen belongs to
      */
-    public constructor(game: Game, ctx: CanvasRenderingContext2D) {
+    public constructor(game: Game) {
         super(game);
 
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
-        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1, 0.7)
+        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7)
     }
 
 
@@ -49,6 +49,27 @@ class LevelScreen extends GameScreen {
         this.player.update();
     }
 
+
+
+    public collide() {
+        let player = this.player.box();
+        let program1 = this.program1.box();
+        if (this.collides(player, program1)) {
+            // console.log('bam');
+
+            
+        }
+        let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
+        let playerbottom = [player[0], player[1], player[3], player[3]]
+        // console.log(upperbox);
+        if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
+            this.player.vel.y = 0;
+            console.log(" eojiehfieh")
+            this.player.standing = true;
+        } else {
+            this.player.standing = false;
+        }
+    }
     /**
      * Uses the loaded life image to remaining lives of the player on the rop
      * left of the screen.

@@ -57,7 +57,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new BossScreen(this);
+        this.currentScreen = new LevelScreen(this);
         this.input = new UserInput();
         this.loop();
     }
@@ -188,6 +188,12 @@ class Vector {
     set y(value) {
         this.ypos = value;
     }
+    mirror_X() {
+        return new Vector(this.x, this.y * -1);
+    }
+    mirror_Y() {
+        return new Vector(this.x * -1, this.y);
+    }
 }
 class GameObject {
     constructor(pos, vel, ctx, path, frames = 1, speed = 1, scale = 1) {
@@ -290,12 +296,33 @@ class Boss extends GameObject {
         }
     }
 }
+class Enemy extends GameObject {
+    constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
+        this.screen = screen;
+    }
+    update() {
+        super.update();
+        this.drawBox();
+    }
+    enemyMove(canvas) {
+        this.vel.x = 0;
+        if ((this.pos.x + this.animation.imageWidth) > canvas.width) {
+            this.vel.x -= 5;
+        }
+        else if ((this.pos.x + this.animation.imageWidth) < canvas.width) {
+            this.vel.x += 5;
+        }
+    }
+}
 class Player extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.UserInput = new UserInput;
         this.hasSword = false;
         this.scale = scale;
+        this.standsOnGround = false;
     }
     playerMove(canvas) {
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
@@ -307,12 +334,14 @@ class Player extends GameObject {
         if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
             this.vel.y = 0;
             this.pos.y = canvas.height - this.animation.imageHeight * this.scale;
+            this.standsOnGround = true;
         }
         else {
             this.vel.y += 0.15;
+            this.standsOnGround = false;
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
-            this.vel.y -= 5;
+            this.vel.y -= 15;
         }
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
             console.log('Hiyaa!');
@@ -321,6 +350,13 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA');
             this.hasSword = true;
         }
+        console.log(this.standsOnGround);
+    }
+    get standing() {
+        return this.standsOnGround;
+    }
+    set standing(value) {
+        this.standsOnGround = value;
     }
 }
 class Program extends GameObject {
@@ -443,16 +479,19 @@ class BossScreen extends GameScreen {
         this.shouldSwitchToTitleScreen = false;
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1, 1);
+        this.enemy = new Enemy(new Vector(100, 600), new Vector(0, 0), this.game.ctx, "./Frog Side.png", this, 20, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
         this.player.playerMove(this.game.canvas);
+        this.enemy.enemyMove(this.game.canvas);
     }
     draw(ctx) {
         this.boss.update();
         this.player.update();
+        this.enemy.update();
     }
     listen(userinput) {
         if (this.player.clickedOn(userinput)) {
@@ -471,11 +510,11 @@ class BossScreen extends GameScreen {
     }
 }
 class LevelScreen extends GameScreen {
-    constructor(game, ctx) {
+    constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
-        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -486,6 +525,22 @@ class LevelScreen extends GameScreen {
     draw(ctx) {
         this.program1.update();
         this.player.update();
+    }
+    collide() {
+        let player = this.player.box();
+        let program1 = this.program1.box();
+        if (this.collides(player, program1)) {
+        }
+        let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
+        let playerbottom = [player[0], player[1], player[3], player[3]];
+        if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
+            this.player.vel.y = 0;
+            console.log(" eojiehfieh");
+            this.player.standing = true;
+        }
+        else {
+            this.player.standing = false;
+        }
     }
     writeLifeImagesToLevelScreen(ctx) {
     }
