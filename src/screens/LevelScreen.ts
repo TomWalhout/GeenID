@@ -21,8 +21,8 @@ class LevelScreen extends GameScreen {
 
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
         this.openPrograms = [];
-        this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7)
-        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7)
+        this.openPrograms[1] = new Program(new Vector(250, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7);
 
     }
 
@@ -63,8 +63,8 @@ class LevelScreen extends GameScreen {
         this.openPrograms.forEach(program => {
             if (program.isOpen) {
                 let programbox = program.box();
-                let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 3];
-                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
+                let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
+                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
                     this.player.vel.y = 0;
                     this.player.standing = true;
                 } else {
@@ -74,7 +74,9 @@ class LevelScreen extends GameScreen {
         });
 
     }
+
     public listen(userinput: UserInput) {
+        //Checks for every program if there's been clicked on the button
         for (let i = 0; i < this.openPrograms.length; i++) {
             if (this.openPrograms[i].button) {
                 if (this.openPrograms[i].button.clickedOn(userinput)) {
@@ -84,15 +86,5 @@ class LevelScreen extends GameScreen {
                 }
             }
         }
-    }
-
-    /**
-     * Uses the loaded life image to remaining lives of the player on the rop
-     * left of the screen.
-     *
-     * @param {HTMLImageElement} img the loaded image object
-     */
-    private writeLifeImagesToLevelScreen(ctx: CanvasRenderingContext2D) {
-
     }
 }
