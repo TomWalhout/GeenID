@@ -79,29 +79,20 @@ class BossScreen extends GameScreen {
         this.hit();
     }
 
-<<<<<<< HEAD
+
 
     public hit() {
-=======
-    public enemyHit() {
->>>>>>> 03c4661a70f9e3b420c733cc9da9f976346fa65e
 
         let player = this.player.box();
         let boss = this.boss.box();
         let enemy = this.enemy.box();
 
-<<<<<<< HEAD
+
         if (this.collides(player, boss) || this.collides(player, enemy)) {
             // console.log("ouchie ive been ripped");
             this.lives--;
             console.log(this.lives);
         } 
-=======
-        if (this.collides(player, enemy)) {
-            console.log("oopsie woopsie, i have been hit");
-        }    
-    }
->>>>>>> 03c4661a70f9e3b420c733cc9da9f976346fa65e
 
         if (this.lives < 1) {
             this.gameOver();
@@ -109,16 +100,11 @@ class BossScreen extends GameScreen {
 
     }
 
-<<<<<<< HEAD
 
     public gameOver() {
   
         this.game.switchScreen(new LevelScreen(this.game))
-        
-=======
-        if (this.collides(player, boss)) {
-            console.log("nah-ah don't touch the wizard");
-        }  
->>>>>>> 03c4661a70f9e3b420c733cc9da9f976346fa65e
+    
     }
+    
 }
