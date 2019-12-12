@@ -74,7 +74,6 @@ class LevelScreen extends GameScreen {
         });
 
     }
-
     public listen(userinput: UserInput) {
         for (let i = 0; i < this.openPrograms.length; i++) {
             if (this.openPrograms[i].button) {

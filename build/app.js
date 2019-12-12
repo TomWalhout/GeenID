@@ -57,7 +57,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new LevelScreen(this);
+        this.currentScreen = new BossScreen(this);
         this.input = new UserInput();
         this.loop();
     }
@@ -83,34 +83,6 @@ let init = function () {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
-class KeyboardListener {
-    constructor() {
-        this.keyDown = (ev) => {
-            this.keyCodeStates[ev.keyCode] = true;
-        };
-        this.keyUp = (ev) => {
-            this.keyCodeStates[ev.keyCode] = false;
-        };
-        this.keyCodeStates = new Array();
-        window.addEventListener("keydown", this.keyDown);
-        window.addEventListener("keyup", this.keyUp);
-    }
-    isKeyDown(keyCode) {
-        return this.keyCodeStates[keyCode] === true;
-    }
-}
-KeyboardListener.KEY_ESC = 27;
-KeyboardListener.KEY_SPACE = 32;
-KeyboardListener.KEY_LEFT = 37;
-KeyboardListener.KEY_UP = 38;
-KeyboardListener.KEY_RIGHT = 39;
-KeyboardListener.KEY_DOWN = 40;
-KeyboardListener.KEY_W = 87;
-KeyboardListener.KEY_A = 65;
-KeyboardListener.KEY_S = 83;
-KeyboardListener.KEY_D = 68;
-KeyboardListener.KEY_ENTER = 13;
-KeyboardListener.KEY_BACK = 8;
 class UserInput {
     constructor() {
         this.inWindow = true;
@@ -307,13 +279,15 @@ class Enemy extends GameObject {
         this.drawBox();
     }
     enemyMove(canvas) {
-        this.vel.x = 0;
-        if ((this.pos.x + this.animation.imageWidth) > canvas.width) {
-            this.vel.x -= 5;
+        if (this.pos.x + this.animation.imageWidth >= canvas.width ||
+            this.pos.x < 0) {
+            this.vel.x = -this.vel.x;
         }
-        else if ((this.pos.x + this.animation.imageWidth) < canvas.width) {
-            this.vel.x += 5;
+        if (this.pos.y + this.animation.imageWidth >= canvas.height ||
+            this.pos.y < 0) {
+            this.vel.y = -this.vel.y;
         }
+        this.pos.x += this.vel.x;
     }
 }
 class Player extends GameObject {
@@ -336,9 +310,11 @@ class Player extends GameObject {
             this.pos.y = canvas.height - this.animation.imageHeight * this.scale;
             this.standsOnGround = true;
         }
-        else {
+        else if (!this.standsOnGround) {
             this.vel.y += 0.15;
-            this.standsOnGround = false;
+        }
+        else if (this.standsOnGround) {
+            this.vel.y = 0;
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
             this.vel.y -= 15;
@@ -351,7 +327,6 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA');
             this.hasSword = true;
         }
-        console.log(this.standsOnGround);
     }
     get standing() {
         return this.standsOnGround;
@@ -512,8 +487,8 @@ class BossScreen extends GameScreen {
         super(game);
         this.shouldSwitchToTitleScreen = false;
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
-        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1, 1);
-        this.enemy = new Enemy(new Vector(100, 600), new Vector(0, 0), this.game.ctx, "./Frog Side.png", this, 20, 1);
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
+        this.enemy = new Enemy(new Vector(this.randomNumber(100, 500), this.randomNumber(600, 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -540,6 +515,14 @@ class BossScreen extends GameScreen {
         let player = this.player.box();
         let boss = this.boss.box();
         if (this.collides(player, boss)) {
+        }
+        this.enemyHit();
+    }
+    enemyHit() {
+        let player = this.player.box();
+        let enemy = this.enemy.box();
+        if (this.collides(player, enemy)) {
+            console.log("oopsie woopsie, i have been hit");
         }
     }
 }

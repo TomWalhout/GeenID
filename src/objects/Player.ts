@@ -17,20 +17,22 @@ class Player extends GameObject {
     }
 
     public playerMove(canvas: HTMLCanvasElement) {
+
         // Walk
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
             this.pos.x += 5
         } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
             this.pos.x -= 5
         }
-        // Gravity
+        // Gravity + floor
         if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
             this.vel.y = 0
             this.pos.y = canvas.height - this.animation.imageHeight * this.scale
             this.standsOnGround = true;
-        } else {
+        } else if (!this.standsOnGround) {
             this.vel.y += 0.15
-            this.standsOnGround = false;
+        } else if (this.standsOnGround) {
+            this.vel.y = 0;
         }
         // Jump
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
@@ -46,7 +48,6 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA')
             this.hasSword = true;
         }
-        console.log(this.standsOnGround)
     }
 
     public get standing(): boolean {
