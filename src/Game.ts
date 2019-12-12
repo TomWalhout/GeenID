@@ -30,12 +30,12 @@ class Game {
         // Let the current screen move its objects around the canvas
         this.currentScreen.move(this.canvas);
 
+        this.currentScreen.listen(this.input);
         this.currentScreen.collide();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Let the current screen draw itself on the rendering context
         this.currentScreen.draw(this.ctx);
-        this.currentScreen.listen(this.input);
 
         requestAnimationFrame(this.loop);
 

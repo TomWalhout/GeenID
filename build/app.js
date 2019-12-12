@@ -45,10 +45,10 @@ class Game {
         this.loop = () => {
             this.currentScreen.increaseFrameCounter();
             this.currentScreen.move(this.canvas);
+            this.currentScreen.listen(this.input);
             this.currentScreen.collide();
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.currentScreen.draw(this.ctx);
-            this.currentScreen.listen(this.input);
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
             if (this.input.isKeyDown(UserInput.KEY_1)) {
@@ -327,7 +327,7 @@ class Player extends GameObject {
             this.vel.y = 0;
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
-            this.vel.y -= 15;
+            this.vel.y -= 11;
             this.standing = false;
         }
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
@@ -538,7 +538,7 @@ class LevelScreen extends GameScreen {
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5);
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(250, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7);
+        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/WORD.png', 1, 1, 0.7);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -560,19 +560,23 @@ class LevelScreen extends GameScreen {
     collide() {
         let player = this.player.box();
         let playerbottom = [player[0], player[1], player[3], player[3] + 2];
+        let onground = false;
         this.openPrograms.forEach(program => {
             if (program.isOpen) {
                 let programbox = program.box();
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
                 if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
-                    this.player.vel.y = 0;
-                    this.player.standing = true;
-                }
-                else {
-                    this.player.standing = false;
+                    onground = true;
                 }
             }
         });
+        if (onground) {
+            this.player.vel.y = 0;
+            this.player.standing = true;
+        }
+        else {
+            this.player.standing = false;
+        }
     }
     listen(userinput) {
         for (let i = 0; i < this.openPrograms.length; i++) {
@@ -583,12 +587,10 @@ class LevelScreen extends GameScreen {
             }
         }
         if (this.icons[0].clickedOn(userinput)) {
-            this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7);
-            console.log(this.openPrograms.length);
+            this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
         }
         if (this.icons[1].clickedOn(userinput)) {
             this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-            console.log(this.openPrograms.length);
         }
     }
 }
