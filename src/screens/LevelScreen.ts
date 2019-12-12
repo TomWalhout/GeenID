@@ -20,9 +20,10 @@ class LevelScreen extends GameScreen {
         super(game);
 
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
-        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7)
         this.openPrograms = [];
-        this.openPrograms[0] = this.program1;
+        this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7)
+        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7)
+
     }
 
 
@@ -49,7 +50,7 @@ class LevelScreen extends GameScreen {
     public draw(ctx: CanvasRenderingContext2D) {
         // this.program1.update();
         for (let i = 0; i < this.openPrograms.length; i++) {
-            this.openPrograms[0].update();
+            this.openPrograms[i].update();
         }
         this.player.update();
     }
@@ -57,30 +58,30 @@ class LevelScreen extends GameScreen {
 
 
     public collide() {
-        if (this.program1.isOpen) {
-            let player = this.player.box();
-            let program1 = this.program1.box();
-            if (this.collides(player, program1)) {
+        let player = this.player.box();
+        let playerbottom = [player[0], player[1], player[3], player[3] + 2]
+        this.openPrograms.forEach(program => {
+            if (program.isOpen) {
+                let programbox = program.box();
+                let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 3];
+                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
+                    this.player.vel.y = 0;
+                    this.player.standing = true;
+                } else {
+                    this.player.standing = false;
+                }
             }
-            let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
-            let playerbottom = [player[0], player[1], player[3], player[3]]
-            // console.log(upperbox);
-            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
-                this.player.vel.y = 0;
-                this.player.standing = true;
-            } else if (this.player.standing) {
-                this.player.standing = false;
-            }
-        }
+        });
+
     }
     public listen(userinput: UserInput) {
-
         for (let i = 0; i < this.openPrograms.length; i++) {
-            this.openPrograms[i].button.drawBox();
-            if (this.openPrograms[i].button.clickedOn(userinput)) {
-                this.openPrograms[i].isOpen = false;
-                this.openPrograms.splice(i, 1);
-                i++;
+            if (this.openPrograms[i].button) {
+                if (this.openPrograms[i].button.clickedOn(userinput)) {
+                    this.openPrograms[i].isOpen = false;
+                    this.openPrograms.splice(i, 1);
+                    i++;
+                }
             }
         }
     }

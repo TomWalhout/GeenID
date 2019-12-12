@@ -17,7 +17,7 @@ class Player extends GameObject {
     }
 
     public playerMove(canvas: HTMLCanvasElement) {
-        
+
         // Walk
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
             this.pos.x += 5
@@ -35,9 +35,9 @@ class Player extends GameObject {
             this.vel.y = 0;
         }
         // Jump
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
-            this.vel.y -= 15            
-            this.standsOnGround = false
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
+            this.vel.y -= 15;
+            this.standing = false;
         }
         // Attack
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
