@@ -51,6 +51,12 @@ class Game {
             this.currentScreen.listen(this.input);
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
+            if (this.input.isKeyDown(UserInput.KEY_1)) {
+                this.switchScreen(new LevelScreen(this));
+            }
+            if (this.input.isKeyDown(UserInput.KEY_2)) {
+                this.switchScreen(new BossScreen(this));
+            }
         };
         this.canvas = canvasId;
         this.canvas.width = window.innerWidth;
@@ -143,6 +149,8 @@ UserInput.KEY_W = 87;
 UserInput.KEY_A = 65;
 UserInput.KEY_BACK = 8;
 UserInput.KEY_ENTER = 13;
+UserInput.KEY_1 = 49;
+UserInput.KEY_2 = 50;
 class Vector {
     constructor(xpos = 0, ypos = 0) {
         this.xpos = xpos;
@@ -490,7 +498,7 @@ class BossScreen extends GameScreen {
         this.shouldSwitchToTitleScreen = false;
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
-        this.enemy = new Enemy(new Vector(this.randomNumber(100, 500), this.randomNumber(600, 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
+        this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
