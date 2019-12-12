@@ -6,6 +6,7 @@ class GameObject {
     private classname: string;
     private exist: boolean;
     protected scale: number;
+
     constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path?: string, frames: number = 1, speed: number = 1, scale: number = 1) {
         this.position = pos;
         this.velocity = vel;
@@ -21,6 +22,7 @@ class GameObject {
     public get pos(): Vector {
         return this.position
     }
+    
     public set pos(value: Vector) {
         this.position = value;
     }
@@ -28,6 +30,7 @@ class GameObject {
     public get vel(): Vector {
         return this.velocity
     }
+
     public set vel(value: Vector) {
         this.velocity = value;
     }

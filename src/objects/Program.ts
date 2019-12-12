@@ -16,6 +16,7 @@ class Program extends GameObject {
             this.setCloseButton();
         }
     }
+
     private setCloseButton() {
         console.log(this.animation.imageWidth);
         this.closeButton = new CloseButton(
@@ -28,10 +29,12 @@ class Program extends GameObject {
             0.5
         )
     }
+
     public update() {
         this.wait();
         super.update();
     }
+    
     public get isOpen(): boolean {
         return this.open;
     }

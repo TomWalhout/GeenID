@@ -56,5 +56,4 @@ class StartScreen extends GameScreen {
             new Vector(this.center.x, this.center.y - 20)
         );
     }
-
 }

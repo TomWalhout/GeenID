@@ -14,7 +14,6 @@ class LoadingScreen extends GameScreen {
      */
     public constructor(game: Game) {
         super(game);
-      
     }
 
     /**
@@ -41,5 +40,4 @@ class LoadingScreen extends GameScreen {
         // TODO add nice animation that shows loading progress
         this.writeTextToCanvas(ctx, "LOADING...", 140, this.center);
     }
-
 }

@@ -26,9 +26,7 @@ class LevelScreen extends GameScreen {
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7);
-
     }
-
 
     /**
      * Let this screen adjust its state and/or let the game switch to a new
@@ -61,8 +59,6 @@ class LevelScreen extends GameScreen {
         this.player.playerMove(this.game.canvas);
     }
 
-
-
     public collide() {
         let player = this.player.box();
         let playerbottom = [player[0], player[1], player[3], player[3] + 2]
@@ -78,7 +74,6 @@ class LevelScreen extends GameScreen {
                 }
             }
         });
-
     }
 
     public listen(userinput: UserInput) {

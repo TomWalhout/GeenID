@@ -23,7 +23,6 @@ class BossScreen extends GameScreen {
         // add an mouse event listener
     }
 
-
     /**
      * Let this screen adjust its state and/or let the game switch to a new
      * screen to show.
@@ -39,8 +38,6 @@ class BossScreen extends GameScreen {
         this.enemy.enemyMove(this.game.canvas);
     }
 
-
-
     /**
      * Let this screen draw itself and its gameobjects on the given rendering
      * context.
@@ -52,7 +49,6 @@ class BossScreen extends GameScreen {
         this.player.update();
         this.enemy.update();
     }
-
 
     /**
      * Let this screen listen to the user input
@@ -78,8 +74,6 @@ class BossScreen extends GameScreen {
         this.enemyHit();
     }
 
-
-
     public enemyHit() {
 
         let player = this.player.box();
@@ -87,9 +81,6 @@ class BossScreen extends GameScreen {
 
         if (this.collides(player, enemy)) {
             console.log("oopsie woopsie, i have been hit");
-        } 
-        
+        }    
     }
-
-
 }
