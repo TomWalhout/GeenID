@@ -25,13 +25,6 @@ class Codebeam extends GameObject {
         }
     }
 
-    private respawn() {
-        if (this.waveTimer >= 60) {
-            this.init();
-            this.waveTimer = 0;
-        }
-        this.waveTimer++;
-    }
 
     public draw() {
         for (let j = 0; j < this.rays.length - 1; j++) {
@@ -44,7 +37,6 @@ class Codebeam extends GameObject {
     }
 
     public update() {
-        // this.respawn();
         this.draw();
         super.update();
     }
