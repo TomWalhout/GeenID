@@ -300,6 +300,8 @@ class Enemy extends GameObject {
 }
 class Icon extends GameObject {
 }
+class IdCard extends GameObject {
+}
 class Player extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -491,6 +493,7 @@ class BossScreen extends GameScreen {
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
+        this.lives = 100;
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -519,22 +522,22 @@ class BossScreen extends GameScreen {
         let boss = this.boss.box();
         if (this.collides(player, boss)) {
         }
-        this.enemyHit();
-        this.bossHit();
+        this.hit();
     }
-    enemyHit() {
-        let player = this.player.box();
-        let enemy = this.enemy.box();
-        if (this.collides(player, enemy)) {
-            console.log("oopsie woopsie, i have been hit");
-        }
-    }
-    bossHit() {
+    hit() {
         let player = this.player.box();
         let boss = this.boss.box();
-        if (this.collides(player, boss)) {
-            console.log("nah-ah don't touch the wizard");
+        let enemy = this.enemy.box();
+        if (this.collides(player, boss) || this.collides(player, enemy)) {
+            this.lives--;
+            console.log(this.lives);
         }
+        if (this.lives < 1) {
+            this.gameOver();
+        }
+    }
+    gameOver() {
+        this.game.switchScreen(new LevelScreen(this.game));
     }
 }
 class LevelScreen extends GameScreen {

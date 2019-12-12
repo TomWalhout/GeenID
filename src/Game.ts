@@ -7,6 +7,7 @@ class Game {
 
     private currentScreen: GameScreen;
 
+
     public constructor(canvasId: HTMLCanvasElement) {
         // Construct all of the canvas
         this.canvas = canvasId;
@@ -17,6 +18,7 @@ class Game {
         this.ctx = this.canvas.getContext("2d");
         this.currentScreen = new LevelScreen(this);
         this.input = new UserInput();
+
         this.loop();
     }
 
@@ -51,6 +53,9 @@ class Game {
         }
 
     }
+
+
+
 
     /**
      * Writes text to the canvas

@@ -10,6 +10,8 @@ class BossScreen extends GameScreen {
     private enemy: Enemy;
     private shouldSwitchToTitleScreen = false;
 
+    private lives: number;
+
     /**
      * Construct a new GameScreen object.
      *
@@ -21,6 +23,8 @@ class BossScreen extends GameScreen {
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
         // add an mouse event listener
+
+        this.lives = 100;
     }
 
 
@@ -76,31 +80,32 @@ class BossScreen extends GameScreen {
         if (this.collides(player, boss)) {
             //boem
         }
-        this.enemyHit();
-        this.bossHit();
+        this.hit();
     }
 
 
-
-    public enemyHit() {
-
-        let player = this.player.box();
-        let enemy = this.enemy.box();
-
-        if (this.collides(player, enemy)) {
-            console.log("oopsie woopsie, i have been hit");
-        } 
-        
-    }
-
-    public bossHit() {
+    public hit() {
 
         let player = this.player.box();
         let boss = this.boss.box();
+        let enemy = this.enemy.box();
 
-        if (this.collides(player, boss)) {
-            console.log("nah-ah don't touch the wizard");
+        if (this.collides(player, boss) || this.collides(player, enemy)) {
+            // console.log("ouchie ive been ripped");
+            this.lives--;
+            console.log(this.lives);
         } 
+
+        if (this.lives < 1) {
+            this.gameOver();
+        }
+
+    }
+
+
+    public gameOver() {
+  
+        this.game.switchScreen(new LevelScreen(this.game))
         
     }
 
