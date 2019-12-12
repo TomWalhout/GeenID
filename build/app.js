@@ -327,7 +327,7 @@ class Player extends GameObject {
             this.vel.y = 0;
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
-            this.vel.y -= 15;
+            this.vel.y -= 11;
             this.standing = false;
         }
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
