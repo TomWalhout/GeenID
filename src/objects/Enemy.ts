@@ -16,17 +16,6 @@ class Enemy extends GameObject {
     }
 
     public enemyMove(canvas: HTMLCanvasElement) {
-        
-   
-        // if ((this.pos.x + this.animation.imageWidth) < canvas.width) {
-        //     this.vel.x *= 1
-        // }
-        
-        // if ((this.pos.x + this.animation.imageWidth) > canvas.width) {
-        //     this.vel.x *= -1 
-        // }
-
-
         if (
             this.pos.x + this.animation.imageWidth / 2 > canvas.width ||
             this.pos.x - this.animation.imageWidth / 2 < 0

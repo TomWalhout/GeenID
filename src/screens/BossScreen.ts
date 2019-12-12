@@ -18,8 +18,8 @@ class BossScreen extends GameScreen {
     public constructor(game: Game) {
         super(game);
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
-        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1, 1);
-        this.enemy = new Enemy(new Vector(100, 600), new Vector(4, 2), this.game.ctx, "./Frog Side.png", this, 20, 1);
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
+        this.enemy = new Enemy(new Vector(this.randomNumber(100, 500), this.randomNumber(600, 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
         // add an mouse event listener
     }
 
