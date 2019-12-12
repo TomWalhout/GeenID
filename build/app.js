@@ -279,12 +279,12 @@ class Enemy extends GameObject {
         this.drawBox();
     }
     enemyMove(canvas) {
-        if (this.pos.x + this.animation.imageWidth / 2 > canvas.width ||
-            this.pos.x - this.animation.imageWidth / 2 < 0) {
+        if (this.pos.x + this.animation.imageWidth >= canvas.width ||
+            this.pos.x < 0) {
             this.vel.x = -this.vel.x;
         }
-        if (this.pos.y + this.animation.imageWidth / 2 > canvas.height ||
-            this.pos.y - this.animation.imageWidth / 2 < 0) {
+        if (this.pos.y + this.animation.imageWidth >= canvas.height ||
+            this.pos.y < 0) {
             this.vel.y = -this.vel.y;
         }
         this.pos.x += this.vel.x;

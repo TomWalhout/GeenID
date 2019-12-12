@@ -92,23 +92,4 @@ class BossScreen extends GameScreen {
 }
 
 
-// public collide() {
-//     if (this.program1.isOpen) {
-//         let player = this.player.box();
-//         let program1 = this.program1.box();
-//         if (this.collides(player, program1)) {
-//         }
-//         let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
-//         let playerbottom = [player[0], player[1], player[3], player[3]]
-//         // console.log(upperbox);
-//         if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
-//             this.player.vel.y = 0;
-//             this.player.standing = true;
-//         } else if (this.player.standing) {
-//             this.player.standing = false;
-//         }
-//     }
-// }
-
-
 }
