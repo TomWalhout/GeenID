@@ -17,7 +17,7 @@ class Program extends GameObject {
         }
     }
     private setCloseButton() {
-        console.log(this.animation.imageWidth);
+        // console.log(this.animation.imageWidth);
         this.closeButton = new CloseButton(
             new Vector(this.pos.x + this.animation.imageWidth * this.scale - 30, this.pos.y),
             new Vector(0, 0),

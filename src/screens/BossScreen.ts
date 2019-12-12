@@ -51,6 +51,7 @@ class BossScreen extends GameScreen {
         this.boss.update();
         this.player.update();
         this.enemy.update();
+        this.boss.update();
     }
 
 
@@ -76,6 +77,7 @@ class BossScreen extends GameScreen {
             //boem
         }
         this.enemyHit();
+        this.bossHit();
     }
 
 
@@ -87,6 +89,17 @@ class BossScreen extends GameScreen {
 
         if (this.collides(player, enemy)) {
             console.log("oopsie woopsie, i have been hit");
+        } 
+        
+    }
+
+    public bossHit() {
+
+        let player = this.player.box();
+        let boss = this.boss.box();
+
+        if (this.collides(player, boss)) {
+            console.log("nah-ah don't touch the wizard");
         } 
         
     }
