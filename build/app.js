@@ -340,8 +340,9 @@ class Player extends GameObject {
             this.vel.y += 0.15;
             this.standsOnGround = false;
         }
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
             this.vel.y -= 15;
+            this.standing = false;
         }
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
             console.log('Hiyaa!');
@@ -350,6 +351,7 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA');
             this.hasSword = true;
         }
+        console.log(this.standsOnGround);
     }
     get standing() {
         return this.standsOnGround;
@@ -362,10 +364,20 @@ class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.open = true;
-        this.setCloseButton(ctx);
+        this.ctx = ctx;
     }
-    setCloseButton(ctx) {
-        this.closeButton = new CloseButton(new Vector(this.pos.x + 880, this.pos.y), new Vector(0, 0), ctx, "./transparent.png", 1, 1, 0.5);
+    wait() {
+        if (this.animation.imageWidth > 0 && !this.closeButton) {
+            this.setCloseButton();
+        }
+    }
+    setCloseButton() {
+        console.log(this.animation.imageWidth);
+        this.closeButton = new CloseButton(new Vector(this.pos.x + this.animation.imageWidth * this.scale - 30, this.pos.y), new Vector(0, 0), this.ctx, "./transparent.png", 1, 1, 0.5);
+    }
+    update() {
+        this.wait();
+        super.update();
     }
     get isOpen() {
         return this.open;
@@ -536,9 +548,9 @@ class LevelScreen extends GameScreen {
         super(game);
         this.shouldSwitchToTitleScreen = false;
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
-        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms = [];
-        this.openPrograms[0] = this.program1;
+        this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -548,34 +560,35 @@ class LevelScreen extends GameScreen {
     }
     draw(ctx) {
         for (let i = 0; i < this.openPrograms.length; i++) {
-            this.openPrograms[0].update();
+            this.openPrograms[i].update();
         }
         this.player.update();
     }
     collide() {
-        if (this.program1.isOpen) {
-            let player = this.player.box();
-            let program1 = this.program1.box();
-            if (this.collides(player, program1)) {
+        let player = this.player.box();
+        let playerbottom = [player[0], player[1], player[3], player[3] + 2];
+        this.openPrograms.forEach(program => {
+            if (program.isOpen) {
+                let programbox = program.box();
+                let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 3];
+                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
+                    this.player.vel.y = 0;
+                    this.player.standing = true;
+                }
+                else {
+                    this.player.standing = false;
+                }
             }
-            let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
-            let playerbottom = [player[0], player[1], player[3], player[3] + 2];
-            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
-                this.player.vel.y = 0;
-                this.player.standing = true;
-            }
-            else {
-                this.player.standing = false;
-            }
-        }
+        });
     }
     listen(userinput) {
         for (let i = 0; i < this.openPrograms.length; i++) {
-            this.openPrograms[i].button.drawBox();
-            if (this.openPrograms[i].button.clickedOn(userinput)) {
-                this.openPrograms[i].isOpen = false;
-                this.openPrograms.splice(i, 1);
-                i++;
+            if (this.openPrograms[i].button) {
+                if (this.openPrograms[i].button.clickedOn(userinput)) {
+                    this.openPrograms[i].isOpen = false;
+                    this.openPrograms.splice(i, 1);
+                    i++;
+                }
             }
         }
     }

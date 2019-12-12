@@ -33,8 +33,9 @@ class Player extends GameObject {
             this.standsOnGround = false;
         }
         // Jump
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
-            this.vel.y -= 15
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
+            this.vel.y -= 15;
+            this.standing = false;
         }
         // Attack
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
@@ -45,7 +46,7 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA')
             this.hasSword = true;
         }
-        // console.log(this.standsOnGround)
+        console.log(this.standsOnGround)
     }
 
     public get standing(): boolean {
