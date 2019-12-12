@@ -57,7 +57,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new BossScreen(this);
+        this.currentScreen = new LevelScreen(this, this.ctx);
         this.input = new UserInput();
         this.loop();
     }
@@ -316,9 +316,8 @@ class Player extends GameObject {
             this.pos.y = canvas.height - this.animation.imageHeight * this.scale;
             this.standsOnGround = true;
         }
-        else {
+        else if (!this.standsOnGround) {
             this.vel.y += 0.15;
-            this.standsOnGround = false;
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
             this.vel.y -= 15;
@@ -516,7 +515,6 @@ class LevelScreen extends GameScreen {
         let playerbottom = [player[0], player[1], player[3], player[3]];
         if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
             this.player.vel.y = 0;
-            console.log(" eojiehfieh");
             this.player.standing = true;
         }
         else {

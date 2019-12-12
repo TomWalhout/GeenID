@@ -64,7 +64,6 @@ class LevelScreen extends GameScreen {
         // console.log(upperbox);
         if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
             this.player.vel.y = 0;
-            console.log(" eojiehfieh")
             this.player.standing = true;
         } else {
             this.player.standing = false;
