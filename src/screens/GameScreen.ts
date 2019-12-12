@@ -180,9 +180,7 @@ class GameScreen {
         return Math.random() * (max - min) + min;
     }
 
-
     public createHitbox(left: number, right: number, up: number, down: number) {
         return [left, right, up, down];
     }
-
 }

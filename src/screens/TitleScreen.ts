@@ -52,7 +52,5 @@ class TitleScreen extends GameScreen {
     public draw(ctx: CanvasRenderingContext2D) {
         const x = this.game.canvas.width / 2;
         let y = this.game.canvas.height / 2;
-
     }
-
 }

@@ -51,7 +51,6 @@ class Game {
         if (this.input.isKeyDown(UserInput.KEY_2)) {
             this.switchScreen(new BossScreen(this))
         }
-
     }
 
 

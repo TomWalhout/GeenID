@@ -44,5 +44,4 @@ class Boss extends GameObject {
                 break;
         }
     }
-
 }
