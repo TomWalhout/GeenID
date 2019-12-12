@@ -75,7 +75,21 @@ class BossScreen extends GameScreen {
         if (this.collides(player, boss)) {
             //boem
         }
+        this.enemyHit();
     }
+
+
+
+    public enemyHit() {
+
+        let player = this.player.box();
+        let enemy = this.enemy.box();
+
+        if (this.collides(player, enemy)) {
+            console.log("oopsie woopsie, i have been hit");
+        } 
+        
+}
 
 
 }

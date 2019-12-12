@@ -28,9 +28,10 @@ class Enemy extends GameObject {
         ) {
             this.vel.y = -this.vel.y;
         }
-        
+
         // Use the velocity to change the position
         this.pos.x += this.vel.x;
-        this.pos.y += this.vel.y;
+        // this.pos.y += this.vel.y;
         }
+
 }
