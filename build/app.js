@@ -83,34 +83,6 @@ let init = function () {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
-class KeyboardListener {
-    constructor() {
-        this.keyDown = (ev) => {
-            this.keyCodeStates[ev.keyCode] = true;
-        };
-        this.keyUp = (ev) => {
-            this.keyCodeStates[ev.keyCode] = false;
-        };
-        this.keyCodeStates = new Array();
-        window.addEventListener("keydown", this.keyDown);
-        window.addEventListener("keyup", this.keyUp);
-    }
-    isKeyDown(keyCode) {
-        return this.keyCodeStates[keyCode] === true;
-    }
-}
-KeyboardListener.KEY_ESC = 27;
-KeyboardListener.KEY_SPACE = 32;
-KeyboardListener.KEY_LEFT = 37;
-KeyboardListener.KEY_UP = 38;
-KeyboardListener.KEY_RIGHT = 39;
-KeyboardListener.KEY_DOWN = 40;
-KeyboardListener.KEY_W = 87;
-KeyboardListener.KEY_A = 65;
-KeyboardListener.KEY_S = 83;
-KeyboardListener.KEY_D = 68;
-KeyboardListener.KEY_ENTER = 13;
-KeyboardListener.KEY_BACK = 8;
 class UserInput {
     constructor() {
         this.inWindow = true;
@@ -336,9 +308,8 @@ class Player extends GameObject {
             this.pos.y = canvas.height - this.animation.imageHeight * this.scale;
             this.standsOnGround = true;
         }
-        else {
+        else if (!this.standsOnGround) {
             this.vel.y += 0.15;
-            this.standsOnGround = false;
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
             this.vel.y -= 15;
@@ -559,7 +530,7 @@ class LevelScreen extends GameScreen {
             if (this.collides(player, program1)) {
             }
             let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
-            let playerbottom = [player[0], player[1], player[3], player[3] + 2];
+            let playerbottom = [player[0], player[1], player[3], player[3]];
             if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
                 this.player.vel.y = 0;
                 this.player.standing = true;

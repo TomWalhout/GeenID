@@ -17,24 +17,24 @@ class Player extends GameObject {
     }
 
     public playerMove(canvas: HTMLCanvasElement) {
+        
         // Walk
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
             this.pos.x += 5
         } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
             this.pos.x -= 5
         }
-        // Gravity
+        // Gravity + floor
         if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
             this.vel.y = 0
             this.pos.y = canvas.height - this.animation.imageHeight * this.scale
             this.standsOnGround = true;
-        } else {
+        } else if (!this.standsOnGround) {
             this.vel.y += 0.15
-            this.standsOnGround = false;
         }
         // Jump
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
-            this.vel.y -= 15
+            this.vel.y -= 15            
         }
         // Attack
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {

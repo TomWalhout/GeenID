@@ -61,10 +61,10 @@ class LevelScreen extends GameScreen {
             let player = this.player.box();
             let program1 = this.program1.box();
             if (this.collides(player, program1)) {
-
             }
             let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
-            let playerbottom = [player[0], player[1], player[3], player[3] + 2]
+            let playerbottom = [player[0], player[1], player[3], player[3]]
+            // console.log(upperbox);
             if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
                 this.player.vel.y = 0;
                 this.player.standing = true;
@@ -73,7 +73,6 @@ class LevelScreen extends GameScreen {
             }
         }
     }
-
     public listen(userinput: UserInput) {
 
         for (let i = 0; i < this.openPrograms.length; i++) {
