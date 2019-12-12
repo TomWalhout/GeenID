@@ -357,7 +357,6 @@ class Program extends GameObject {
         }
     }
     setCloseButton() {
-        console.log(this.animation.imageWidth);
         this.closeButton = new CloseButton(new Vector(this.pos.x + this.animation.imageWidth * this.scale - 30, this.pos.y), new Vector(0, 0), this.ctx, "./transparent.png", 1, 1, 0.5);
     }
     update() {
@@ -504,6 +503,7 @@ class BossScreen extends GameScreen {
         this.boss.update();
         this.player.update();
         this.enemy.update();
+        this.boss.update();
     }
     listen(userinput) {
         if (this.player.clickedOn(userinput)) {
@@ -520,12 +520,20 @@ class BossScreen extends GameScreen {
         if (this.collides(player, boss)) {
         }
         this.enemyHit();
+        this.bossHit();
     }
     enemyHit() {
         let player = this.player.box();
         let enemy = this.enemy.box();
         if (this.collides(player, enemy)) {
             console.log("oopsie woopsie, i have been hit");
+        }
+    }
+    bossHit() {
+        let player = this.player.box();
+        let boss = this.boss.box();
+        if (this.collides(player, boss)) {
+            console.log("nah-ah don't touch the wizard");
         }
     }
 }
