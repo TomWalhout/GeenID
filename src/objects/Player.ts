@@ -45,8 +45,7 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA')
             this.hasSword = true;
         }
-        console.log(this.standsOnGround);
-        
+        // console.log(this.standsOnGround)
     }
 
     public get standing(): boolean {

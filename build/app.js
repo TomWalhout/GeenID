@@ -44,11 +44,11 @@ class Game {
     constructor(canvasId) {
         this.loop = () => {
             this.currentScreen.increaseFrameCounter();
-            this.currentScreen.listen(this.input);
             this.currentScreen.move(this.canvas);
             this.currentScreen.collide();
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.currentScreen.draw(this.ctx);
+            this.currentScreen.listen(this.input);
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
         };
@@ -57,7 +57,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new LevelScreen(this, this.ctx);
+        this.currentScreen = new LevelScreen(this);
         this.input = new UserInput();
         this.loop();
     }
@@ -83,34 +83,6 @@ let init = function () {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
-class KeyboardListener {
-    constructor() {
-        this.keyDown = (ev) => {
-            this.keyCodeStates[ev.keyCode] = true;
-        };
-        this.keyUp = (ev) => {
-            this.keyCodeStates[ev.keyCode] = false;
-        };
-        this.keyCodeStates = new Array();
-        window.addEventListener("keydown", this.keyDown);
-        window.addEventListener("keyup", this.keyUp);
-    }
-    isKeyDown(keyCode) {
-        return this.keyCodeStates[keyCode] === true;
-    }
-}
-KeyboardListener.KEY_ESC = 27;
-KeyboardListener.KEY_SPACE = 32;
-KeyboardListener.KEY_LEFT = 37;
-KeyboardListener.KEY_UP = 38;
-KeyboardListener.KEY_RIGHT = 39;
-KeyboardListener.KEY_DOWN = 40;
-KeyboardListener.KEY_W = 87;
-KeyboardListener.KEY_A = 65;
-KeyboardListener.KEY_S = 83;
-KeyboardListener.KEY_D = 68;
-KeyboardListener.KEY_ENTER = 13;
-KeyboardListener.KEY_BACK = 8;
 class UserInput {
     constructor() {
         this.inWindow = true;
@@ -148,6 +120,15 @@ class UserInput {
     }
     isKeyDown(keyCode) {
         return this.keyCodeStates[keyCode] == true;
+    }
+    isMouseDown() {
+        return this.buttonDown;
+    }
+    mousePos() {
+        return this.position;
+    }
+    isInWindow() {
+        return this.inWindow;
     }
 }
 UserInput.KEY_ESC = 27;
@@ -237,6 +218,17 @@ class GameObject {
         this.ctx.closePath();
         this.ctx.strokeStyle = "red";
         this.ctx.stroke();
+    }
+    clickedOn(userinput) {
+        let box = this.box();
+        if (userinput.isMouseDown()) {
+            if (userinput.mousePos().x > box[0] && userinput.mousePos().x < box[1]) {
+                if (userinput.mousePos().y > box[2] && userinput.mousePos().y < box[3]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 class Boss extends GameObject {
@@ -329,7 +321,6 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA');
             this.hasSword = true;
         }
-        console.log(this.standsOnGround);
     }
     get standing() {
         return this.standsOnGround;
@@ -341,6 +332,26 @@ class Player extends GameObject {
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
         super(pos, vel, ctx, path, frames, speed, scale);
+        this.open = true;
+        this.setCloseButton(ctx);
+    }
+    setCloseButton(ctx) {
+        this.closeButton = new CloseButton(new Vector(this.pos.x + 880, this.pos.y), new Vector(0, 0), ctx, "./transparent.png", 1, 1, 0.5);
+    }
+    get isOpen() {
+        return this.open;
+    }
+    set isOpen(value) {
+        this.open = value;
+    }
+    get button() {
+        return this.closeButton;
+    }
+}
+class CloseButton extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
     }
 }
 class Codebeam extends GameObject {
@@ -451,24 +462,17 @@ class GameScreen {
     randomNumber(min, max) {
         return Math.random() * (max - min) + min;
     }
+    createHitbox(left, right, up, down) {
+        return [left, right, up, down];
+    }
 }
 class BossScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.mouseHandler = (event) => {
-            let box = this.boss.box();
-            if (event.clientX >= box[0] &&
-                event.clientX < box[1] &&
-                event.clientY >= box[2] &&
-                event.clientY <= box[3]) {
-                console.log('YOU SHALL NOT PAAAAAS');
-            }
-        };
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1, 1);
         this.enemy = new Enemy(new Vector(100, 600), new Vector(0, 0), this.game.ctx, "./Frog Side.png", this, 20, 1);
-        document.addEventListener("click", this.mouseHandler);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -482,6 +486,15 @@ class BossScreen extends GameScreen {
         this.player.update();
         this.enemy.update();
     }
+    listen(userinput) {
+        if (this.player.clickedOn(userinput)) {
+            console.log("omg");
+        }
+        ;
+        if (this.boss.clickedOn(userinput)) {
+            console.log("aiergjoiajgn");
+        }
+    }
     collide() {
         let player = this.player.box();
         let boss = this.boss.box();
@@ -490,11 +503,13 @@ class BossScreen extends GameScreen {
     }
 }
 class LevelScreen extends GameScreen {
-    constructor(game, ctx) {
+    constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
-        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.program1 = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms = [];
+        this.openPrograms[0] = this.program1;
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -503,22 +518,36 @@ class LevelScreen extends GameScreen {
         this.player.playerMove(this.game.canvas);
     }
     draw(ctx) {
-        this.program1.update();
+        for (let i = 0; i < this.openPrograms.length; i++) {
+            this.openPrograms[0].update();
+        }
         this.player.update();
     }
     collide() {
-        let player = this.player.box();
-        let program1 = this.program1.box();
-        if (this.collides(player, program1)) {
+        if (this.program1.isOpen) {
+            let player = this.player.box();
+            let program1 = this.program1.box();
+            if (this.collides(player, program1)) {
+            }
+            let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
+            let playerbottom = [player[0], player[1], player[3], player[3]];
+            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
+                this.player.vel.y = 0;
+                this.player.standing = true;
+            }
+            else {
+                this.player.standing = false;
+            }
         }
-        let upperbox = [program1[0], program1[1], program1[2], program1[2] + 3];
-        let playerbottom = [player[0], player[1], player[3], player[3]];
-        if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0) {
-            this.player.vel.y = 0;
-            this.player.standing = true;
-        }
-        else {
-            this.player.standing = false;
+    }
+    listen(userinput) {
+        for (let i = 0; i < this.openPrograms.length; i++) {
+            this.openPrograms[i].button.drawBox();
+            if (this.openPrograms[i].button.clickedOn(userinput)) {
+                this.openPrograms[i].isOpen = false;
+                this.openPrograms.splice(i, 1);
+                i++;
+            }
         }
     }
     writeLifeImagesToLevelScreen(ctx) {

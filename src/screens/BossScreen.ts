@@ -21,7 +21,6 @@ class BossScreen extends GameScreen {
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1, 1);
         this.enemy = new Enemy(new Vector(100, 600), new Vector(0, 0), this.game.ctx, "./Frog Side.png", this, 20, 1);
         // add an mouse event listener
-        document.addEventListener("click", this.mouseHandler);
     }
 
 
@@ -40,23 +39,7 @@ class BossScreen extends GameScreen {
         this.enemy.enemyMove(this.game.canvas);
     }
 
-    private mouseHandler = (event: MouseEvent) => {// console.log(`xPos ${event.clientX}, yPos ${event.clientY}`);
-        //0 = x, 
-        //1 = x + width, 
-        //2 = y, 
-        //3 = y + height
 
-        let box = this.boss.box();
-        if (
-            event.clientX >= box[0] &&
-            event.clientX < box[1] &&
-            event.clientY >= box[2] &&
-            event.clientY <= box[3]
-        ) {
-            console.log('YOU SHALL NOT PAAAAAS');
-        }
-
-    };
 
     /**
      * Let this screen draw itself and its gameobjects on the given rendering
@@ -70,13 +53,27 @@ class BossScreen extends GameScreen {
         this.enemy.update();
     }
 
+
     /**
-     * Check collisions
+     * Let this screen listen to the user input
      */
+    public listen(userinput: UserInput) {
+        if (this.player.clickedOn(userinput)) {
+            console.log("omg");
+        };
+        if (this.boss.clickedOn(userinput)) {
+            console.log("aiergjoiajgn");
+        }
+    }
+
+    /**
+    * Check collisions
+    */
     public collide() {
         let player = this.player.box();
         let boss = this.boss.box();
         if (this.collides(player, boss)) {
+            //boem
         }
     }
 

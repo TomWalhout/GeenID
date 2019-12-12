@@ -46,7 +46,12 @@ class GameObject {
         this.pos.y += this.velocity.y;
     }
 
-
+    /**
+     * returns the hitbox of the object as an array of 4 numbers.
+     * These numbers represent the following:
+     * box[0] = the x-coordinate of the position
+     * box[1] = the x-coordinate of the position plus width
+     */
     public box(): Array<number> {
         return [this.pos.x, this.pos.x + this.animation.imageWidth * this.scale, this.pos.y, this.pos.y + this.animation.imageHeight * this.scale];
     }
@@ -64,5 +69,21 @@ class GameObject {
         this.ctx.closePath();
         this.ctx.strokeStyle = "red";
         this.ctx.stroke();
+    }
+
+    /**
+     * Returns true when clicked on this object, otherwise returns false
+     * @param userinput The userinput class
+     */
+    public clickedOn(userinput: UserInput): boolean {
+        let box = this.box();
+        if (userinput.isMouseDown()) {
+            if (userinput.mousePos().x > box[0] && userinput.mousePos().x < box[1]) {
+                if (userinput.mousePos().y > box[2] && userinput.mousePos().y < box[3]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
