@@ -6,9 +6,9 @@
  */
 class LevelScreen extends GameScreen {
 
-    private program1: Program;
     private player: Player;
     private openPrograms: Array<Program>;
+    private icons: Array<Icon>;
     private shouldSwitchToTitleScreen = false;
 
     /**
@@ -20,6 +20,9 @@ class LevelScreen extends GameScreen {
         super(game);
 
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
+        this.icons = [];
+        this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5)
+        this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5)
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(250, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7);
@@ -38,7 +41,6 @@ class LevelScreen extends GameScreen {
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
-        this.player.playerMove(this.game.canvas);
     }
 
     /**
@@ -49,10 +51,14 @@ class LevelScreen extends GameScreen {
      */
     public draw(ctx: CanvasRenderingContext2D) {
         // this.program1.update();
+        for (let i = 0; i < this.icons.length; i++) {
+            this.icons[i].update();
+        }
         for (let i = 0; i < this.openPrograms.length; i++) {
             this.openPrograms[i].update();
         }
         this.player.update();
+        this.player.playerMove(this.game.canvas);
     }
 
 
@@ -85,6 +91,12 @@ class LevelScreen extends GameScreen {
                     i++;
                 }
             }
+        }
+        if (this.icons[0].clickedOn(userinput)) {
+            this.openPrograms.push(new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7))
+        }
+        if (this.icons[1].clickedOn(userinput)) {
+            this.openPrograms.push(new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7))
         }
     }
 }
