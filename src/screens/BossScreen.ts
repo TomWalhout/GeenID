@@ -93,7 +93,6 @@ class BossScreen extends GameScreen {
 
         if (this.collides(player, boss)) {
             console.log("nah-ah don't touch the wizard");
-        } 
-        
+        }  
     }
 }
