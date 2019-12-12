@@ -24,6 +24,7 @@ class Player extends GameObject {
         } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
             this.pos.x -= 5
         }
+
         // Gravity + floor
         if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
             this.vel.y = 0
@@ -48,9 +49,8 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA')
             this.hasSword = true;
         }
-        //  console.log(this.standsOnGround) 
-        //  console.log(this.vel.y);
-                 
+        //  console.log(this.standsOnGround)
+
     }
 
     public get standing(): boolean {

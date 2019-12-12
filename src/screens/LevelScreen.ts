@@ -55,7 +55,9 @@ class LevelScreen extends GameScreen {
             this.icons[i].update();
         }
         for (let i = 0; i < this.openPrograms.length; i++) {
-            this.openPrograms[i].update();
+            if (this.openPrograms[i].isOpen) {
+                this.openPrograms[i].update();
+            }
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
@@ -87,16 +89,17 @@ class LevelScreen extends GameScreen {
             if (this.openPrograms[i].button) {
                 if (this.openPrograms[i].button.clickedOn(userinput)) {
                     this.openPrograms[i].isOpen = false;
-                    this.openPrograms.splice(i, 1);
-                    i++;
                 }
             }
         }
+
         if (this.icons[0].clickedOn(userinput)) {
-            this.openPrograms.push(new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7))
+            this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.7)
+            console.log(this.openPrograms.length);
         }
         if (this.icons[1].clickedOn(userinput)) {
-            this.openPrograms.push(new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7))
+            this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7)
+            console.log(this.openPrograms.length);
         }
     }
 }
