@@ -57,7 +57,7 @@ class Game {
         this.canvas.height = window.innerHeight;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new LevelScreen(this);
+        this.currentScreen = new BossScreen(this);
         this.input = new UserInput();
         this.loop();
     }
@@ -279,13 +279,16 @@ class Enemy extends GameObject {
         this.drawBox();
     }
     enemyMove(canvas) {
-        this.vel.x = 0;
-        if ((this.pos.x + this.animation.imageWidth) > canvas.width) {
-            this.vel.x -= 5;
+        if (this.pos.x + this.animation.imageWidth / 2 > canvas.width ||
+            this.pos.x - this.animation.imageWidth / 2 < 0) {
+            this.vel.x = -this.vel.x;
         }
-        else if ((this.pos.x + this.animation.imageWidth) < canvas.width) {
-            this.vel.x += 5;
+        if (this.pos.y + this.animation.imageWidth / 2 > canvas.height ||
+            this.pos.y - this.animation.imageWidth / 2 < 0) {
+            this.vel.y = -this.vel.y;
         }
+        this.pos.x += this.vel.x;
+        this.pos.y += this.vel.y;
     }
 }
 class Player extends GameObject {
@@ -311,8 +314,12 @@ class Player extends GameObject {
         else if (!this.standsOnGround) {
             this.vel.y += 0.15;
         }
+        else if (this.standsOnGround) {
+            this.vel.y = 0;
+        }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.vel.y === 0) {
             this.vel.y -= 15;
+            this.standsOnGround = false;
         }
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
             console.log('Hiyaa!');
@@ -321,6 +328,8 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA');
             this.hasSword = true;
         }
+        console.log(this.standsOnGround);
+        console.log(this.vel.y);
     }
     get standing() {
         return this.standsOnGround;
@@ -472,7 +481,7 @@ class BossScreen extends GameScreen {
         this.shouldSwitchToTitleScreen = false;
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./urawizardgandalf2.png", this, 4, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./Frog Down.png", 20, 1, 1);
-        this.enemy = new Enemy(new Vector(100, 600), new Vector(0, 0), this.game.ctx, "./Frog Side.png", this, 20, 1);
+        this.enemy = new Enemy(new Vector(100, 600), new Vector(4, 2), this.game.ctx, "./Frog Side.png", this, 20, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -535,7 +544,7 @@ class LevelScreen extends GameScreen {
                 this.player.vel.y = 0;
                 this.player.standing = true;
             }
-            else {
+            else if (this.player.standing) {
                 this.player.standing = false;
             }
         }
