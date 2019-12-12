@@ -41,6 +41,15 @@ class Game {
 
         // Let the current screen adjust itself
         this.currentScreen.adjust(this);
+
+        // switch screen
+        if (this.input.isKeyDown(UserInput.KEY_1)) {
+            this.switchScreen(new LevelScreen(this))
+        }
+        if (this.input.isKeyDown(UserInput.KEY_2)) {
+            this.switchScreen(new BossScreen(this))
+        }
+
     }
 
     /**

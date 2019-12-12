@@ -122,5 +122,7 @@ class UserInput {
     public static readonly KEY_A = 65;
     public static readonly KEY_BACK = 8;
     public static readonly KEY_ENTER = 13;
+    public static readonly KEY_1 = 49;
+    public static readonly KEY_2 = 50;
 
 }
