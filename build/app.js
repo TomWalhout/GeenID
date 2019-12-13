@@ -252,6 +252,66 @@ class GameObject {
         this.exists = v;
     }
 }
+class Program extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.open = true;
+        this.ctx = ctx;
+    }
+    wait() {
+        if (this.animation.imageWidth > 0 && !this.closeButton) {
+            this.setCloseButton();
+        }
+    }
+    setCloseButton() {
+        this.closeButton = new CloseButton(new Vector(this.pos.x + this.animation.imageWidth * this.scale - 30, this.pos.y), new Vector(0, 0), this.ctx, "./transparent.png", 1, 1, 0.5);
+    }
+    update() {
+        this.wait();
+        super.update();
+    }
+    get isOpen() {
+        return this.open;
+    }
+    set isOpen(value) {
+        this.open = value;
+    }
+    get button() {
+        return this.closeButton;
+    }
+}
+class CloseButton extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
+    }
+}
+class Ad extends Program {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.open = true;
+        this.ctx = ctx;
+    }
+    spawnEnemy() {
+    }
+    randomAd() {
+        if (this.open == false) {
+            let rNumber = this.randomRoundedNumber(1, 100);
+            console.log("pascal is lief");
+            console.log(rNumber);
+            if (rNumber == 1) {
+                this.open = true;
+                console.log("pascal is boos :(");
+            }
+        }
+    }
+    randomNumber(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    randomRoundedNumber(min, max) {
+        return Math.round(this.randomNumber(min, max));
+    }
+}
 class Boss extends GameObject {
     constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -384,38 +444,14 @@ class Player extends GameObject {
         this.standsOnGround = value;
     }
 }
-class Program extends GameObject {
+class Sword extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
         super(pos, vel, ctx, path, frames, speed, scale);
-        this.open = true;
+        this.scale = scale;
         this.ctx = ctx;
-    }
-    wait() {
-        if (this.animation.imageWidth > 0 && !this.closeButton) {
-            this.setCloseButton();
-        }
-    }
-    setCloseButton() {
-        this.closeButton = new CloseButton(new Vector(this.pos.x + this.animation.imageWidth * this.scale - 30, this.pos.y), new Vector(0, 0), this.ctx, "./transparent.png", 1, 1, 0.5);
     }
     update() {
-        this.wait();
         super.update();
-    }
-    get isOpen() {
-        return this.open;
-    }
-    set isOpen(value) {
-        this.open = value;
-    }
-    get button() {
-        return this.closeButton;
-    }
-}
-class CloseButton extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed, scale) {
-        super(pos, vel, ctx, path, frames, speed, scale);
-        this.ctx = ctx;
     }
 }
 class Codebeam extends GameObject {
@@ -529,8 +565,11 @@ class BossScreen extends GameScreen {
         this.shouldSwitchToTitleScreen = false;
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
+        this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
         this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idCard.png', 1, 1, 0.5, game);
+        this.playerLives = 100;
+        this.enemyLives = 10;
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -545,6 +584,7 @@ class BossScreen extends GameScreen {
         this.enemy.update();
         this.boss.update();
         this.id.update();
+        this.sword.update();
     }
     listen(userinput) {
         if (this.player.clickedOn(userinput)) {
@@ -558,7 +598,11 @@ class BossScreen extends GameScreen {
     collide() {
         let player = this.player.box();
         let boss = this.boss.box();
+        let sword = this.sword.box();
+        let enemy = this.enemy.box();
         if (this.collides(player, boss)) {
+        }
+        if (this.collides(sword, enemy)) {
         }
         this.hit();
     }
@@ -566,6 +610,7 @@ class BossScreen extends GameScreen {
         let player = this.player.box();
         let boss = this.boss.box();
         let enemy = this.enemy.box();
+        let sword = this.sword.box();
         if (this.collides(player, boss)) {
             console.log("oei");
             if (this.boss.exist) {
@@ -578,6 +623,16 @@ class BossScreen extends GameScreen {
                 this.enemy.exist = false;
                 this.id.youGotRekt = this.id.youGotRekt - 1;
             }
+            this.playerLives--;
+        }
+        if (this.collides(sword, enemy) && this.player.hasSword) {
+            this.enemyLives--;
+            console.log(this.enemyLives);
+        }
+        if (this.enemyLives < 1) {
+        }
+        if (this.playerLives < 1) {
+            this.gameOver();
         }
     }
     gameOver() {
@@ -593,9 +648,13 @@ class LevelScreen extends GameScreen {
         this.icons = [];
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5);
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5);
+        this.openAds = [];
+        this.openAds[2] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
+        this.openAds[1] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
+        this.openAds[0] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
         this.openPrograms = [];
-        this.openPrograms[1] = new Program(new Vector(250, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/WORD.png', 1, 1, 0.7);
+        this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -612,6 +671,12 @@ class LevelScreen extends GameScreen {
             }
         }
         this.id.update();
+        for (let i = 0; i < this.openAds.length; i++) {
+            if (this.openAds[i].isOpen) {
+                this.openAds[i].update();
+            }
+            this.openAds[i].randomAd();
+        }
         this.player.update();
         this.player.playerMove(this.game.canvas);
     }
@@ -641,6 +706,13 @@ class LevelScreen extends GameScreen {
             if (this.openPrograms[i].button) {
                 if (this.openPrograms[i].button.clickedOn(userinput)) {
                     this.openPrograms[i].isOpen = false;
+                }
+            }
+        }
+        for (let i = 0; i < this.openAds.length; i++) {
+            if (this.openAds[i].button) {
+                if (this.openAds[i].button.clickedOn(userinput)) {
+                    this.openAds[i].isOpen = false;
                 }
             }
         }

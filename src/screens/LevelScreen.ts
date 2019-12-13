@@ -8,6 +8,7 @@ class LevelScreen extends GameScreen {
 
     private player: Player;
     private openPrograms: Array<Program>;
+    private openAds: Array<Ad>
     private icons: Array<Icon>;
     private shouldSwitchToTitleScreen = false;
     private id: IDcard;
@@ -25,9 +26,13 @@ class LevelScreen extends GameScreen {
         this.icons = [];
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5)
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5)
+        this.openAds = [];
+        this.openAds[2] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
+        this.openAds[1] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
+        this.openAds[0] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
         this.openPrograms = [];
-        this.openPrograms[1] = new Program(new Vector(250, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/WORD.png', 1, 1, 0.7);
+        this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
     }
 
 
@@ -60,8 +65,15 @@ class LevelScreen extends GameScreen {
             }
         }
         this.id.update();
+        for (let i = 0; i < this.openAds.length; i++) {
+            if (this.openAds[i].isOpen) {
+                this.openAds[i].update();
+            }
+            this.openAds[i].randomAd();
+        }
         this.player.update();
         this.player.playerMove(this.game.canvas);
+
     }
 
 
@@ -99,6 +111,16 @@ class LevelScreen extends GameScreen {
                 }
             }
         }
+        for (let i = 0; i < this.openAds.length; i++) {
+            if (this.openAds[i].button) {
+                if (this.openAds[i].button.clickedOn(userinput)) {
+                    this.openAds[i].isOpen = false
+                }
+
+            }
+        }
+
+
 
         if (this.icons[0].clickedOn(userinput)) {
             this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
