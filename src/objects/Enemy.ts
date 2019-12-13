@@ -13,7 +13,6 @@ class Enemy extends GameObject {
 
     public update() {
         super.update();
-        this.drawBox();
     }
 
     public enemyMove(canvas: HTMLCanvasElement) {
@@ -33,5 +32,5 @@ class Enemy extends GameObject {
         // Use the velocity to change the position
         this.pos.x += this.vel.x;
         // this.pos.y += this.vel.y;
-        }
+    }
 }

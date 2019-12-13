@@ -9,8 +9,7 @@ class BossScreen extends GameScreen {
     private player: Player;
     private enemy: Enemy;
     private shouldSwitchToTitleScreen = false;
-
-    private lives: number;
+    private id: IDcard;
 
     /**
      * Construct a new GameScreen object.
@@ -22,9 +21,7 @@ class BossScreen extends GameScreen {
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
-        // add an mouse event listener
-
-        this.lives = 100;
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idCard.png', 1, 1, 0.5, game);
     }
 
     /**
@@ -53,6 +50,7 @@ class BossScreen extends GameScreen {
         this.player.update();
         this.enemy.update();
         this.boss.update();
+        this.id.update();
     }
 
     /**
@@ -88,23 +86,28 @@ class BossScreen extends GameScreen {
         let enemy = this.enemy.box();
 
 
-        if (this.collides(player, boss) || this.collides(player, enemy)) {
+        if (this.collides(player, boss)) {
             // console.log("ouchie ive been ripped");
-            this.lives--;
-            console.log(this.lives);
-        } 
-
-        if (this.lives < 1) {
-            this.gameOver();
+            console.log("oei");
+            if (this.boss.exist) {
+                this.boss.exist = false;
+                this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
+        }
+        if (this.collides(player, enemy)) {
+            if (this.enemy.exist) {
+                this.enemy.exist = false;
+                this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
         }
 
     }
 
 
     public gameOver() {
-  
+
         this.game.switchScreen(new LevelScreen(this.game))
-    
+
     }
-    
+
 }

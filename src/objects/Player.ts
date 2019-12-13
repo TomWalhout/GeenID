@@ -9,7 +9,6 @@ class Player extends GameObject {
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
         super(pos, vel, ctx, path, frames, speed, scale)
-
         this.UserInput = new UserInput;
         this.hasSword = false;
         this.scale = scale
@@ -38,7 +37,7 @@ class Player extends GameObject {
 
         // Jump
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
-            this.vel.y -= 11;
+            this.vel.y -= 12;
             this.standing = false;
         }
 
