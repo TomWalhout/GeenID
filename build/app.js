@@ -239,6 +239,49 @@ class GameObject {
         return false;
     }
 }
+class Program extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.open = true;
+        this.ctx = ctx;
+    }
+    wait() {
+        if (this.animation.imageWidth > 0 && !this.closeButton) {
+            this.setCloseButton();
+        }
+    }
+    setCloseButton() {
+        this.closeButton = new CloseButton(new Vector(this.pos.x + this.animation.imageWidth * this.scale - 30, this.pos.y), new Vector(0, 0), this.ctx, "./transparent.png", 1, 1, 0.5);
+    }
+    update() {
+        this.wait();
+        super.update();
+    }
+    get isOpen() {
+        return this.open;
+    }
+    set isOpen(value) {
+        this.open = value;
+    }
+    get button() {
+        return this.closeButton;
+    }
+}
+class CloseButton extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
+    }
+}
+class Ad extends Program {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.open = true;
+        this.ctx = ctx;
+    }
+    spawnEnemy() {
+    }
+}
 class Boss extends GameObject {
     constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -327,7 +370,7 @@ class Player extends GameObject {
             this.vel.y = 0;
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
-            this.vel.y -= 11;
+            this.vel.y -= 12;
             this.standing = false;
         }
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
@@ -343,40 +386,6 @@ class Player extends GameObject {
     }
     set standing(value) {
         this.standsOnGround = value;
-    }
-}
-class Program extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed, scale) {
-        super(pos, vel, ctx, path, frames, speed, scale);
-        this.open = true;
-        this.ctx = ctx;
-    }
-    wait() {
-        if (this.animation.imageWidth > 0 && !this.closeButton) {
-            this.setCloseButton();
-        }
-    }
-    setCloseButton() {
-        this.closeButton = new CloseButton(new Vector(this.pos.x + this.animation.imageWidth * this.scale - 30, this.pos.y), new Vector(0, 0), this.ctx, "./transparent.png", 1, 1, 0.5);
-    }
-    update() {
-        this.wait();
-        super.update();
-    }
-    get isOpen() {
-        return this.open;
-    }
-    set isOpen(value) {
-        this.open = value;
-    }
-    get button() {
-        return this.closeButton;
-    }
-}
-class CloseButton extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed, scale) {
-        super(pos, vel, ctx, path, frames, speed, scale);
-        this.ctx = ctx;
     }
 }
 class Codebeam extends GameObject {
@@ -504,7 +513,6 @@ class BossScreen extends GameScreen {
         this.boss.update();
         this.player.update();
         this.enemy.update();
-        this.boss.update();
     }
     listen(userinput) {
         if (this.player.clickedOn(userinput)) {
@@ -547,12 +555,12 @@ class LevelScreen extends GameScreen {
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5);
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5);
         this.openAds = [];
-        this.openAds[2] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.3);
-        this.openAds[1] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.3);
-        this.openAds[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.3);
+        this.openAds[2] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
+        this.openAds[1] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
+        this.openAds[0] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
         this.openPrograms = [];
-        this.openPrograms[1] = new Program(new Vector(250, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/WORD.png', 1, 1, 0.7);
+        this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -568,7 +576,9 @@ class LevelScreen extends GameScreen {
                 this.openPrograms[i].update();
             }
             for (let i = 0; i < this.openAds.length; i++) {
-                this.openAds[i].update();
+                if (this.openAds[i].isOpen) {
+                    this.openAds[i].update();
+                }
             }
         }
         this.player.update();
@@ -600,6 +610,13 @@ class LevelScreen extends GameScreen {
             if (this.openPrograms[i].button) {
                 if (this.openPrograms[i].button.clickedOn(userinput)) {
                     this.openPrograms[i].isOpen = false;
+                }
+            }
+        }
+        for (let i = 0; i < this.openAds.length; i++) {
+            if (this.openAds[i].button) {
+                if (this.openAds[i].button.clickedOn(userinput)) {
+                    this.openAds[i].isOpen = false;
                 }
             }
         }
