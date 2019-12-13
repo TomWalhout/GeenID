@@ -4,13 +4,13 @@ class GameObject {
     protected animation: Animate;
     protected ctx: CanvasRenderingContext2D;
     private classname: string;
-    private exist: boolean;
+    private exists: boolean;
     protected scale: number;
 
     constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path?: string, frames: number = 1, speed: number = 1, scale: number = 1) {
         this.position = pos;
         this.velocity = vel;
-        this.exist = true;
+        this.exists = true;
         this.scale = scale;
         if (path) {
             this.animation = new Animate(ctx, path, frames, speed, this, scale);
@@ -22,7 +22,7 @@ class GameObject {
     public get pos(): Vector {
         return this.position
     }
-    
+
     public set pos(value: Vector) {
         this.position = value;
     }
@@ -89,4 +89,16 @@ class GameObject {
         }
         return false;
     }
+
+
+    public get exist(): boolean {
+        return this.exists;
+    }
+
+
+    public set exist(v: boolean) {
+        this.exists = v;
+    }
+
+
 }

@@ -6,7 +6,7 @@ class Game {
     public readonly input: UserInput;
 
     private currentScreen: GameScreen;
-
+    public Lives: number;
 
     public constructor(canvasId: HTMLCanvasElement) {
         // Construct all of the canvas
@@ -18,7 +18,7 @@ class Game {
         this.ctx = this.canvas.getContext("2d");
         this.currentScreen = new LevelScreen(this);
         this.input = new UserInput();
-
+        this.Lives = 5;
         this.loop();
     }
 
@@ -27,16 +27,19 @@ class Game {
         // Increase the frame counter
         this.currentScreen.increaseFrameCounter();
 
-        // Let the current screen listen to the user input
-
         // Let the current screen move its objects around the canvas
         this.currentScreen.move(this.canvas);
 
+        // Let the current screen handle collisions
         this.currentScreen.collide();
+
+        //clear the current screen
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Let the current screen draw itself on the rendering context
         this.currentScreen.draw(this.ctx);
+
+        // Let the current screen listen to the user input
         this.currentScreen.listen(this.input);
 
         requestAnimationFrame(this.loop);
@@ -96,6 +99,17 @@ class Game {
             this.currentScreen = newScreen;
         }
     }
+
+
+    public get lives(): number {
+        return this.Lives;
+    }
+
+    public set lives(v: number) {
+        this.Lives = v;
+    }
+
+
 }
 
 // This will get an HTML element. I cast this element in de appropriate type using <>

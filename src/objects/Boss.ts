@@ -24,7 +24,6 @@ class Boss extends GameObject {
             });
         }
         super.update();
-        this.drawBox();
     }
 
     private Attack() {

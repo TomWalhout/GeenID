@@ -11,7 +11,7 @@ class LevelScreen extends GameScreen {
     private openAds: Array<Ad>
     private icons: Array<Icon>;
     private shouldSwitchToTitleScreen = false;
-    private enemy: Enemy;
+    private id: IDcard;
 
     /**
      * Construct a new GameScreen object.
@@ -21,6 +21,7 @@ class LevelScreen extends GameScreen {
     public constructor(game: Game) {
         super(game);
 
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 0.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
         this.icons = [];
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5)
@@ -32,7 +33,6 @@ class LevelScreen extends GameScreen {
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
-        this.enemy = new Enemy(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/Enemy.png', this, 1, 1)
     }
 
 
@@ -64,16 +64,16 @@ class LevelScreen extends GameScreen {
                 this.openPrograms[i].update();
             }
         }
+        this.id.update();
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].isOpen) {
                 this.openAds[i].update();
             }
-
+            this.openAds[i].randomAd();
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
-        this.enemy.update();
-        this.enemy.enemyMove(this.game.canvas);
+
     }
 
 
@@ -99,9 +99,7 @@ class LevelScreen extends GameScreen {
         } else {
             this.player.standing = false;
         }
-        if (this.collides(this.player.box(),this.enemy.box())) {
-            console.log('bam');
-        }
+
     }
 
     public listen(userinput: UserInput) {
