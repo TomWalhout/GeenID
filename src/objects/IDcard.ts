@@ -22,7 +22,7 @@ class IDcard extends GameObject {
         if (this.lives < this.prevlives) {
             console.log(this.lives);
             this.prevlives--;
-            this.animation = new Animate(this.ctx, `./assets/idCard${this.lives}.png`, 1, 1, this, 0.5);
+            this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 0.5);
         }
         if (this.lives <= 0) {
             console.log("you dead mah boi");

@@ -26,7 +26,7 @@ class BossScreen extends GameScreen {
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
         this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idCard.png', 1, 1, 0.5, game);
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 0.5, game);
         // add an mouse event listener
 
         this.playerLives = 100;
@@ -57,10 +57,10 @@ class BossScreen extends GameScreen {
     public draw(ctx: CanvasRenderingContext2D) {
         this.boss.update();
         this.player.update();
+        this.sword.movePos(this.player);
         this.enemy.update();
         this.boss.update();
         this.id.update();
-        this.sword.update();
     }
 
     /**

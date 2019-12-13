@@ -383,7 +383,7 @@ class IDcard extends GameObject {
         if (this.lives < this.prevlives) {
             console.log(this.lives);
             this.prevlives--;
-            this.animation = new Animate(this.ctx, `./assets/idCard${this.lives}.png`, 1, 1, this, 0.5);
+            this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 0.5);
         }
         if (this.lives <= 0) {
             console.log("you dead mah boi");
@@ -452,6 +452,10 @@ class Sword extends GameObject {
     }
     update() {
         super.update();
+    }
+    movePos(player) {
+        this.pos.x += player.vel.x;
+        this.pos.y += player.vel.y;
     }
 }
 class Codebeam extends GameObject {
@@ -567,7 +571,7 @@ class BossScreen extends GameScreen {
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
         this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idCard.png', 1, 1, 0.5, game);
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 0.5, game);
         this.playerLives = 100;
         this.enemyLives = 10;
     }
@@ -581,10 +585,10 @@ class BossScreen extends GameScreen {
     draw(ctx) {
         this.boss.update();
         this.player.update();
+        this.sword.movePos(this.player);
         this.enemy.update();
         this.boss.update();
         this.id.update();
-        this.sword.update();
     }
     listen(userinput) {
         if (this.player.clickedOn(userinput)) {
@@ -643,7 +647,7 @@ class LevelScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idCard.png', 1, 1, 0.5, game);
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 0.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
         this.icons = [];
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5);
