@@ -3,7 +3,7 @@
 class Player extends GameObject {
 
     private UserInput: UserInput;
-    public hasSword: boolean;
+    private hasSword: boolean;
     protected scale: number;
     protected standsOnGround: boolean;
 

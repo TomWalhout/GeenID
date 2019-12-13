@@ -8,11 +8,9 @@ class BossScreen extends GameScreen {
     private boss: Boss;
     private player: Player;
     private enemy: Enemy;
-    private sword: Sword;
     private shouldSwitchToTitleScreen = false;
 
-    private playerLives: number;
-    private enemyLives: number;
+    private lives: number;
 
     /**
      * Construct a new GameScreen object.
@@ -23,12 +21,10 @@ class BossScreen extends GameScreen {
         super(game);
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
-        this.sword = new Sword(new Vector(140, 675), new Vector(0, 0 ), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
         // add an mouse event listener
 
-        this.playerLives = 100;
-        this.enemyLives = 10;
+        this.lives = 100;
     }
 
     /**
@@ -56,7 +52,6 @@ class BossScreen extends GameScreen {
         this.boss.update();
         this.player.update();
         this.enemy.update();
-        this.sword.update(); 
     }
 
     /**
@@ -77,22 +72,20 @@ class BossScreen extends GameScreen {
     public collide() {
         let player = this.player.box();
         let boss = this.boss.box();
-        let sword = this.sword.box();
-        let enemy = this.enemy.box();
         if (this.collides(player, boss)) {
             //boem
-        }
-        if (this.collides(sword, enemy)) {
-            // boem
         }
         this.hit();
     }
 
+
+
     public hit() {
+
         let player = this.player.box();
         let boss = this.boss.box();
         let enemy = this.enemy.box();
-        let sword = this.sword.box();
+
 
         if (this.collides(player, boss) || this.collides(player, enemy)) {
             // console.log("ouchie ive been ripped");
@@ -110,7 +103,7 @@ class BossScreen extends GameScreen {
             // console.log('Victory');
         }
 
-        if (this.playerLives < 1) {
+        if (this.lives < 1) {
             this.gameOver();
         }
 

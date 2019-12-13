@@ -11,9 +11,4 @@ class Ad extends Program {
         this.open = true;
         this.ctx = ctx;
     }
-
-
-    public spawnEnemy() {
-
-    }
 }
