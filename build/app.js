@@ -279,8 +279,6 @@ class Ad extends Program {
         this.open = true;
         this.ctx = ctx;
     }
-    spawnEnemy() {
-    }
 }
 class Boss extends GameObject {
     constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
@@ -561,6 +559,7 @@ class LevelScreen extends GameScreen {
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
+        this.enemy = new Enemy(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/Enemy.png', this, 1, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -575,14 +574,16 @@ class LevelScreen extends GameScreen {
             if (this.openPrograms[i].isOpen) {
                 this.openPrograms[i].update();
             }
-            for (let i = 0; i < this.openAds.length; i++) {
-                if (this.openAds[i].isOpen) {
-                    this.openAds[i].update();
-                }
+        }
+        for (let i = 0; i < this.openAds.length; i++) {
+            if (this.openAds[i].isOpen) {
+                this.openAds[i].update();
             }
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
+        this.enemy.update();
+        this.enemy.enemyMove(this.game.canvas);
     }
     collide() {
         let player = this.player.box();
@@ -603,6 +604,9 @@ class LevelScreen extends GameScreen {
         }
         else {
             this.player.standing = false;
+        }
+        if (this.collides(this.player.box(), this.enemy.box())) {
+            console.log('bam');
         }
     }
     listen(userinput) {
