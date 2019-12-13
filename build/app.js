@@ -281,6 +281,23 @@ class Ad extends Program {
     }
     spawnEnemy() {
     }
+    randomAd() {
+        if (this.open == false) {
+            let rNumber = this.randomRoundedNumber(1, 100);
+            console.log("pascal is lief");
+            console.log(rNumber);
+            if (rNumber == 1) {
+                this.open = true;
+                console.log("pascal is boos :(");
+            }
+        }
+    }
+    randomNumber(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    randomRoundedNumber(min, max) {
+        return Math.round(this.randomNumber(min, max));
+    }
 }
 class Boss extends GameObject {
     constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
@@ -575,11 +592,12 @@ class LevelScreen extends GameScreen {
             if (this.openPrograms[i].isOpen) {
                 this.openPrograms[i].update();
             }
-            for (let i = 0; i < this.openAds.length; i++) {
-                if (this.openAds[i].isOpen) {
-                    this.openAds[i].update();
-                }
+        }
+        for (let i = 0; i < this.openAds.length; i++) {
+            if (this.openAds[i].isOpen) {
+                this.openAds[i].update();
             }
+            this.openAds[i].randomAd();
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);

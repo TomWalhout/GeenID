@@ -61,14 +61,16 @@ class LevelScreen extends GameScreen {
             if (this.openPrograms[i].isOpen) {
                 this.openPrograms[i].update();
             }
+        }
             for (let i = 0; i < this.openAds.length; i++) {
                 if (this.openAds[i].isOpen) {
                     this.openAds[i].update();
                 }
-            }
+                this.openAds[i].randomAd();
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
+
     }
 
 
