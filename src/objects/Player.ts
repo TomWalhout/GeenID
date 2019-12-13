@@ -38,7 +38,7 @@ class Player extends GameObject {
 
         // Jump
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
-            this.vel.y -= 11;
+            this.vel.y -= 12;
             this.standing = false;
         }
 

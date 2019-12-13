@@ -52,7 +52,6 @@ class BossScreen extends GameScreen {
         this.boss.update();
         this.player.update();
         this.enemy.update();
-        this.boss.update();
     }
 
     /**
