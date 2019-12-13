@@ -546,6 +546,10 @@ class LevelScreen extends GameScreen {
         this.icons = [];
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5);
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5);
+        this.openAds = [];
+        this.openAds[2] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.3);
+        this.openAds[1] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.3);
+        this.openAds[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.3);
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(250, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/WORD.png', 1, 1, 0.7);
@@ -562,6 +566,9 @@ class LevelScreen extends GameScreen {
         for (let i = 0; i < this.openPrograms.length; i++) {
             if (this.openPrograms[i].isOpen) {
                 this.openPrograms[i].update();
+            }
+            for (let i = 0; i < this.openAds.length; i++) {
+                this.openAds[i].update();
             }
         }
         this.player.update();
