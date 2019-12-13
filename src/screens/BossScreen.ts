@@ -8,9 +8,11 @@ class BossScreen extends GameScreen {
     private boss: Boss;
     private player: Player;
     private enemy: Enemy;
+    private sword: Sword;
     private shouldSwitchToTitleScreen = false;
 
-    private lives: number;
+    private playerLives: number;
+    private enemyLives: number;
 
     /**
      * Construct a new GameScreen object.
@@ -21,10 +23,12 @@ class BossScreen extends GameScreen {
         super(game);
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
+        this.sword = new Sword(new Vector(110, 900), new Vector(0, 0 ), this.game.ctx, "./assets/mastersword.png", 1, 1, 1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
         // add an mouse event listener
 
-        this.lives = 100;
+        this.playerLives = 100;
+        this.enemyLives = 10;
     }
 
     /**
@@ -52,6 +56,7 @@ class BossScreen extends GameScreen {
         this.boss.update();
         this.player.update();
         this.enemy.update();
+        this.sword.update();
     }
 
     /**
@@ -72,28 +77,39 @@ class BossScreen extends GameScreen {
     public collide() {
         let player = this.player.box();
         let boss = this.boss.box();
+        let sword = this.sword.box();
+        let enemy = this.enemy.box();
         if (this.collides(player, boss)) {
             //boem
+        }
+        if (this.collides(sword, enemy)) {
+            // boem
         }
         this.hit();
     }
 
-
-
     public hit() {
-
         let player = this.player.box();
         let boss = this.boss.box();
         let enemy = this.enemy.box();
-
+        let sword = this.sword.box();
 
         if (this.collides(player, boss) || this.collides(player, enemy)) {
             // console.log("ouchie ive been ripped");
-            this.lives--;
-            console.log(this.lives);
-        } 
+            this.playerLives--;
+            // console.log(this.playerLives);
+        }
+        
+        if (this.collides(sword, enemy) && this.player.hasSword) {
+            this.enemyLives--;
+            console.log(this.enemyLives);
+        }
 
-        if (this.lives < 1) {
+        if (this.enemyLives < 1) {
+            console.log('Victory');
+        }
+
+        if (this.playerLives < 1) {
             this.gameOver();
         }
 
