@@ -13,6 +13,6 @@ class Sword extends GameObject {
 
     public update(){
         super.update();
-        this.drawBox();
+        // this.drawBox();
     }
 }

@@ -23,7 +23,7 @@ class BossScreen extends GameScreen {
         super(game);
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
-        this.sword = new Sword(new Vector(110, 900), new Vector(0, 0 ), this.game.ctx, "./assets/mastersword.png", 1, 1, 1);
+        this.sword = new Sword(new Vector(140, 675), new Vector(0, 0 ), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
         // add an mouse event listener
 
@@ -56,7 +56,7 @@ class BossScreen extends GameScreen {
         this.boss.update();
         this.player.update();
         this.enemy.update();
-        this.sword.update();
+        this.sword.update(); 
     }
 
     /**
@@ -106,7 +106,8 @@ class BossScreen extends GameScreen {
         }
 
         if (this.enemyLives < 1) {
-            console.log('Victory');
+            
+            // console.log('Victory');
         }
 
         if (this.playerLives < 1) {
