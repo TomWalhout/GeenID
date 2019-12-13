@@ -106,7 +106,7 @@ class BossScreen extends GameScreen {
         }
 
         if (this.enemyLives < 1) {
-            
+
             // console.log('Victory');
         }
 
