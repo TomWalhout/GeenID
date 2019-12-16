@@ -20,10 +20,10 @@ class Player extends GameObject {
         // Walk
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
             this.pos.x += 5
-            this.animation.mirrored = true;
+            this.animation.mirrored = false;
         } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
             this.pos.x -= 5
-            this.animation.mirrored = false;
+            this.animation.mirrored = true;
         }
 
         // Gravity + floor

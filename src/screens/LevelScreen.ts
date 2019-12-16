@@ -24,12 +24,14 @@ class LevelScreen extends GameScreen {
         this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 0.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
         this.icons = [];
-        this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5)
-        this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5)
+        this.icons[2] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/placeholder-thispc.png', 1, 1, 0.5)
+        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5)
+        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5)
         this.openAds = [];
         this.openPrograms = [];
-        this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
+        //this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0,0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
+        //this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        //this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
     }
 
     /**
@@ -65,7 +67,7 @@ class LevelScreen extends GameScreen {
         this.id.update();
         if (this.openAds.length < 5) { // max amount of ads
             if (this.randomRoundedNumber(1, 100) == 1) { // add chance
-                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3));
+                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2));
                 this.sound();
             }
         }
@@ -141,9 +143,12 @@ class LevelScreen extends GameScreen {
                 element.respawning = true;
             });
         }
+        if (this.icons[2].clickedOn(userinput)) {
+            this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0,0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
+        }
     }
     public sound() {
         let audio = new Audio('./assets/sounds/errorxp.mp3');
-        audio.play();
+        //audio.play();
     }
 }
