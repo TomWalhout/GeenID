@@ -8,6 +8,7 @@ class Animate {
     private object: any;
     private counter: number;
     private scale: number;
+    private mirror: boolean;
     constructor(ctx: CanvasRenderingContext2D, path: string, noOfFrames: number, anispeed: number, object: GameObject, scale: number = 1) {
         this.ctx = ctx;
         // Load the image into the img var
@@ -20,6 +21,7 @@ class Animate {
         //daddy object
         this.object = object;
         this.scale = scale;
+        this.mirror = false;
     }
 
     private loadImage(path: string): HTMLImageElement {
@@ -41,18 +43,35 @@ class Animate {
                     this.currentFrame = 0;
                 }
             }
-
-            this.ctx.drawImage(
-                this.img,
-                0,
-                this.currentFrame * this.frameHeight,
-                this.img.width,
-                this.frameHeight,
-                this.object.pos.x,
-                this.object.pos.y,
-                this.img.width * this.scale,
-                this.frameHeight * this.scale
-            )
+            this.ctx.save();
+            if (this.mirror) {
+                this.ctx.scale(-1, 1);
+                this.ctx.drawImage(
+                    this.img,
+                    0,
+                    this.currentFrame * this.frameHeight,
+                    this.img.width,
+                    this.frameHeight,
+                    this.object.pos.x * -1 - this.imageWidth * this.scale,
+                    this.object.pos.y,
+                    this.img.width * this.scale,
+                    this.frameHeight * this.scale
+                );
+            }
+            else {
+                this.ctx.drawImage(
+                    this.img,
+                    0,
+                    this.currentFrame * this.frameHeight,
+                    this.img.width,
+                    this.frameHeight,
+                    this.object.pos.x,
+                    this.object.pos.y,
+                    this.img.width * this.scale,
+                    this.frameHeight * this.scale
+                )
+            }
+            this.ctx.restore();
         }
     }
 
@@ -63,8 +82,16 @@ class Animate {
     public get imageHeight() {
         return this.img.height / this.noOfFrames;
     }
-    
+
     public get imageWidth() {
         return this.img.width;
+    }
+
+    public set height(v: number) {
+        this.img.height = v;
+    }
+
+    public set mirrored(v: boolean) {
+        this.mirror = v;
     }
 }

@@ -26,10 +26,10 @@ class BossScreen extends GameScreen {
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
         this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
         this.enemy = [];
-        for (let i = 0; i < 8; i++){
+        for (let i = 0; i < 8; i++) {
             this.enemy[i] = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(this.randomNumber(-4, 4), this.randomNumber(-2, 2)), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
         }
-    
+
         this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 0.5, game);
         // add an mouse event listener
 
@@ -69,7 +69,6 @@ class BossScreen extends GameScreen {
             this.sword.movePos(this.player);
             this.sword.update();
         }
-        this.boss.update();
         this.id.update();
     }
 
@@ -113,6 +112,12 @@ class BossScreen extends GameScreen {
                 this.enemy[i].exist = false;
                 // console.log('Victory');
             }
+            if (this.collides(player, enemy)) {
+                if (this.enemy[i].exist) {
+                    this.enemy[i].exist = false;
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+            }
         }
 
         if (this.collides(player, boss)) {
@@ -122,14 +127,12 @@ class BossScreen extends GameScreen {
             }
         }
 
-        if (this.collides(player, boss)) {
-            // console.log("ouchie ive been ripped");
-            console.log("oei");
-            if (this.boss.exist) {
-                this.boss.exist = false;
-                this.id.youGotRekt = this.id.youGotRekt - 1;
+        if (this.boss.attack) {
+            if (this.collides(player, this.boss.attack.box())) {
+                console.log("ohmygodtheykilledSquary!!");
             }
         }
+
     }
 
     public sound() {

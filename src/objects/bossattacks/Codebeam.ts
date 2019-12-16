@@ -13,6 +13,7 @@ class Codebeam extends GameObject {
         this.waveTimer = 0;
         //init the new rays 2d array
         this.rays = new Array;
+        this.animation.height = 500;
     }
 
     private init() {
