@@ -65,7 +65,7 @@ class LevelScreen extends GameScreen {
         this.id.update();
         if (this.openAds.length < 5) { // max amount of ads
             if (this.randomRoundedNumber(1, 100) == 1) { // add chance
-                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3));
+                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2));
                 this.sound();
             }
         }

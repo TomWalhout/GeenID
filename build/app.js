@@ -338,12 +338,6 @@ class Ad extends Program {
     }
     spawnEnemy() {
     }
-    randomNumber(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-    randomRoundedNumber(min, max) {
-        return Math.round(this.randomNumber(min, max));
-    }
     get respawning() {
         return this.respawn;
     }
@@ -722,7 +716,7 @@ class LevelScreen extends GameScreen {
         this.id.update();
         if (this.openAds.length < 5) {
             if (this.randomRoundedNumber(1, 100) == 1) {
-                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3));
+                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2));
                 this.sound();
             }
         }
