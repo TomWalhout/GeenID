@@ -65,6 +65,11 @@ class LevelScreen extends GameScreen {
             }
         }
         this.id.update();
+        if (this.openAds.length < 3) {
+            if (this.randomRoundedNumber(1, 100) == 1) {
+                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3));
+            }
+        }
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].isOpen) {
                 this.openAds[i].update();
@@ -108,15 +113,19 @@ class LevelScreen extends GameScreen {
             if (this.openPrograms[i].button) {
                 if (this.openPrograms[i].button.clickedOn(userinput)) {
                     this.openPrograms[i].isOpen = false;
+                    this.openAds.forEach(element => {
+                        element.isOpen = false;
+                        element.respawning = false;
+                    });
                 }
             }
         }
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].button) {
                 if (this.openAds[i].button.clickedOn(userinput)) {
-                    this.openAds[i].isOpen = false
+                    // this.openAds[i].isOpen = false
+                    this.openAds.splice(i, 1);
                 }
-
             }
         }
 
@@ -127,6 +136,9 @@ class LevelScreen extends GameScreen {
         }
         if (this.icons[1].clickedOn(userinput)) {
             this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+            this.openAds.forEach(element => {
+                element.respawning = true;
+            });
         }
     }
 }

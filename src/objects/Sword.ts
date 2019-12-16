@@ -17,7 +17,7 @@ class Sword extends GameObject {
     }
 
     public movePos(player: Player) {
-        this.pos.x += player.vel.x;
-        this.pos.y += player.vel.y;
+        this.pos.x = player.pos.x + 50;
+        this.pos.y = player.pos.y - 30;
     }
 }
