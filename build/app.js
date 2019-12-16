@@ -338,17 +338,6 @@ class Ad extends Program {
     }
     spawnEnemy() {
     }
-    randomAd() {
-        if (!this.open && this.respawn) {
-            let rNumber = this.randomRoundedNumber(1, 100);
-            console.log("pascal is lief");
-            console.log(rNumber);
-            if (rNumber == 1) {
-                this.open = true;
-                console.log("pascal is boos :(");
-            }
-        }
-    }
     randomNumber(min, max) {
         return Math.random() * (max - min) + min;
     }
@@ -621,26 +610,32 @@ class BossScreen extends GameScreen {
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
         this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
-        this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 0.5, game);
-        this.playerLives = 100;
-        this.enemyLives = 10;
+        this.enemy = [];
+        for (let i = 0; i < 8; i++) {
+            this.enemy[i] = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(this.randomNumber(-4, 4), this.randomNumber(-2, 2)), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
+        }
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 0.5, game);
+        this.enemyLives = 100;
     }
     adjust(game) {
+        for (let i = 0; i < this.enemy.length; i++) {
+            this.enemy[i].enemyMove(this.game.canvas);
+        }
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
         this.player.playerMove(this.game.canvas);
-        this.enemy.enemyMove(this.game.canvas);
     }
     draw(ctx) {
+        for (let i = 0; i < this.enemy.length; i++) {
+            this.enemy[i].update();
+        }
         this.boss.update();
         this.player.update();
         if (this.player.hasSword) {
             this.sword.movePos(this.player);
             this.sword.update();
         }
-        this.enemy.update();
         this.id.update();
     }
     listen(userinput) {
@@ -656,18 +651,29 @@ class BossScreen extends GameScreen {
         let player = this.player.box();
         let boss = this.boss.box();
         let sword = this.sword.box();
-        let enemy = this.enemy.box();
-        if (this.collides(player, boss)) {
+        for (let i = 0; i < this.enemy.length; i++) {
+            let enemy = this.enemy[i].box();
+            if (this.collides(player, enemy)) {
+                if (this.enemy[i].exist) {
+                    this.enemy[i].exist = false;
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+                this.playerLives--;
+                this.sound();
+            }
+            if (this.collides(sword, enemy) && this.player.hasSword) {
+                this.enemyLives--;
+            }
+            if (this.enemyLives < 1) {
+                this.enemy[i].exist = false;
+            }
+            if (this.collides(player, enemy)) {
+                if (this.enemy[i].exist) {
+                    this.enemy[i].exist = false;
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+            }
         }
-        if (this.collides(sword, enemy)) {
-        }
-        this.hit();
-    }
-    hit() {
-        let player = this.player.box();
-        let boss = this.boss.box();
-        let enemy = this.enemy.box();
-        let sword = this.sword.box();
         if (this.collides(player, boss)) {
             if (this.boss.exist) {
                 this.boss.exist = false;
@@ -675,30 +681,14 @@ class BossScreen extends GameScreen {
             }
         }
         if (this.boss.attack) {
-            console.log("oiejrgoiaerjgoiaerjhgpoiaerjgpioaerjtgpoiaerjgpoiaernjgoiaerjgpoijeragpjerahg");
             if (this.collides(player, this.boss.attack.box())) {
                 console.log("ohmygodtheykilledSquary!!");
             }
         }
-        if (this.collides(player, enemy)) {
-            if (this.enemy.exist) {
-                this.enemy.exist = false;
-                this.id.youGotRekt = this.id.youGotRekt - 1;
-            }
-            this.playerLives--;
-        }
-        if (this.collides(sword, enemy) && this.player.hasSword) {
-            this.enemyLives--;
-        }
-        if (this.enemyLives < 1) {
-            this.enemy.exist = false;
-        }
-        if (this.playerLives < 1) {
-            this.gameOver();
-        }
     }
-    gameOver() {
-        this.game.switchScreen(new LevelScreen(this.game));
+    sound() {
+        let audio = new Audio('./assets/sounds/oof.mp3');
+        audio.play();
     }
 }
 class LevelScreen extends GameScreen {
@@ -711,9 +701,6 @@ class LevelScreen extends GameScreen {
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5);
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5);
         this.openAds = [];
-        this.openAds[2] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
-        this.openAds[1] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
-        this.openAds[0] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
@@ -733,16 +720,16 @@ class LevelScreen extends GameScreen {
             }
         }
         this.id.update();
-        if (this.openAds.length < 3) {
+        if (this.openAds.length < 5) {
             if (this.randomRoundedNumber(1, 100) == 1) {
                 this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3));
+                this.sound();
             }
         }
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].isOpen) {
                 this.openAds[i].update();
             }
-            this.openAds[i].randomAd();
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
@@ -766,6 +753,12 @@ class LevelScreen extends GameScreen {
         }
         else {
             this.player.standing = false;
+        }
+        let Glooole = this.icons[1].box();
+        let GloooleBox = [Glooole[0], Glooole[1], Glooole[2], Glooole[3]];
+        let playerBox = [player[0], player[1], player[2], player[3]];
+        if (this.collides(GloooleBox, playerBox)) {
+            this.game.switchScreen(new BossScreen(this.game));
         }
     }
     listen(userinput) {
@@ -796,6 +789,10 @@ class LevelScreen extends GameScreen {
                 element.respawning = true;
             });
         }
+    }
+    sound() {
+        let audio = new Audio('./assets/sounds/errorxp.mp3');
+        audio.play();
     }
 }
 class LoadingScreen extends GameScreen {
