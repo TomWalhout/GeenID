@@ -65,7 +65,10 @@ class BossScreen extends GameScreen {
         }
         this.boss.update();
         this.player.update();
-        this.sword.movePos(this.player);
+        if (this.player.hasSword) {
+            this.sword.movePos(this.player);
+            this.sword.update();
+        }
         this.boss.update();
         this.id.update();
     }
@@ -92,21 +95,27 @@ class BossScreen extends GameScreen {
         for (let i = 0; i < this.enemy.length; i++){
             let enemy = this.enemy[i].box();
 
+        if (this.collides(player, boss)) {
+            if (this.boss.exist) {
+                this.boss.exist = false;
+                this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
+        }
+
         if (this.collides(player, enemy)) {
             if (this.enemy[i].exist) {
                 this.enemy[i].exist = false;
                 this.id.youGotRekt = this.id.youGotRekt - 1;
             }
             this.playerLives--;
-            // console.log(this.playerLives);
         }
 
         if (this.collides(sword, enemy) && this.player.hasSword) {
             this.enemyLives--;
-            console.log(this.enemyLives);
         }
 
         if (this.enemyLives < 1) {
+            this.enemy[i].exist = false;
             // console.log('Victory');
         }
 
