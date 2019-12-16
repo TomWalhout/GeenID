@@ -27,9 +27,6 @@ class LevelScreen extends GameScreen {
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5)
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5)
         this.openAds = [];
-        this.openAds[2] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
-        this.openAds[1] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
-        this.openAds[0] = new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3);
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
@@ -66,8 +63,8 @@ class LevelScreen extends GameScreen {
         }
 
         this.id.update();
-        if (this.openAds.length < 3) {
-            if (this.randomRoundedNumber(1, 300) == 1) {
+        if (this.openAds.length < 5) { // max amount of ads
+            if (this.randomRoundedNumber(1, 100) == 1) { // add chance
                 this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3));
                 this.sound();
             }
@@ -96,12 +93,19 @@ class LevelScreen extends GameScreen {
                 }
             }
         });
-
         if (onground) {
             this.player.vel.y = 0;
             this.player.standing = true;
         } else {
             this.player.standing = false;
+        }
+
+        // Glooole collision
+        let Glooole = this.icons[1].box(); // Glooole
+        let GloooleBox = [Glooole[0], Glooole[1], Glooole[2], Glooole[3]];
+        let playerBox = [player[0], player[1], player[2], player[3]];
+        if (this.collides(GloooleBox, playerBox)) {
+            this.game.switchScreen(new BossScreen(this.game))
         }
     }
 
@@ -122,7 +126,6 @@ class LevelScreen extends GameScreen {
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].button) {
                 if (this.openAds[i].button.clickedOn(userinput)) {
-                    // this.openAds[i].isOpen = false
                     this.openAds.splice(i, 1);
                 }
             }
