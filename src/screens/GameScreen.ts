@@ -42,7 +42,6 @@ class GameScreen {
      * @param input user input to listen to
      */
     public listen(input: UserInput) {
-
     }
 
     /**
@@ -61,7 +60,6 @@ class GameScreen {
      * Let this screen detect and handle collisions of its objects
      */
     public collide() {
-
     }
 
     public collides(a: Array<number>, b: Array<number>) {
@@ -94,7 +92,6 @@ class GameScreen {
      *      can easily call the switchScreen() method if needed.
      */
     public adjust(game: Game) {
-
     }
 
     /**
@@ -104,7 +101,6 @@ class GameScreen {
      * @param ctx the rendering context to draw on
      */
     public draw(ctx: CanvasRenderingContext2D) {
-
     }
 
     /**

@@ -59,7 +59,6 @@ class GameObject {
         return [this.pos.x, this.pos.x + this.animation.imageWidth * this.scale, this.pos.y, this.pos.y + this.animation.imageHeight * this.scale];
     }
 
-
     //FOR TESTING ONLY
     public drawBox() {
         let box = this.box();
@@ -95,10 +94,7 @@ class GameObject {
         return this.exists;
     }
 
-
     public set exist(v: boolean) {
         this.exists = v;
     }
-
-
 }

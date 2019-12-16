@@ -2,9 +2,6 @@
 
 class Ad extends Program {
 
-
-
-
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
         super(pos, vel, ctx, path, frames, speed, scale)
         // console.log(this.animation.imageWidth);
@@ -12,14 +9,10 @@ class Ad extends Program {
         this.ctx = ctx;
     }
 
-
     public spawnEnemy() {
-
     }
 
-
     public randomAd() {
-
         if (this.open == false) {
            let rNumber = this.randomRoundedNumber(1, 100);
            console.log("pascal is lief");
@@ -31,7 +24,6 @@ class Ad extends Program {
         }
     }
 
-
     protected randomNumber(min: number, max: number): number {
         return Math.random() * (max - min) + min;
     }
@@ -39,5 +31,4 @@ class Ad extends Program {
     protected randomRoundedNumber(min: number, max: number): number {
         return Math.round(this.randomNumber(min, max));
     }
-
 }

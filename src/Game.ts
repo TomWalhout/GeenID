@@ -56,9 +56,6 @@ class Game {
         }
     }
 
-
-
-
     /**
      * Writes text to the canvas
      * @param {string} text - Text to write
@@ -100,7 +97,6 @@ class Game {
         }
     }
 
-
     public get lives(): number {
         return this.Lives;
     }
@@ -108,8 +104,6 @@ class Game {
     public set lives(v: number) {
         this.Lives = v;
     }
-
-
 }
 
 // This will get an HTML element. I cast this element in de appropriate type using <>

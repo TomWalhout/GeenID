@@ -25,7 +25,6 @@ class Codebeam extends GameObject {
         }
     }
 
-
     public draw() {
         for (let j = 0; j < this.rays.length - 1; j++) {
             for (let i = 0; i < this.rays[j].length - 1; i++) {

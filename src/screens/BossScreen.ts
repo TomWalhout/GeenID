@@ -106,6 +106,7 @@ class BossScreen extends GameScreen {
                 this.id.youGotRekt = this.id.youGotRekt - 1;
             }
         }
+        
         if (this.collides(player, enemy)) {
             if (this.enemy.exist) {
                 this.enemy.exist = false;
@@ -121,7 +122,6 @@ class BossScreen extends GameScreen {
         }
 
         if (this.enemyLives < 1) {
-
             // console.log('Victory');
         }
 
@@ -131,11 +131,7 @@ class BossScreen extends GameScreen {
 
     }
 
-
     public gameOver() {
-
         this.game.switchScreen(new LevelScreen(this.game))
-
     }
-
 }
