@@ -23,7 +23,7 @@ class Enemy extends GameObject {
             this.vel.x = -this.vel.x;
         }
         if (
-            this.pos.y + this.animation.imageWidth >= canvas.height ||
+            this.pos.y + this.animation.imageHeight >= canvas.height ||
             this.pos.y < 0
         ) {
             this.vel.y = -this.vel.y;
