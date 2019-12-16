@@ -44,7 +44,7 @@ class BossScreen extends GameScreen {
      *      can easily call the switchScreen() method if needed.
      */
     public adjust(game: Game) {
-        for (let i = 0; i < this.enemy.length; i++){
+        for (let i = 0; i < this.enemy.length; i++) {
             this.enemy[i].enemyMove(this.game.canvas);
         }
         if (this.shouldSwitchToTitleScreen) {
@@ -60,7 +60,7 @@ class BossScreen extends GameScreen {
      * @param ctx the rendering context to draw on
      */
     public draw(ctx: CanvasRenderingContext2D) {
-        for (let i = 0; i < this.enemy.length; i++){
+        for (let i = 0; i < this.enemy.length; i++) {
             this.enemy[i].update();
         }
         this.boss.update();
@@ -92,28 +92,30 @@ class BossScreen extends GameScreen {
         let player = this.player.box();
         let boss = this.boss.box();
         let sword = this.sword.box();
-        for (let i = 0; i < this.enemy.length; i++){
+        for (let i = 0; i < this.enemy.length; i++) {
             let enemy = this.enemy[i].box();
 
-        if (this.collides(player, enemy)) {
-            if (this.enemy[i].exist) {
-                this.enemy[i].exist = false;
-                this.id.youGotRekt = this.id.youGotRekt - 1;
+            if (this.collides(player, enemy)) {
+                if (this.enemy[i].exist) {
+                    this.enemy[i].exist = false;
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+                this.playerLives--;
+                this.sound();
+
             }
-            this.playerLives--;
-        }
 
-        if (this.collides(sword, enemy) && this.player.hasSword) {
-            this.enemyLives--;
-        }
+            if (this.collides(sword, enemy) && this.player.hasSword) {
+                this.enemyLives--;
+            }
 
-        if (this.enemyLives < 1) {
-            this.enemy[i].exist = false;
-            // console.log('Victory');
-        }
+            if (this.enemyLives < 1) {
+                this.enemy[i].exist = false;
+                // console.log('Victory');
+            }
 
-        if (this.playerLives < 1) {
-            this.gameOver();
+            if (this.playerLives < 1) {
+                this.gameOver();
             }
         }
 
@@ -132,6 +134,12 @@ class BossScreen extends GameScreen {
                 this.id.youGotRekt = this.id.youGotRekt - 1;
             }
         }
+    }
+
+
+    public sound() {
+        let audio = new Audio('./assets/sounds/oof.mp3');
+        audio.play();
     }
 
     public gameOver() {
