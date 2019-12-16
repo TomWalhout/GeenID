@@ -67,15 +67,15 @@ class LevelScreen extends GameScreen {
 
         this.id.update();
         if (this.openAds.length < 3) {
-            if (this.randomRoundedNumber(1, 100) == 1) {
+            if (this.randomRoundedNumber(1, 300) == 1) {
                 this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3));
+                this.sound();
             }
         }
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].isOpen) {
                 this.openAds[i].update();
             }
-            this.openAds[i].randomAd();
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
@@ -138,5 +138,9 @@ class LevelScreen extends GameScreen {
                 element.respawning = true;
             });
         }
+    }
+    public sound() {
+        let audio = new Audio('./assets/sounds/errorxp.mp3');
+        audio.play();
     }
 }

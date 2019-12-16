@@ -323,17 +323,6 @@ class Ad extends Program {
     }
     spawnEnemy() {
     }
-    randomAd() {
-        if (!this.open && this.respawn) {
-            let rNumber = this.randomRoundedNumber(1, 100);
-            console.log("pascal is lief");
-            console.log(rNumber);
-            if (rNumber == 1) {
-                this.open = true;
-                console.log("pascal is boos :(");
-            }
-        }
-    }
     randomNumber(min, max) {
         return Math.random() * (max - min) + min;
     }
@@ -605,7 +594,7 @@ class BossScreen extends GameScreen {
         this.enemy[2] = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(this.randomNumber(-4, 4), this.randomNumber(-2, 2)), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
         this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 0.5, game);
         this.playerLives = 100;
-        this.enemyLives = 10;
+        this.enemyLives = 100;
     }
     adjust(game) {
         for (let i = 0; i < this.enemy.length; i++) {
@@ -644,18 +633,13 @@ class BossScreen extends GameScreen {
         let sword = this.sword.box();
         for (let i = 0; i < this.enemy.length; i++) {
             let enemy = this.enemy[i].box();
-            if (this.collides(player, boss)) {
-                if (this.boss.exist) {
-                    this.boss.exist = false;
-                    this.id.youGotRekt = this.id.youGotRekt - 1;
-                }
-            }
             if (this.collides(player, enemy)) {
                 if (this.enemy[i].exist) {
                     this.enemy[i].exist = false;
                     this.id.youGotRekt = this.id.youGotRekt - 1;
                 }
                 this.playerLives--;
+                this.sound();
             }
             if (this.collides(sword, enemy) && this.player.hasSword) {
                 this.enemyLives--;
@@ -668,12 +652,22 @@ class BossScreen extends GameScreen {
             }
         }
         if (this.collides(player, boss)) {
+            if (this.boss.exist) {
+                this.boss.exist = false;
+                this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
+        }
+        if (this.collides(player, boss)) {
             console.log("oei");
             if (this.boss.exist) {
                 this.boss.exist = false;
                 this.id.youGotRekt = this.id.youGotRekt - 1;
             }
         }
+    }
+    sound() {
+        let audio = new Audio('./assets/sounds/oof.mp3');
+        audio.play();
     }
     gameOver() {
         this.game.switchScreen(new LevelScreen(this.game));
@@ -712,15 +706,15 @@ class LevelScreen extends GameScreen {
         }
         this.id.update();
         if (this.openAds.length < 3) {
-            if (this.randomRoundedNumber(1, 100) == 1) {
+            if (this.randomRoundedNumber(1, 300) == 1) {
                 this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3));
+                this.sound();
             }
         }
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].isOpen) {
                 this.openAds[i].update();
             }
-            this.openAds[i].randomAd();
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
@@ -774,6 +768,10 @@ class LevelScreen extends GameScreen {
                 element.respawning = true;
             });
         }
+    }
+    sound() {
+        let audio = new Audio('./assets/sounds/errorxp.mp3');
+        audio.play();
     }
 }
 class LoadingScreen extends GameScreen {
