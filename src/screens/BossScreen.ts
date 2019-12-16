@@ -33,7 +33,7 @@ class BossScreen extends GameScreen {
         // add an mouse event listener
 
         this.playerLives = 100;
-        this.enemyLives = 10;
+        this.enemyLives = 100;
     }
 
     /**
@@ -95,13 +95,6 @@ class BossScreen extends GameScreen {
         for (let i = 0; i < this.enemy.length; i++){
             let enemy = this.enemy[i].box();
 
-        if (this.collides(player, boss)) {
-            if (this.boss.exist) {
-                this.boss.exist = false;
-                this.id.youGotRekt = this.id.youGotRekt - 1;
-            }
-        }
-
         if (this.collides(player, enemy)) {
             if (this.enemy[i].exist) {
                 this.enemy[i].exist = false;
@@ -121,6 +114,13 @@ class BossScreen extends GameScreen {
 
         if (this.playerLives < 1) {
             this.gameOver();
+            }
+        }
+
+        if (this.collides(player, boss)) {
+            if (this.boss.exist) {
+                this.boss.exist = false;
+                this.id.youGotRekt = this.id.youGotRekt - 1;
             }
         }
 
