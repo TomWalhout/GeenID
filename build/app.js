@@ -65,6 +65,7 @@ class Game {
         this.ctx = this.canvas.getContext("2d");
         this.currentScreen = new LevelScreen(this);
         this.input = new UserInput();
+        this.Lives = 5;
         this.loop();
     }
     writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
@@ -84,11 +85,45 @@ class Game {
             this.currentScreen = newScreen;
         }
     }
+    get lives() {
+        return this.Lives;
+    }
+    set lives(v) {
+        this.Lives = v;
+    }
 }
 let init = function () {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
+class KeyboardListener {
+    constructor() {
+        this.keyDown = (ev) => {
+            this.keyCodeStates[ev.keyCode] = true;
+        };
+        this.keyUp = (ev) => {
+            this.keyCodeStates[ev.keyCode] = false;
+        };
+        this.keyCodeStates = new Array();
+        window.addEventListener("keydown", this.keyDown);
+        window.addEventListener("keyup", this.keyUp);
+    }
+    isKeyDown(keyCode) {
+        return this.keyCodeStates[keyCode] === true;
+    }
+}
+KeyboardListener.KEY_ESC = 27;
+KeyboardListener.KEY_SPACE = 32;
+KeyboardListener.KEY_LEFT = 37;
+KeyboardListener.KEY_UP = 38;
+KeyboardListener.KEY_RIGHT = 39;
+KeyboardListener.KEY_DOWN = 40;
+KeyboardListener.KEY_W = 87;
+KeyboardListener.KEY_A = 65;
+KeyboardListener.KEY_S = 83;
+KeyboardListener.KEY_D = 68;
+KeyboardListener.KEY_ENTER = 13;
+KeyboardListener.KEY_BACK = 8;
 class UserInput {
     constructor() {
         this.inWindow = true;
@@ -179,7 +214,7 @@ class GameObject {
     constructor(pos, vel, ctx, path, frames = 1, speed = 1, scale = 1) {
         this.position = pos;
         this.velocity = vel;
-        this.exist = true;
+        this.exists = true;
         this.scale = scale;
         if (path) {
             this.animation = new Animate(ctx, path, frames, speed, this, scale);
@@ -238,6 +273,12 @@ class GameObject {
         }
         return false;
     }
+    get exist() {
+        return this.exists;
+    }
+    set exist(v) {
+        this.exists = v;
+    }
 }
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
@@ -279,6 +320,25 @@ class Ad extends Program {
         this.open = true;
         this.ctx = ctx;
     }
+    spawnEnemy() {
+    }
+    randomAd() {
+        if (this.open == false) {
+            let rNumber = this.randomRoundedNumber(1, 100);
+            console.log("pascal is lief");
+            console.log(rNumber);
+            if (rNumber == 1) {
+                this.open = true;
+                console.log("pascal is boos :(");
+            }
+        }
+    }
+    randomNumber(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    randomRoundedNumber(min, max) {
+        return Math.round(this.randomNumber(min, max));
+    }
 }
 class Boss extends GameObject {
     constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
@@ -298,7 +358,6 @@ class Boss extends GameObject {
             });
         }
         super.update();
-        this.drawBox();
     }
     Attack() {
         let chance = 0;
@@ -325,7 +384,6 @@ class Enemy extends GameObject {
     }
     update() {
         super.update();
-        this.drawBox();
     }
     enemyMove(canvas) {
         if (this.pos.x + this.animation.imageWidth >= canvas.width ||
@@ -337,6 +395,34 @@ class Enemy extends GameObject {
             this.vel.y = -this.vel.y;
         }
         this.pos.x += this.vel.x;
+    }
+}
+class IDcard extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale, game) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
+        this.pos.x -= 300;
+        this.prevlives = 5;
+        this.game = game;
+        this.lives = this.game.lives;
+    }
+    update() {
+        super.update();
+        if (this.lives < this.prevlives) {
+            console.log(this.lives);
+            this.prevlives--;
+            this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 0.5);
+        }
+        if (this.lives <= 0) {
+            console.log("you dead mah boi");
+            this.game.switchScreen(new LevelScreen(this.game));
+        }
+    }
+    set youGotRekt(v) {
+        this.lives = v;
+    }
+    get youGotRekt() {
+        return this.lives;
     }
 }
 class Icon extends GameObject {
@@ -384,6 +470,20 @@ class Player extends GameObject {
     }
     set standing(value) {
         this.standsOnGround = value;
+    }
+}
+class Sword extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.scale = scale;
+        this.ctx = ctx;
+    }
+    update() {
+        super.update();
+    }
+    movePos(player) {
+        this.pos.x += player.vel.x;
+        this.pos.y += player.vel.y;
     }
 }
 class Codebeam extends GameObject {
@@ -497,8 +597,11 @@ class BossScreen extends GameScreen {
         this.shouldSwitchToTitleScreen = false;
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
+        this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
-        this.lives = 100;
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 0.5, game);
+        this.playerLives = 100;
+        this.enemyLives = 10;
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -510,7 +613,10 @@ class BossScreen extends GameScreen {
     draw(ctx) {
         this.boss.update();
         this.player.update();
+        this.sword.movePos(this.player);
         this.enemy.update();
+        this.boss.update();
+        this.id.update();
     }
     listen(userinput) {
         if (this.player.clickedOn(userinput)) {
@@ -524,7 +630,11 @@ class BossScreen extends GameScreen {
     collide() {
         let player = this.player.box();
         let boss = this.boss.box();
+        let sword = this.sword.box();
+        let enemy = this.enemy.box();
         if (this.collides(player, boss)) {
+        }
+        if (this.collides(sword, enemy)) {
         }
         this.hit();
     }
@@ -532,11 +642,28 @@ class BossScreen extends GameScreen {
         let player = this.player.box();
         let boss = this.boss.box();
         let enemy = this.enemy.box();
-        if (this.collides(player, boss) || this.collides(player, enemy)) {
-            this.lives--;
-            console.log(this.lives);
+        let sword = this.sword.box();
+        if (this.collides(player, boss)) {
+            console.log("oei");
+            if (this.boss.exist) {
+                this.boss.exist = false;
+                this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
         }
-        if (this.lives < 1) {
+        if (this.collides(player, enemy)) {
+            if (this.enemy.exist) {
+                this.enemy.exist = false;
+                this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
+            this.playerLives--;
+        }
+        if (this.collides(sword, enemy) && this.player.hasSword) {
+            this.enemyLives--;
+            console.log(this.enemyLives);
+        }
+        if (this.enemyLives < 1) {
+        }
+        if (this.playerLives < 1) {
             this.gameOver();
         }
     }
@@ -548,6 +675,7 @@ class LevelScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 0.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
         this.icons = [];
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5);
@@ -559,7 +687,6 @@ class LevelScreen extends GameScreen {
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
-        this.enemy = new Enemy(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/Enemy.png', this, 1, 1);
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -575,15 +702,15 @@ class LevelScreen extends GameScreen {
                 this.openPrograms[i].update();
             }
         }
+        this.id.update();
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].isOpen) {
                 this.openAds[i].update();
             }
+            this.openAds[i].randomAd();
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
-        this.enemy.update();
-        this.enemy.enemyMove(this.game.canvas);
     }
     collide() {
         let player = this.player.box();
@@ -604,9 +731,6 @@ class LevelScreen extends GameScreen {
         }
         else {
             this.player.standing = false;
-        }
-        if (this.collides(this.player.box(), this.enemy.box())) {
-            console.log('bam');
         }
     }
     listen(userinput) {

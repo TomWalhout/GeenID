@@ -3,13 +3,12 @@
 class Player extends GameObject {
 
     private UserInput: UserInput;
-    private hasSword: boolean;
+    public hasSword: boolean;
     protected scale: number;
     protected standsOnGround: boolean;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
         super(pos, vel, ctx, path, frames, speed, scale)
-
         this.UserInput = new UserInput;
         this.hasSword = false;
         this.scale = scale

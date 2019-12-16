@@ -1,7 +1,7 @@
 /// <reference path="./GameObject.ts"/>
 
 class Sword extends GameObject {
- 
+
     protected scale: number;
     protected ctx: CanvasRenderingContext2D;
 
@@ -11,8 +11,13 @@ class Sword extends GameObject {
         this.ctx = ctx;
     }
 
-    public update(){
+    public update() {
         super.update();
         // this.drawBox();
+    }
+
+    public movePos(player: Player) {
+        this.pos.x += player.vel.x;
+        this.pos.y += player.vel.y;
     }
 }
