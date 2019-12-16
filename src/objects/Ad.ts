@@ -20,7 +20,7 @@ class Ad extends Program {
            if (rNumber == 1) {
                this.open = true;
                console.log("pascal is boos :(");
-           }
+            }
         }
     }
 
