@@ -8,6 +8,7 @@ class Animate {
         this.counter = 0;
         this.object = object;
         this.scale = scale;
+        this.mirror = false;
     }
     loadImage(path) {
         const image = new Image();
@@ -27,7 +28,15 @@ class Animate {
                     this.currentFrame = 0;
                 }
             }
-            this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width * this.scale, this.frameHeight * this.scale);
+            this.ctx.save();
+            if (this.mirror) {
+                this.ctx.scale(-1, 1);
+                this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x * -1 - this.imageWidth * this.scale, this.object.pos.y, this.img.width * this.scale, this.frameHeight * this.scale);
+            }
+            else {
+                this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width * this.scale, this.frameHeight * this.scale);
+            }
+            this.ctx.restore();
         }
     }
     set aniSpeed(speed) {
@@ -38,6 +47,12 @@ class Animate {
     }
     get imageWidth() {
         return this.img.width;
+    }
+    set height(v) {
+        this.img.height = v;
+    }
+    set mirrored(v) {
+        this.mirror = v;
     }
 }
 class Game {
@@ -371,6 +386,7 @@ class Boss extends GameObject {
             case 0:
                 this.currentAttack = new Array;
                 for (let i = 1; i < 8; i++) {
+                    console.log("apoejrgiajerg");
                     this.currentAttack[i] = new Codebeam(new Vector(i * 100, 0), new Vector(0, .1 * i * Math.random()), this.ctx);
                 }
                 break;
@@ -380,6 +396,9 @@ class Boss extends GameObject {
                 console.log("jammerjoh");
                 break;
         }
+    }
+    get attack() {
+        return this.currentAttack[0];
     }
 }
 class Enemy extends GameObject {
@@ -444,9 +463,11 @@ class Player extends GameObject {
     playerMove(canvas) {
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
             this.pos.x += 5;
+            this.animation.mirrored = true;
         }
         else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
             this.pos.x -= 5;
+            this.animation.mirrored = false;
         }
         if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
             this.vel.y = 0;
@@ -499,6 +520,7 @@ class Codebeam extends GameObject {
         this.attackTimer = 0;
         this.waveTimer = 0;
         this.rays = new Array;
+        this.animation.height = 500;
     }
     init() {
         for (let j = 0; j < Math.floor(Math.random() * 10 + 1); j++) {
@@ -540,7 +562,7 @@ class GameScreen {
     collides(a, b) {
         let xoverlap = false;
         let yoverlap = false;
-        if (a[0] < b[0] && a[1] > b[0]) {
+        if (a[0] <= b[0] && a[1] > b[0]) {
             xoverlap = true;
         }
         if (a[0] > b[0] && a[0] < b[1]) {
@@ -619,7 +641,6 @@ class BossScreen extends GameScreen {
             this.sword.update();
         }
         this.enemy.update();
-        this.boss.update();
         this.id.update();
     }
     listen(userinput) {
@@ -651,6 +672,12 @@ class BossScreen extends GameScreen {
             if (this.boss.exist) {
                 this.boss.exist = false;
                 this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
+        }
+        if (this.boss.attack) {
+            console.log("oiejrgoiaerjgoiaerjhgpoiaerjgpioaerjtgpoiaerjgpoiaernjgoiaerjgpoijeragpjerahg");
+            if (this.collides(player, this.boss.attack.box())) {
+                console.log("ohmygodtheykilledSquary!!");
             }
         }
         if (this.collides(player, enemy)) {

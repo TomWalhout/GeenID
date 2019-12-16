@@ -34,6 +34,7 @@ class Boss extends GameObject {
             case 0:
                 this.currentAttack = new Array;
                 for (let i = 1; i < 8; i++) {
+                    console.log("apoejrgiajerg");
                     this.currentAttack[i] = new Codebeam(new Vector(i * 100, 0), new Vector(0, .1 * i * Math.random()), this.ctx);
                 }
                 break;
@@ -43,5 +44,9 @@ class Boss extends GameObject {
                 console.log("jammerjoh");
                 break;
         }
+    }
+
+    public get attack(): GameObject {
+        return this.currentAttack[0];
     }
 }

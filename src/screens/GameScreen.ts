@@ -65,7 +65,7 @@ class GameScreen {
     public collides(a: Array<number>, b: Array<number>) {
         let xoverlap = false;
         let yoverlap = false;
-        if (a[0] < b[0] && a[1] > b[0]) {
+        if (a[0] <= b[0] && a[1] > b[0]) {
             //there is x-overlap
             xoverlap = true;
         }

@@ -62,7 +62,6 @@ class BossScreen extends GameScreen {
             this.sword.update();
         }
         this.enemy.update();
-        this.boss.update();
         this.id.update();
     }
 
@@ -105,6 +104,13 @@ class BossScreen extends GameScreen {
             if (this.boss.exist) {
                 this.boss.exist = false;
                 this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
+        }
+
+        if (this.boss.attack) {
+            console.log("oiejrgoiaerjgoiaerjhgpoiaerjgpioaerjtgpoiaerjgpoiaernjgoiaerjgpoijeragpjerahg")
+            if (this.collides(player, this.boss.attack.box())) {
+                console.log("ohmygodtheykilledSquary!!");
             }
         }
 
