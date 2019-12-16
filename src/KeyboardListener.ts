@@ -25,7 +25,6 @@ class KeyboardListener {
     public static readonly KEY_ENTER = 13;
     public static readonly KEY_BACK = 8;
 
-
     // Array that holds the state of all keys
     private keyCodeStates: boolean[];
 
@@ -66,5 +65,4 @@ class KeyboardListener {
     private keyUp = (ev: KeyboardEvent) => {
         this.keyCodeStates[ev.keyCode] = false;
     }
-
 }

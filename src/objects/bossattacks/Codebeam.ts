@@ -25,8 +25,6 @@ class Codebeam extends GameObject {
         }
     }
 
-
-
     public draw() {
         this.drawBox();
         this.init();

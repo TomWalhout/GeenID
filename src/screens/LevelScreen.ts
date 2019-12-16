@@ -35,7 +35,6 @@ class LevelScreen extends GameScreen {
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
     }
 
-
     /**
      * Let this screen adjust its state and/or let the game switch to a new
      * screen to show.
@@ -59,11 +58,13 @@ class LevelScreen extends GameScreen {
         for (let i = 0; i < this.icons.length; i++) {
             this.icons[i].update();
         }
+
         for (let i = 0; i < this.openPrograms.length; i++) {
             if (this.openPrograms[i].isOpen) {
                 this.openPrograms[i].update();
             }
         }
+
         this.id.update();
         if (this.openAds.length < 3) {
             if (this.randomRoundedNumber(1, 100) == 1) {
@@ -81,8 +82,6 @@ class LevelScreen extends GameScreen {
 
     }
 
-
-
     public collide() {
         let player = this.player.box();
         let playerbottom = [player[0], player[1], player[3], player[3] + 2];
@@ -96,15 +95,14 @@ class LevelScreen extends GameScreen {
                     onground = true;
                 }
             }
-        }
-        );
+        });
+
         if (onground) {
             this.player.vel.y = 0;
             this.player.standing = true;
         } else {
             this.player.standing = false;
         }
-
     }
 
     public listen(userinput: UserInput) {
@@ -120,6 +118,7 @@ class LevelScreen extends GameScreen {
                 }
             }
         }
+
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].button) {
                 if (this.openAds[i].button.clickedOn(userinput)) {
@@ -129,11 +128,10 @@ class LevelScreen extends GameScreen {
             }
         }
 
-
-
         if (this.icons[0].clickedOn(userinput)) {
             this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
         }
+
         if (this.icons[1].clickedOn(userinput)) {
             this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
             this.openAds.forEach(element => {

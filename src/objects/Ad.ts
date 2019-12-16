@@ -13,11 +13,8 @@ class Ad extends Program {
         this.respawn = false;
     }
 
-
     public spawnEnemy() {
-
     }
-
 
     public randomAd() {
 
@@ -31,7 +28,6 @@ class Ad extends Program {
             }
         }
     }
-
 
     protected randomNumber(min: number, max: number): number {
         return Math.random() * (max - min) + min;
