@@ -7,7 +7,7 @@
 class BossScreen extends GameScreen {
     private boss: Boss;
     private player: Player;
-    private enemy: Enemy;
+    private enemy: Array<Enemy>;
     private sword: Sword;
     private shouldSwitchToTitleScreen = false;
     private id: IDcard;
@@ -25,12 +25,15 @@ class BossScreen extends GameScreen {
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
         this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
-        this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 0.5, game);
+        this.enemy = [];
+        for (let i = 0; i < 8; i++){
+            this.enemy[i] = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(this.randomNumber(-4, 4), this.randomNumber(-2, 2)), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
+        }
+    
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 0.5, game);
         // add an mouse event listener
 
-        this.playerLives = 100;
-        this.enemyLives = 10;
+        this.enemyLives = 100;
     }
 
     /**
@@ -41,11 +44,13 @@ class BossScreen extends GameScreen {
      *      can easily call the switchScreen() method if needed.
      */
     public adjust(game: Game) {
+        for (let i = 0; i < this.enemy.length; i++) {
+            this.enemy[i].enemyMove(this.game.canvas);
+        }
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
         this.player.playerMove(this.game.canvas);
-        this.enemy.enemyMove(this.game.canvas);
     }
 
     /**
@@ -55,13 +60,15 @@ class BossScreen extends GameScreen {
      * @param ctx the rendering context to draw on
      */
     public draw(ctx: CanvasRenderingContext2D) {
+        for (let i = 0; i < this.enemy.length; i++) {
+            this.enemy[i].update();
+        }
         this.boss.update();
         this.player.update();
         if (this.player.hasSword) {
             this.sword.movePos(this.player);
             this.sword.update();
         }
-        this.enemy.update();
         this.boss.update();
         this.id.update();
     }
@@ -85,21 +92,28 @@ class BossScreen extends GameScreen {
         let player = this.player.box();
         let boss = this.boss.box();
         let sword = this.sword.box();
-        let enemy = this.enemy.box();
-        if (this.collides(player, boss)) {
-            //boem
-        }
-        if (this.collides(sword, enemy)) {
-            // boem
-        }
-        this.hit();
-    }
+        for (let i = 0; i < this.enemy.length; i++) {
+            let enemy = this.enemy[i].box();
 
-    public hit() {
-        let player = this.player.box();
-        let boss = this.boss.box();
-        let enemy = this.enemy.box();
-        let sword = this.sword.box();
+            if (this.collides(player, enemy)) {
+                if (this.enemy[i].exist) {
+                    this.enemy[i].exist = false;
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+                this.playerLives--;
+                this.sound();
+
+            }
+
+            if (this.collides(sword, enemy) && this.player.hasSword) {
+                this.enemyLives--;
+            }
+
+            if (this.enemyLives < 1) {
+                this.enemy[i].exist = false;
+                // console.log('Victory');
+            }
+        }
 
         if (this.collides(player, boss)) {
             if (this.boss.exist) {
@@ -108,30 +122,18 @@ class BossScreen extends GameScreen {
             }
         }
 
-        if (this.collides(player, enemy)) {
-            if (this.enemy.exist) {
-                this.enemy.exist = false;
+        if (this.collides(player, boss)) {
+            // console.log("ouchie ive been ripped");
+            console.log("oei");
+            if (this.boss.exist) {
+                this.boss.exist = false;
                 this.id.youGotRekt = this.id.youGotRekt - 1;
             }
-            this.playerLives--;
         }
-
-        if (this.collides(sword, enemy) && this.player.hasSword) {
-            this.enemyLives--;
-        }
-
-        if (this.enemyLives < 1) {
-            this.enemy.exist = false;
-            // console.log('Victory');
-        }
-
-        if (this.playerLives < 1) {
-            this.gameOver();
-        }
-
     }
 
-    public gameOver() {
-        this.game.switchScreen(new LevelScreen(this.game))
+    public sound() {
+        let audio = new Audio('./assets/sounds/oof.mp3');
+        audio.play();
     }
 }
