@@ -26,7 +26,7 @@ class BossScreen extends GameScreen {
         this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
         this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
         this.enemy = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(4, 2), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 0.5, game);
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 0.5, game);
         // add an mouse event listener
 
         this.playerLives = 100;
@@ -57,7 +57,10 @@ class BossScreen extends GameScreen {
     public draw(ctx: CanvasRenderingContext2D) {
         this.boss.update();
         this.player.update();
-        this.sword.movePos(this.player);
+        if (this.player.hasSword) {
+            this.sword.movePos(this.player);
+            this.sword.update();
+        }
         this.enemy.update();
         this.boss.update();
         this.id.update();
@@ -99,29 +102,26 @@ class BossScreen extends GameScreen {
         let sword = this.sword.box();
 
         if (this.collides(player, boss)) {
-            // console.log("ouchie ive been ripped");
-            console.log("oei");
             if (this.boss.exist) {
                 this.boss.exist = false;
                 this.id.youGotRekt = this.id.youGotRekt - 1;
             }
         }
+
         if (this.collides(player, enemy)) {
             if (this.enemy.exist) {
                 this.enemy.exist = false;
                 this.id.youGotRekt = this.id.youGotRekt - 1;
             }
             this.playerLives--;
-            // console.log(this.playerLives);
         }
 
         if (this.collides(sword, enemy) && this.player.hasSword) {
             this.enemyLives--;
-            console.log(this.enemyLives);
         }
 
         if (this.enemyLives < 1) {
-
+            this.enemy.exist = false;
             // console.log('Victory');
         }
 
@@ -131,11 +131,7 @@ class BossScreen extends GameScreen {
 
     }
 
-
     public gameOver() {
-
         this.game.switchScreen(new LevelScreen(this.game))
-
     }
-
 }

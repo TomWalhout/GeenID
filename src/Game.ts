@@ -48,16 +48,13 @@ class Game {
         this.currentScreen.adjust(this);
 
         // switch screen
-        if (this.input.isKeyDown(UserInput.KEY_1)) {
+        if (this.input.isKeyDown(UserInput.KEY_1) && !(this.currentScreen instanceof LevelScreen)) {
             this.switchScreen(new LevelScreen(this))
         }
-        if (this.input.isKeyDown(UserInput.KEY_2)) {
+        if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof BossScreen)) {
             this.switchScreen(new BossScreen(this))
         }
     }
-
-
-
 
     /**
      * Writes text to the canvas
@@ -100,7 +97,6 @@ class Game {
         }
     }
 
-
     public get lives(): number {
         return this.Lives;
     }
@@ -108,8 +104,6 @@ class Game {
     public set lives(v: number) {
         this.Lives = v;
     }
-
-
 }
 
 // This will get an HTML element. I cast this element in de appropriate type using <>

@@ -15,10 +15,11 @@ class Boss extends GameObject {
     }
 
     public update() {
+        // vibrate threateningly
         this.vel.x = Math.random() - .5;
         this.vel.y = Math.random() - .5;
+
         if (this.currentAttack) {
-            let inList = false;
             this.currentAttack.forEach(element => {
                 element.update();
             });
