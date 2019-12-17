@@ -36,19 +36,9 @@ class BossScreen extends GameScreen {
         this.enemyLives = 100;
     }
 
-    /**
-     * Let this screen adjust its state and/or let the game switch to a new
-     * screen to show.
-     *
-     * @param game the game object, conveniently added as a parameter so you
-     *      can easily call the switchScreen() method if needed.
-     */
     public adjust(game: Game) {
         for (let i = 0; i < this.enemy.length; i++) {
             this.enemy[i].enemyMove(this.game.canvas);
-        }
-        if (this.shouldSwitchToTitleScreen) {
-            game.switchScreen(new TitleScreen(game));
         }
         this.player.playerMove(this.game.canvas);
     }
