@@ -72,10 +72,13 @@ class Game {
             if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof BossScreen)) {
                 this.switchScreen(new BossScreen(this));
             }
+            if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof BossScreen)) {
+                this.switchScreen(new Level1(this));
+            }
         };
         this.canvas = canvasId;
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+        this.canvas.width = 1536;
+        this.canvas.height = 722;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
         this.currentScreen = new LevelScreen(this);
@@ -201,6 +204,7 @@ UserInput.KEY_BACK = 8;
 UserInput.KEY_ENTER = 13;
 UserInput.KEY_1 = 49;
 UserInput.KEY_2 = 50;
+UserInput.KEY_3 = 51;
 class Vector {
     constructor(xpos = 0, ypos = 0) {
         this.xpos = xpos;
@@ -300,6 +304,7 @@ class Program extends GameObject {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.open = true;
         this.ctx = ctx;
+        this.ads = false;
     }
     wait() {
         if (this.animation.imageWidth > 0 && !this.closeButton) {
@@ -321,6 +326,12 @@ class Program extends GameObject {
     }
     get button() {
         return this.closeButton;
+    }
+    get hasAds() {
+        return this.ads;
+    }
+    set hasAds(v) {
+        this.ads = v;
     }
 }
 class CloseButton extends GameObject {
@@ -494,6 +505,11 @@ class Sword extends GameObject {
     movePos(player) {
         this.pos.x = player.pos.x + 50;
         this.pos.y = player.pos.y - 30;
+    }
+}
+class Wizard extends GameObject {
+    constructor(pos, vel, ctx, path, frames = 0, speed = 0, scale = 1) {
+        super(pos, vel, ctx, path, frames, speed, scale);
     }
 }
 class Codebeam extends GameObject {
@@ -685,6 +701,87 @@ class BossScreen extends GameScreen {
         audio.play();
     }
 }
+class Level1 extends GameScreen {
+    constructor(game) {
+        super(game);
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
+        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
+        this.wizard = new Wizard(new Vector(this.game.canvas.width - 120, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 20, 1);
+        this.storyFlag = 0;
+        this.openPrograms = [];
+        this.openPrograms[0] = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.5);
+        this.openPrograms[1] = new Program(new Vector(300, 400), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms[1].isOpen = false;
+        this.icons = [];
+        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
+        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/Gloole.png', 1, 1, 1.4);
+    }
+    draw() {
+        console.log(this.storyFlag);
+        this.id.update();
+        this.wizard.update();
+        for (let i = 0; i < this.openPrograms.length; i++) {
+            if (i <= this.storyFlag) {
+                if (this.openPrograms[i].isOpen) {
+                    this.openPrograms[i].update();
+                }
+                this.icons[i].update();
+            }
+        }
+        this.player.update();
+    }
+    collide() {
+        let player = this.player.box();
+        let wiz = this.wizard.box();
+        if (this.collides(player, wiz) && this.storyFlag < 1) {
+            this.storyFlag++;
+        }
+        let playerbottom = [player[0], player[1], player[3], player[3] + 2];
+        let onground = false;
+        this.openPrograms.forEach(program => {
+            if (program.isOpen) {
+                let programbox = program.box();
+                let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
+                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
+                    onground = true;
+                }
+            }
+        });
+        if (onground) {
+            this.player.vel.y = 0;
+            this.player.standing = true;
+        }
+        else {
+            this.player.standing = false;
+        }
+        let Glooole = this.icons[1].box();
+        if (this.collides(Glooole, player)) {
+            this.game.switchScreen(new LevelScreen(this.game));
+        }
+    }
+    listen(userinput) {
+        this.player.playerMove(this.game.canvas);
+        for (let i = 0; i < this.openPrograms.length; i++) {
+            if (this.openPrograms[i].button) {
+                if (this.openPrograms[i].button.clickedOn(userinput)) {
+                    this.openPrograms[i].isOpen = false;
+                    if (this.openPrograms[i].hasAds) {
+                        this.openAds.forEach(element => {
+                            element.isOpen = false;
+                            element.respawning = false;
+                        });
+                    }
+                }
+            }
+        }
+        if (this.icons[0].clickedOn(userinput)) {
+            this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
+        }
+        if (this.icons[1].clickedOn(userinput)) {
+            this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        }
+    }
+}
 class LevelScreen extends GameScreen {
     constructor(game) {
         super(game);
@@ -700,6 +797,7 @@ class LevelScreen extends GameScreen {
         this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
+        this.openPrograms[1].hasAds = true;
     }
     adjust(game) {
         if (this.shouldSwitchToTitleScreen) {
@@ -751,9 +849,7 @@ class LevelScreen extends GameScreen {
             this.player.standing = false;
         }
         let Glooole = this.icons[1].box();
-        let GloooleBox = [Glooole[0], Glooole[1], Glooole[2], Glooole[3]];
-        let playerBox = [player[0], player[1], player[2], player[3]];
-        if (this.collides(GloooleBox, playerBox)) {
+        if (this.collides(Glooole, player)) {
             this.game.switchScreen(new BossScreen(this.game));
         }
     }
@@ -762,10 +858,12 @@ class LevelScreen extends GameScreen {
             if (this.openPrograms[i].button) {
                 if (this.openPrograms[i].button.clickedOn(userinput)) {
                     this.openPrograms[i].isOpen = false;
-                    this.openAds.forEach(element => {
-                        element.isOpen = false;
-                        element.respawning = false;
-                    });
+                    if (this.openPrograms[i].hasAds) {
+                        this.openAds.forEach(element => {
+                            element.isOpen = false;
+                            element.respawning = false;
+                        });
+                    }
                 }
             }
         }
