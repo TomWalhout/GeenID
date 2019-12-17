@@ -14,7 +14,7 @@ class Ad extends Program {
     }
 
     public spawnEnemy(screen : GameScreen) {
-        this.enemy[0] = new Enemy(new Vector(this.randomNumber(100, this.ctx.canvas.width - 100), this.randomNumber(100, this.ctx.canvas.height - 100)), new Vector(this.randomNumber(-4, 4), this.randomNumber(-2, 2)), this.ctx, "./assets/Enemy.png", screen, 1, 1);
+        this.enemy[0] = new Enemy(new Vector(this.randomNumber(100, 100), this.randomNumber(100, 100)), new Vector(0,0), this.ctx, "./assets/Enemy.png", screen, 1, 1);
         // console.log('bla 2');
         // console.log(this.enemy[0]);
     }
@@ -24,27 +24,6 @@ class Ad extends Program {
         if (this.enemy.length > 0) {
             this.enemy[0].update();
         }
-        for (let i = 0; i < this.enemy.length; i++) {
-            this.enemy[i].enemyMove(this.ctx.canvas);
-        }
-    }
-
-    public enemyMove(canvas: HTMLCanvasElement) {
-        if (
-            this.pos.x + this.animation.imageWidth >= canvas.width ||
-            this.pos.x < 0
-        ) {
-            this.vel.x = -this.vel.x;
-        }
-        if (
-            this.pos.y + this.animation.imageHeight >= canvas.height ||
-            this.pos.y < 0
-        ) {
-            this.vel.y = -this.vel.y;
-        }
-        // Use the velocity to change the position
-        this.pos.x += this.vel.x;
-        // this.pos.y += this.vel.y;
     }
 
     public get respawning(): boolean {
