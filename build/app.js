@@ -911,6 +911,7 @@ class Level2 extends LevelScreen {
         this.programs[0] = new Program(new Vector(100, 400), new Vector(0, 0), this.game.ctx, './assets/windows/DEZEPC.png', 1, 1, 0.5, 0);
         this.programs[1] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
         this.programs[1].hasAds = true;
+        this.programs[2] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
     }
     draw() {
         super.draw(this.game.ctx);
@@ -931,20 +932,33 @@ class Level3 extends LevelScreen {
     constructor(game) {
         super(game);
         this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/Minecraft.png', 1, 1, 0.4, 0);
-        this.programs[0] = new Program(new Vector(100, 400), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.5, 0);
+        this.programs[0] = new Program(new Vector(300, 100), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 1, 0);
+        this.toggle = false;
+        this.scareBool = false;
     }
     draw() {
         super.draw(this.game.ctx);
         this.closeAds();
         this.closeProgram();
         this.clickedIcon();
-        this.nextLevel();
+        this.corrupt();
+        if (this.scareBool) {
+            this.scare.update();
+            this.writeTextToCanvas(this.game.ctx, 'GAME OVER?', 200, new Vector(700, 300), 'center', 'red');
+        }
     }
-    nextLevel() {
-        let player = this.player.box();
-        let file = this.icons[0].box();
-        if (this.collides(file, player)) {
-            this.game.switchScreen(new Level3(this.game));
+    corrupt() {
+        if (this.programs[0].isOpen == true && !this.toggle) {
+            this.toggle = true;
+        }
+        if (this.toggle && !this.programs[0].isOpen) {
+            this.programs[0] = new Program(new Vector(300, 100), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1, 0);
+            this.programs[0].isOpen = true;
+            setTimeout(() => {
+                this.scareBool = true;
+                this.scare = new GameObject(new Vector(-1, 0), new Vector(0, 0), this.game.ctx, './assets/SquaryC.png', 1, 1, 1.2, 0);
+                this.programs[0].isOpen = true;
+            }, 10000);
         }
     }
 }
