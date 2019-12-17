@@ -30,6 +30,7 @@ class LevelScreen extends GameScreen {
         this.openPrograms = [];
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
+        this.openPrograms[1].hasAds = true;
     }
 
     /**
@@ -65,7 +66,7 @@ class LevelScreen extends GameScreen {
         this.id.update();
         if (this.openAds.length < 5) { // max amount of ads
             if (this.randomRoundedNumber(1, 100) == 1) { // add chance
-                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 0.3));
+                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2));
                 this.sound();
             }
         }
@@ -115,10 +116,12 @@ class LevelScreen extends GameScreen {
             if (this.openPrograms[i].button) {
                 if (this.openPrograms[i].button.clickedOn(userinput)) {
                     this.openPrograms[i].isOpen = false;
-                    this.openAds.forEach(element => {
-                        element.isOpen = false;
-                        element.respawning = false;
-                    });
+                    if (this.openPrograms[i].hasAds) {
+                        this.openAds.forEach(element => {
+                            element.isOpen = false;
+                            element.respawning = false;
+                        });
+                    }
                 }
             }
         }
@@ -130,6 +133,8 @@ class LevelScreen extends GameScreen {
                 }
             }
         }
+
+
 
         if (this.icons[0].clickedOn(userinput)) {
             this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);

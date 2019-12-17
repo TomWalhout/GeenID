@@ -3,7 +3,6 @@ class GameObject {
     protected velocity: Vector;
     protected animation: Animate;
     protected ctx: CanvasRenderingContext2D;
-    private classname: string;
     private exists: boolean;
     protected scale: number;
 
