@@ -5,10 +5,9 @@ class Program extends GameObject {
     protected open: boolean;
     protected ctx: CanvasRenderingContext2D;
     private ads: boolean;
-    public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
-        super(pos, vel, ctx, path, frames, speed, scale)
-        // console.log(this.animation.imageWidth);
-        this.open = true;
+    public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, story: number) {
+        super(pos, vel, ctx, path, frames, speed, scale, story);
+        this.open = false;
         this.ctx = ctx;
         this.ads = false;
     }
@@ -58,6 +57,9 @@ class Program extends GameObject {
         this.ads = v;
     }
 
+    public get storyFlag(): number {
+        return this.story;
+    }
 
 }
 

@@ -6,13 +6,14 @@
  */
 class LevelScreen extends GameScreen {
 
-    private player: Player;
-    protected openPrograms: Array<Program>;
-    private openAds: Array<Ad>
-    private icons: Array<Icon>;
-    private enemy: Array<Enemy>;
-    private shouldSwitchToTitleScreen = false;
-    private id: IDcard;
+    protected player: Player;
+    protected programs: Array<Program>;
+    protected ads: Array<Ad>
+    protected icons: Array<Icon>;
+    protected shouldSwitchToTitleScreen = false;
+    protected id: IDcard;
+    protected userinput: UserInput;
+    private storyFlag: number;
 
     /**
      * Construct a new GameScreen object.
@@ -24,37 +25,12 @@ class LevelScreen extends GameScreen {
 
         this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
-        this.icons = [];
-        this.icons[2] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/placeholder-thispc.png', 1, 1, 1.4)
-        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4)
-        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4)
-        this.openAds = [];
-        this.openPrograms = [];
-        this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
-        this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
-        this.openPrograms[1].hasAds = true;
-        this.enemy = [];
-    }
 
-    /**
-     * Let this screen adjust its state and/or let the game switch to a new
-     * screen to show.
-     *
-     * @param game the game object, conveniently added as a parameter so you
-     *      can easily call the switchScreen() method if needed.
-     */
-    public adjust(game: Game) {
-        if (this.enemy.length > 0) {
-            this.enemy[0].update();
-        }
-        for (let i = 0; i < this.enemy.length; i++) {
-            this.enemy[i].enemyMove(this.game.canvas);
-        }
-        
-        if (this.shouldSwitchToTitleScreen) {
-            game.switchScreen(new TitleScreen(game));
-        }
+        this.icons = [];
+        this.programs = [];
+        this.ads = [];
+        this.storyFlag = 0;
+        this.userinput = new UserInput();
     }
 
     public spawnEnemy() {
@@ -70,31 +46,20 @@ class LevelScreen extends GameScreen {
      * @param ctx the rendering context to draw on
      */
     public draw(ctx: CanvasRenderingContext2D) {
-        for (let i = 0; i < this.icons.length; i++) {
-            this.icons[i].update();
-        }
-
-        for (let i = 0; i < this.openPrograms.length; i++) {
-            if (this.openPrograms[i].isOpen) {
-                this.openPrograms[i].update();
-            }
-        }
-
         this.id.update();
-        if (this.openAds.length < 5) { // max amount of ads
-            if (this.randomRoundedNumber(1, 100) == 1) { // add chance
-                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2));
-                this.sound();
+        for (let i = 0; i < this.programs.length; i++) {
+            if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
+                this.programs[i].update();
+            }
+        }
+        for (let i = 0; i < this.icons.length; i++) {
+            if (this.icons[i].story <= this.storyFlag) {
+                this.icons[i].update();
             }
         }
 
-        for (let i = 0; i < this.openAds.length; i++) {
-            if (this.openAds[i].isOpen) {
-                this.openAds[i].update();
-            }
-        }
+
         this.player.update();
-        this.player.playerMove(this.game.canvas);
     }
 
     public collide() {
@@ -102,7 +67,7 @@ class LevelScreen extends GameScreen {
         let playerbottom = [player[0], player[1], player[3], player[3] + 2];
         let onground = false;
 
-        this.openPrograms.forEach(program => {
+        this.programs.forEach(program => {
             if (program.isOpen) {
                 let programbox = program.box();
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
@@ -130,21 +95,14 @@ class LevelScreen extends GameScreen {
             this.player.standing = false;
         }
 
-        // Glooole collision
-        let Glooole = this.icons[1].box(); // Glooole
-        if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new BossScreen(this.game))
-        }
     }
-
-    public listen(userinput: UserInput) {
-        //Checks for every program if there's been clicked on the button
-        for (let i = 0; i < this.openPrograms.length; i++) {
-            if (this.openPrograms[i].button) {
-                if (this.openPrograms[i].button.clickedOn(userinput)) {
-                    this.openPrograms[i].isOpen = false;
-                    if (this.openPrograms[i].hasAds) {
-                        this.openAds.forEach(element => {
+    protected closeProgram() {
+        for (let i = 0; i < this.programs.length; i++) {
+            if (this.programs[i].button) {
+                if (this.programs[i].button.clickedOn(this.userinput)) {
+                    this.programs[i].isOpen = false;
+                    if (this.programs[i].hasAds) {
+                        this.ads.forEach(element => {
                             element.isOpen = false;
                             element.respawning = false;
                         });
@@ -152,39 +110,44 @@ class LevelScreen extends GameScreen {
                 }
             }
         }
+    }
 
-        for (let i = 0; i < this.openAds.length; i++) {
-            if (this.openAds[i].button) {
-                if (this.openAds[i].button.clickedOn(userinput)) {
-                    this.openAds.splice(i, 1);
+    protected closeAds() {
+        for (let i = 0; i < this.ads.length; i++) {
+            if (this.ads[i].button) {
+                if (this.ads[i].button.clickedOn(this.userinput)) {
+                    this.ads.splice(i, 1);
                 }
             }
         }
+    }
 
-
-
-        if (this.icons[0].clickedOn(userinput)) {
-            this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
-            this.openPrograms[0].isOpen
+    protected clickedIcon() {
+        for (let i = 0; i < this.icons.length; i++) {
+            if (this.icons[i].clickedOn(this.userinput)) {
+                this.programs[i].isOpen = true;
+            }
         }
+    }
 
-        if (this.icons[1].clickedOn(userinput)) {
-            this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-            this.openAds.forEach(element => {
-                element.respawning = true;
-            });
-            this.openPrograms[1].isOpen
-
-        }
-
-        if (this.icons[2].clickedOn(userinput)) {
-            this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
-            this.openPrograms[2].isOpen
-        }
+    public listen(userinput: UserInput) {
+        this.player.playerMove(this.game.canvas);
     }
 
     public sound() {
         let audio = new Audio('./assets/sounds/errorxp.mp3');
         audio.play();
     }
+
+
+    public get story(): number {
+        return this.storyFlag;
+    }
+
+
+    public set story(v: number) {
+        this.storyFlag = v;
+    }
+
+
 }

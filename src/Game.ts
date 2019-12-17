@@ -16,7 +16,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new LevelScreen(this);
+        this.currentScreen = new Level1(this); // Level the game starts on
         this.input = new UserInput();
         this.Lives = 5;
         this.loop();
@@ -48,14 +48,14 @@ class Game {
         this.currentScreen.adjust(this);
 
         // switch screen
-        if (this.input.isKeyDown(UserInput.KEY_1) && !(this.currentScreen instanceof LevelScreen)) {
-            this.switchScreen(new LevelScreen(this))
-        }
-        if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof BossScreen)) {
-            this.switchScreen(new BossScreen(this))
-        }
-        if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof BossScreen)) {
+        if (this.input.isKeyDown(UserInput.KEY_1) && !(this.currentScreen instanceof Level1)) {
             this.switchScreen(new Level1(this))
+        }
+        if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof Level2)) {
+            this.switchScreen(new Level2(this))
+        }
+        if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level3)) {
+            this.switchScreen(new Level3(this))
         }
     }
 
