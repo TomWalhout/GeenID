@@ -27,12 +27,10 @@ class LevelScreen extends GameScreen {
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
 
         this.icons = [];
-
         this.programs = [];
         this.ads = [];
-
-        this.userinput = new UserInput();
         this.storyFlag = 0;
+        this.userinput = new UserInput();
     }
 
     /**
@@ -44,7 +42,9 @@ class LevelScreen extends GameScreen {
     public draw(ctx: CanvasRenderingContext2D) {
         this.id.update();
         for (let i = 0; i < this.icons.length; i++) {
-            this.icons[i].update();
+            if (this.icons[i].story <= this.storyFlag) {
+                this.icons[i].update();
+            }
         }
 
         for (let i = 0; i < this.programs.length; i++) {
@@ -90,12 +90,6 @@ class LevelScreen extends GameScreen {
             this.player.standing = false;
         }
 
-        // // Glooole collision
-        // let Glooole = this.icons[1].box(); // Glooole
-        // if (this.collides(Glooole, player)) {
-        //     this.game.switchScreen(new Level1test(this.game));
-        // }
-
     }
     protected closeProgram() {
         for (let i = 0; i < this.programs.length; i++) {
@@ -131,16 +125,24 @@ class LevelScreen extends GameScreen {
         }
     }
 
-    public listen() {
-
+    public listen(userinput: UserInput) {
         this.player.playerMove(this.game.canvas);
-
-        //Checks for every program if there's been clicked on the button
-
     }
 
     public sound() {
         let audio = new Audio('./assets/sounds/errorxp.mp3');
         audio.play();
     }
+
+
+    public get story(): number {
+        return this.storyFlag;
+    }
+
+
+    public set story(v: number) {
+        this.storyFlag = v;
+    }
+
+
 }

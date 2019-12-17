@@ -5,10 +5,8 @@ class Program extends GameObject {
     protected open: boolean;
     protected ctx: CanvasRenderingContext2D;
     private ads: boolean;
-    private story: number;
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, story: number) {
-        super(pos, vel, ctx, path, frames, speed, scale);
-        this.story = story;
+        super(pos, vel, ctx, path, frames, speed, scale, story);
         this.open = true;
         this.ctx = ctx;
         this.ads = false;

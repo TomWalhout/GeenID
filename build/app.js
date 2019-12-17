@@ -230,11 +230,12 @@ class Vector {
     }
 }
 class GameObject {
-    constructor(pos, vel, ctx, path, frames = 1, speed = 1, scale = 1) {
+    constructor(pos, vel, ctx, path, frames = 1, speed = 1, scale = 1, story = 0) {
         this.position = pos;
         this.velocity = vel;
         this.exists = true;
         this.scale = scale;
+        this.Story = story;
         if (path) {
             this.animation = new Animate(ctx, path, frames, speed, this, scale);
         }
@@ -253,6 +254,9 @@ class GameObject {
     }
     set vel(value) {
         this.velocity = value;
+    }
+    get story() {
+        return this.Story;
     }
     update() {
         if (this.exist) {
@@ -301,8 +305,7 @@ class GameObject {
 }
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, story) {
-        super(pos, vel, ctx, path, frames, speed, scale);
-        this.story = story;
+        super(pos, vel, ctx, path, frames, speed, scale, story);
         this.open = true;
         this.ctx = ctx;
         this.ads = false;
@@ -795,13 +798,15 @@ class LevelScreen extends GameScreen {
         this.icons = [];
         this.programs = [];
         this.ads = [];
-        this.userinput = new UserInput();
         this.storyFlag = 0;
+        this.userinput = new UserInput();
     }
     draw(ctx) {
         this.id.update();
         for (let i = 0; i < this.icons.length; i++) {
-            this.icons[i].update();
+            if (this.icons[i].story <= this.storyFlag) {
+                this.icons[i].update();
+            }
         }
         for (let i = 0; i < this.programs.length; i++) {
             if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
@@ -898,6 +903,11 @@ class LevelScreen2 extends LevelScreen {
     constructor(game) {
         super(game);
         this.programs[3] = new Program(new Vector(600, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 1);
+    }
+}
+class LevelScreen2 extends LevelScreen {
+    constructor(game) {
+        super(game);
     }
 }
 class LoadingScreen extends GameScreen {
