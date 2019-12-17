@@ -66,14 +66,14 @@ class Game {
             this.currentScreen.listen(this.input);
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
-            if (this.input.isKeyDown(UserInput.KEY_1) && !(this.currentScreen instanceof LevelScreen)) {
-                this.switchScreen(new LevelScreen(this));
+            if (this.input.isKeyDown(UserInput.KEY_1) && !(this.currentScreen instanceof Level1)) {
+                this.switchScreen(new Level1(this));
             }
-            if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof BossScreen)) {
-                this.switchScreen(new BossScreen(this));
-            }
-            if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level2)) {
+            if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof Level2)) {
                 this.switchScreen(new Level2(this));
+            }
+            if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level3)) {
+                this.switchScreen(new Level3(this));
             }
         };
         this.canvas = canvasId;
@@ -306,7 +306,7 @@ class GameObject {
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, story) {
         super(pos, vel, ctx, path, frames, speed, scale, story);
-        this.open = true;
+        this.open = false;
         this.ctx = ctx;
         this.ads = false;
     }
@@ -638,9 +638,6 @@ class BossScreen extends GameScreen {
         for (let i = 0; i < this.enemy.length; i++) {
             this.enemy[i].enemyMove(this.game.canvas);
         }
-        if (this.shouldSwitchToTitleScreen) {
-            game.switchScreen(new TitleScreen(game));
-        }
         this.player.playerMove(this.game.canvas);
     }
     draw(ctx) {
@@ -867,15 +864,21 @@ class LevelScreen extends GameScreen {
             }
         }
     }
-    listen() {
+    listen(userinput) {
         this.player.playerMove(this.game.canvas);
     }
     sound() {
         let audio = new Audio('./assets/sounds/errorxp.mp3');
         audio.play();
     }
+    get story() {
+        return this.storyFlag;
+    }
+    set story(v) {
+        this.storyFlag = v;
+    }
 }
-class Level2 extends LevelScreen {
+class Level1Update extends LevelScreen {
     constructor(game) {
         super(game);
         this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
@@ -899,63 +902,50 @@ class Level2 extends LevelScreen {
         }
     }
 }
-class LevelScreen2 extends LevelScreen {
+class Level2 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.programs[3] = new Program(new Vector(600, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 1);
+        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
+        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
+        this.icons[2] = new Icon(new Vector(1450, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 0.3);
+        this.programs[0] = new Program(new Vector(100, 400), new Vector(0, 0), this.game.ctx, './assets/windows/DEZEPC.png', 1, 1, 0.5, 0);
+        this.programs[1] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
+        this.programs[1].hasAds = true;
     }
-}
-class LevelScreen2 extends LevelScreen {
-    constructor(game) {
-        super(game);
+    draw() {
+        super.draw(this.game.ctx);
+        this.closeAds();
+        this.closeProgram();
+        this.clickedIcon();
+        this.nextLevel();
     }
-}
-class LoadingScreen extends GameScreen {
-    constructor(game) {
-        super(game);
-    }
-    adjust(game) {
-        if (this.frameCount > 10) {
-            game.switchScreen(new StartScreen(this.game));
+    nextLevel() {
+        let player = this.player.box();
+        let file = this.icons[2].box();
+        if (this.collides(file, player)) {
+            this.game.switchScreen(new Level3(this.game));
         }
     }
-    draw(ctx) {
-        this.writeTextToCanvas(ctx, "LOADING...", 140, this.center);
-    }
 }
-class StartScreen extends GameScreen {
+class Level3 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.shouldStartLevel = false;
+        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/Minecraft.png', 1, 1, 0.4, 0);
+        this.programs[0] = new Program(new Vector(100, 400), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.5, 0);
     }
-    listen(input) {
-        if (input.isKeyDown(UserInput.KEY_ENTER)) {
-            this.shouldStartLevel = true;
+    draw() {
+        super.draw(this.game.ctx);
+        this.closeAds();
+        this.closeProgram();
+        this.clickedIcon();
+        this.nextLevel();
+    }
+    nextLevel() {
+        let player = this.player.box();
+        let file = this.icons[0].box();
+        if (this.collides(file, player)) {
+            this.game.switchScreen(new Level3(this.game));
         }
-    }
-    draw(ctx) {
-        this.writeTextToCanvas(ctx, "PRESS ENTER TO PLAY", 40, new Vector(this.center.x, this.center.y - 20));
-    }
-}
-class TitleScreen extends GameScreen {
-    constructor(game) {
-        super(game);
-        this.shouldSwitchToStartScreen = false;
-    }
-    listen(input) {
-        if (input.isKeyDown(UserInput.KEY_BACK)) {
-            this.shouldSwitchToStartScreen = true;
-        }
-    }
-    adjust(game) {
-        if (this.shouldSwitchToStartScreen ||
-            this.frameCount > 10 * 60) {
-            game.switchScreen(new StartScreen(game));
-        }
-    }
-    draw(ctx) {
-        const x = this.game.canvas.width / 2;
-        let y = this.game.canvas.height / 2;
     }
 }
 //# sourceMappingURL=app.js.map
