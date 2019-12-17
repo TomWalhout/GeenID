@@ -9,6 +9,7 @@ class LevelScreen extends GameScreen {
     private player: Player;
     protected openPrograms: Array<Program>;
     private openAds: Array<Ad>
+    private enemy: Array<Enemy>;
     private icons: Array<Icon>;
     private shouldSwitchToTitleScreen = false;
     private id: IDcard;
@@ -28,6 +29,9 @@ class LevelScreen extends GameScreen {
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4)
         this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4)
         this.openAds = [];
+        this.openAds[0] = new Ad(new Vector(300, 350), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2);
+        this.openAds[1] = new Ad(new Vector(100, 150), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2);
+        this.openAds[2] = new Ad(new Vector(200, 250), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2);
         this.openPrograms = [];
         this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
@@ -80,6 +84,7 @@ class LevelScreen extends GameScreen {
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
+       
     }
 
     public collide() {
@@ -93,6 +98,17 @@ class LevelScreen extends GameScreen {
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
                 if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
                     onground = true;
+                }
+            }
+        });
+
+        this.openAds.forEach(ad => {
+            if (ad.isOpen) {
+                let adBox = ad.box();
+                let upperbox = [adBox[0], adBox[1], adBox[2], adBox[2] + 10];
+                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
+                    onground = true;
+                    ad.spawnEnemy(this);
                 }
             }
         });
