@@ -27,17 +27,10 @@ class LevelScreen extends GameScreen {
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
 
         this.icons = [];
-        //     this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4)
-        //     this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4)
-        //     this.icons[2] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/placeholder-thispc.png', 1, 1, 1.4)
         this.programs = [];
         this.ads = [];
-        //     this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
-        //     this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-        //     this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
-        //     this.openPrograms[1].hasAds = true;
-        this.userinput = new UserInput();
         this.storyFlag = 0;
+        this.userinput = new UserInput();
     }
 
     /**
@@ -49,7 +42,9 @@ class LevelScreen extends GameScreen {
     public draw(ctx: CanvasRenderingContext2D) {
         this.id.update();
         for (let i = 0; i < this.icons.length; i++) {
-            this.icons[i].update();
+            if (this.icons[i].story <= this.storyFlag) {
+                this.icons[i].update();
+            }
         }
 
         for (let i = 0; i < this.programs.length; i++) {
@@ -95,12 +90,6 @@ class LevelScreen extends GameScreen {
             this.player.standing = false;
         }
 
-        // Glooole collision
-        let Glooole = this.icons[1].box(); // Glooole
-        if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new Level1test(this.game));
-        }
-
     }
     protected closeProgram() {
         for (let i = 0; i < this.programs.length; i++) {
@@ -137,17 +126,23 @@ class LevelScreen extends GameScreen {
     }
 
     public listen(userinput: UserInput) {
-
         this.player.playerMove(this.game.canvas);
-
-        //Checks for every program if there's been clicked on the button
-
-
-
     }
 
     public sound() {
         let audio = new Audio('./assets/sounds/errorxp.mp3');
         audio.play();
     }
+
+
+    public get story(): number {
+        return this.storyFlag;
+    }
+
+
+    public set story(v: number) {
+        this.storyFlag = v;
+    }
+
+
 }

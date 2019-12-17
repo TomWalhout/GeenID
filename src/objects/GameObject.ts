@@ -5,12 +5,13 @@ class GameObject {
     protected ctx: CanvasRenderingContext2D;
     private exists: boolean;
     protected scale: number;
-
-    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path?: string, frames: number = 1, speed: number = 1, scale: number = 1) {
+    private Story: number;
+    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path?: string, frames: number = 1, speed: number = 1, scale: number = 1, story: number = 0) {
         this.position = pos;
         this.velocity = vel;
         this.exists = true;
         this.scale = scale;
+        this.Story = story;
         if (path) {
             this.animation = new Animate(ctx, path, frames, speed, this, scale);
         } else {
@@ -32,6 +33,10 @@ class GameObject {
 
     public set vel(value: Vector) {
         this.velocity = value;
+    }
+
+    public get story(): number {
+        return this.Story;
     }
 
     public update() {

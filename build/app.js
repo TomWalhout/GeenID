@@ -81,7 +81,7 @@ class Game {
         this.canvas.height = 722;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new Level2(this);
+        this.currentScreen = new Level1(this);
         this.input = new UserInput();
         this.Lives = 5;
         this.loop();
@@ -230,11 +230,12 @@ class Vector {
     }
 }
 class GameObject {
-    constructor(pos, vel, ctx, path, frames = 1, speed = 1, scale = 1) {
+    constructor(pos, vel, ctx, path, frames = 1, speed = 1, scale = 1, story = 0) {
         this.position = pos;
         this.velocity = vel;
         this.exists = true;
         this.scale = scale;
+        this.Story = story;
         if (path) {
             this.animation = new Animate(ctx, path, frames, speed, this, scale);
         }
@@ -253,6 +254,9 @@ class GameObject {
     }
     set vel(value) {
         this.velocity = value;
+    }
+    get story() {
+        return this.Story;
     }
     update() {
         if (this.exist) {
@@ -301,8 +305,7 @@ class GameObject {
 }
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, story) {
-        super(pos, vel, ctx, path, frames, speed, scale);
-        this.story = story;
+        super(pos, vel, ctx, path, frames, speed, scale, story);
         this.open = true;
         this.ctx = ctx;
         this.ads = false;
@@ -714,13 +717,15 @@ class LevelScreen extends GameScreen {
         this.icons = [];
         this.programs = [];
         this.ads = [];
-        this.userinput = new UserInput();
         this.storyFlag = 0;
+        this.userinput = new UserInput();
     }
     draw(ctx) {
         this.id.update();
         for (let i = 0; i < this.icons.length; i++) {
-            this.icons[i].update();
+            if (this.icons[i].story <= this.storyFlag) {
+                this.icons[i].update();
+            }
         }
         for (let i = 0; i < this.programs.length; i++) {
             if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
@@ -748,10 +753,6 @@ class LevelScreen extends GameScreen {
         }
         else {
             this.player.standing = false;
-        }
-        let Glooole = this.icons[1].box();
-        if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new Level1test(this.game));
         }
     }
     closeProgram() {
@@ -790,6 +791,50 @@ class LevelScreen extends GameScreen {
     }
     sound() {
         let audio = new Audio('./assets/sounds/errorxp.mp3');
+        audio.play();
+    }
+    get story() {
+        return this.storyFlag;
+    }
+    set story(v) {
+        this.storyFlag = v;
+    }
+}
+class Level1 extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 0);
+        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
+        this.programs[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
+        this.programs[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 1);
+        this.programs[1].isOpen = false;
+        this.wizard = new Wizard(new Vector(this.game.canvas.width - 120, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 20, 1);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width - 380, this.game.canvas.height - 350), new Vector(0, 0), this.game.ctx, './assets/textbox.png', 1, 1, 0.5);
+    }
+    draw() {
+        this.updateOtherThings();
+        super.draw(this.game.ctx);
+        this.closeAds();
+        this.closeProgram();
+        this.clickedIcon();
+        this.storyCheck();
+    }
+    storyCheck() {
+        let player = this.player.box();
+        let wiz = this.wizard.box();
+        if (this.collides(player, wiz) && this.story < 1) {
+            this.story = this.story + 1;
+        }
+        let Glooole = this.icons[1].box();
+        if (this.collides(Glooole, player)) {
+            this.game.switchScreen(new Level2(this.game));
+        }
+    }
+    updateOtherThings() {
+        this.wizard.update();
+        if (this.story > 0) {
+            this.textbox.update();
+        }
     }
 }
 class Level2 extends LevelScreen {
@@ -806,6 +851,11 @@ class Level2 extends LevelScreen {
         this.closeAds();
         this.closeProgram();
         this.clickedIcon();
+    }
+}
+class LevelScreen2 extends LevelScreen {
+    constructor(game) {
+        super(game);
     }
 }
 class LoadingScreen extends GameScreen {
@@ -827,6 +877,7 @@ class Level1test extends GameScreen {
         this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 120, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 20, 1);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width - 380, this.game.canvas.height - 350), new Vector(0, 0), this.game.ctx, './assets/textbox.png', 1, 1, 0.5);
         this.storyFlag = 0;
         this.openPrograms = [];
         this.openPrograms[0] = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.5, 0);
@@ -835,7 +886,6 @@ class Level1test extends GameScreen {
         this.icons = [];
         this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/Gloole.png', 1, 1, 1.4);
-        this.textbox = new GameObject(new Vector(this.game.canvas.width - 380, this.game.canvas.height - 350), new Vector(0, 0), this.game.ctx, './assets/textbox.png', 1, 1, 0.5);
     }
     draw() {
         console.log(this.storyFlag);
