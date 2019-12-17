@@ -47,6 +47,8 @@ class LevelScreen extends GameScreen {
      *      can easily call the switchScreen() method if needed.
      */
     public adjust(game: Game) {
+
+        
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
@@ -84,6 +86,7 @@ class LevelScreen extends GameScreen {
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
+
        
     }
 
