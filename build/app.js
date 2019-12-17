@@ -719,14 +719,14 @@ class LevelScreen extends GameScreen {
     }
     draw(ctx) {
         this.id.update();
-        for (let i = 0; i < this.icons.length; i++) {
-            if (this.icons[i].story <= this.storyFlag) {
-                this.icons[i].update();
-            }
-        }
         for (let i = 0; i < this.programs.length; i++) {
             if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
                 this.programs[i].update();
+            }
+        }
+        for (let i = 0; i < this.icons.length; i++) {
+            if (this.icons[i].story <= this.storyFlag) {
+                this.icons[i].update();
             }
         }
         this.player.update();
@@ -802,6 +802,7 @@ class Level1 extends LevelScreen {
         super(game);
         this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 0);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
+        this.icons[2] = new Icon(new Vector(100, 60), new Vector(0, 0), this.game.ctx, './assets/icons/pijl.png', 1, 1, 1.4, 1);
         this.programs[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
         this.programs[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 1);
         this.programs[1].isOpen = false;
@@ -810,11 +811,11 @@ class Level1 extends LevelScreen {
     }
     draw() {
         this.updateOtherThings();
-        super.draw(this.game.ctx);
         this.closeAds();
         this.closeProgram();
         this.clickedIcon();
         this.storyCheck();
+        super.draw(this.game.ctx);
     }
     storyCheck() {
         let player = this.player.box();

@@ -41,17 +41,17 @@ class LevelScreen extends GameScreen {
      */
     public draw(ctx: CanvasRenderingContext2D) {
         this.id.update();
+        for (let i = 0; i < this.programs.length; i++) {
+            if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
+                this.programs[i].update();
+            }
+        }
         for (let i = 0; i < this.icons.length; i++) {
             if (this.icons[i].story <= this.storyFlag) {
                 this.icons[i].update();
             }
         }
 
-        for (let i = 0; i < this.programs.length; i++) {
-            if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
-                this.programs[i].update();
-            }
-        }
 
         this.player.update();
     }
