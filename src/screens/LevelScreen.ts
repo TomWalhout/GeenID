@@ -7,7 +7,7 @@
 class LevelScreen extends GameScreen {
 
     private player: Player;
-    private openPrograms: Array<Program>;
+    protected openPrograms: Array<Program>;
     private openAds: Array<Ad>
     private icons: Array<Icon>;
     private shouldSwitchToTitleScreen = false;
@@ -71,6 +71,7 @@ class LevelScreen extends GameScreen {
                 this.sound();
             }
         }
+
         for (let i = 0; i < this.openAds.length; i++) {
             if (this.openAds[i].isOpen) {
                 this.openAds[i].update();
@@ -78,7 +79,6 @@ class LevelScreen extends GameScreen {
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
-
     }
 
     public collide() {
@@ -95,6 +95,7 @@ class LevelScreen extends GameScreen {
                 }
             }
         });
+
         if (onground) {
             this.player.vel.y = 0;
             this.player.standing = true;
@@ -146,13 +147,15 @@ class LevelScreen extends GameScreen {
             this.openPrograms[1].isOpen
 
         }
+
         if (this.icons[2].clickedOn(userinput)) {
             this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0,0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
             this.openPrograms[2].isOpen
         }
     }
+
     public sound() {
         let audio = new Audio('./assets/sounds/errorxp.mp3');
-        //audio.play();
+        audio.play();
     }
 }
