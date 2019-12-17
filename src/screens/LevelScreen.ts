@@ -37,6 +37,7 @@ class LevelScreen extends GameScreen {
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
         this.openPrograms[1].hasAds = true;
+        this.enemy = [];
     }
 
     /**
@@ -47,11 +48,22 @@ class LevelScreen extends GameScreen {
      *      can easily call the switchScreen() method if needed.
      */
     public adjust(game: Game) {
-
+        if (this.enemy.length > 0) {
+            this.enemy[0].update();
+        }
+        for (let i = 0; i < this.enemy.length; i++) {
+            this.enemy[i].enemyMove(this.game.canvas);
+        }
         
         if (this.shouldSwitchToTitleScreen) {
             game.switchScreen(new TitleScreen(game));
         }
+    }
+
+    public spawnEnemy() {
+        this.enemy[0] = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(this.randomNumber(-4, 4), this.randomNumber(-2, 2)), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
+        // console.log('bla 2');
+        // console.log(this.enemy[0]);
     }
 
     /**
@@ -86,8 +98,6 @@ class LevelScreen extends GameScreen {
         }
         this.player.update();
         this.player.playerMove(this.game.canvas);
-
-       
     }
 
     public collide() {
@@ -111,7 +121,7 @@ class LevelScreen extends GameScreen {
                 let upperbox = [adBox[0], adBox[1], adBox[2], adBox[2] + 10];
                 if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
                     onground = true;
-                    ad.spawnEnemy(this);
+                    this.spawnEnemy();
                 }
             }
         });
