@@ -145,8 +145,9 @@ class LevelScreen extends GameScreen {
 
 
     }
+
     public sound() {
         let audio = new Audio('./assets/sounds/errorxp.mp3');
-        //audio.play();
+        audio.play();
     }
 }
