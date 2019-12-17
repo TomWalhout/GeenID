@@ -1,6 +1,6 @@
 /// <reference path="GameScreen.ts"/>
 
-class Level1 extends GameScreen {
+class Level1test extends GameScreen {
     /**
      *  Squary,
      * wizard,
@@ -16,7 +16,7 @@ class Level1 extends GameScreen {
     private icons: Array<Icon>;
     private storyFlag: number;
     private id: IDcard;
-    private textbox: any;
+    private textbox: GameObject;
 
     public constructor(game: Game) {
         super(game);
@@ -25,12 +25,13 @@ class Level1 extends GameScreen {
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 120, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 20, 1);
         this.storyFlag = 0;
         this.openPrograms = [];
-        this.openPrograms[0] = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.5);
-        this.openPrograms[1] = new Program(new Vector(300, 400), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms[0] = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.5, 0);
+        this.openPrograms[1] = new Program(new Vector(300, 400), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 1);
         this.openPrograms[1].isOpen = false;
         this.icons = [];
-        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
+        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/Gloole.png', 1, 1, 1.4);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width - 380, this.game.canvas.height - 350), new Vector(0, 0), this.game.ctx, './assets/textbox.png', 1, 1, 0.5);
     }
 
     public draw() {
@@ -45,8 +46,12 @@ class Level1 extends GameScreen {
                 this.icons[i].update();
             }
         }
+        if (this.storyFlag > 0) {
+            this.textbox.update();
+        }
         this.player.update();
     }
+
 
     public collide() {
         //Checks for story beat
@@ -90,22 +95,16 @@ class Level1 extends GameScreen {
             if (this.openPrograms[i].button) {
                 if (this.openPrograms[i].button.clickedOn(userinput)) {
                     this.openPrograms[i].isOpen = false;
-                    if (this.openPrograms[i].hasAds) {
-                        this.openAds.forEach(element => {
-                            element.isOpen = false;
-                            element.respawning = false;
-                        });
-                    }
                 }
             }
         }
 
         if (this.icons[0].clickedOn(userinput)) {
-            this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
+            this.openPrograms[0] = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.5, 0);
         }
 
         if (this.icons[1].clickedOn(userinput)) {
-            this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+            this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 1);
         }
     }
 }

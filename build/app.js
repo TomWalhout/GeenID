@@ -72,8 +72,8 @@ class Game {
             if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof BossScreen)) {
                 this.switchScreen(new BossScreen(this));
             }
-            if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof BossScreen)) {
-                this.switchScreen(new Level1(this));
+            if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level2)) {
+                this.switchScreen(new Level2(this));
             }
         };
         this.canvas = canvasId;
@@ -81,7 +81,7 @@ class Game {
         this.canvas.height = 722;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new LevelScreen(this);
+        this.currentScreen = new Level2(this);
         this.input = new UserInput();
         this.Lives = 5;
         this.loop();
@@ -300,8 +300,9 @@ class GameObject {
     }
 }
 class Program extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed, scale) {
+    constructor(pos, vel, ctx, path, frames, speed, scale, story) {
         super(pos, vel, ctx, path, frames, speed, scale);
+        this.story = story;
         this.open = true;
         this.ctx = ctx;
         this.ads = false;
@@ -333,6 +334,9 @@ class Program extends GameObject {
     set hasAds(v) {
         this.ads = v;
     }
+    get storyFlag() {
+        return this.story;
+    }
 }
 class CloseButton extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
@@ -342,7 +346,7 @@ class CloseButton extends GameObject {
 }
 class Ad extends Program {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
-        super(pos, vel, ctx, path, frames, speed, scale);
+        super(pos, vel, ctx, path, frames, speed, scale, 0);
         this.open = true;
         this.ctx = ctx;
         this.respawn = false;
@@ -701,7 +705,123 @@ class BossScreen extends GameScreen {
         audio.play();
     }
 }
-class Level1 extends GameScreen {
+class LevelScreen extends GameScreen {
+    constructor(game) {
+        super(game);
+        this.shouldSwitchToTitleScreen = false;
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
+        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
+        this.icons = [];
+        this.programs = [];
+        this.ads = [];
+        this.userinput = new UserInput();
+        this.storyFlag = 0;
+    }
+    draw(ctx) {
+        this.id.update();
+        for (let i = 0; i < this.icons.length; i++) {
+            this.icons[i].update();
+        }
+        for (let i = 0; i < this.programs.length; i++) {
+            if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
+                this.programs[i].update();
+            }
+        }
+        this.player.update();
+    }
+    collide() {
+        let player = this.player.box();
+        let playerbottom = [player[0], player[1], player[3], player[3] + 2];
+        let onground = false;
+        this.programs.forEach(program => {
+            if (program.isOpen) {
+                let programbox = program.box();
+                let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
+                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
+                    onground = true;
+                }
+            }
+        });
+        if (onground) {
+            this.player.vel.y = 0;
+            this.player.standing = true;
+        }
+        else {
+            this.player.standing = false;
+        }
+        let Glooole = this.icons[1].box();
+        if (this.collides(Glooole, player)) {
+            this.game.switchScreen(new Level1test(this.game));
+        }
+    }
+    closeProgram() {
+        for (let i = 0; i < this.programs.length; i++) {
+            if (this.programs[i].button) {
+                if (this.programs[i].button.clickedOn(this.userinput)) {
+                    this.programs[i].isOpen = false;
+                    if (this.programs[i].hasAds) {
+                        this.ads.forEach(element => {
+                            element.isOpen = false;
+                            element.respawning = false;
+                        });
+                    }
+                }
+            }
+        }
+    }
+    closeAds() {
+        for (let i = 0; i < this.ads.length; i++) {
+            if (this.ads[i].button) {
+                if (this.ads[i].button.clickedOn(this.userinput)) {
+                    this.ads.splice(i, 1);
+                }
+            }
+        }
+    }
+    clickedIcon() {
+        for (let i = 0; i < this.icons.length; i++) {
+            if (this.icons[i].clickedOn(this.userinput)) {
+                this.programs[i].isOpen = true;
+            }
+        }
+    }
+    listen(userinput) {
+        this.player.playerMove(this.game.canvas);
+    }
+    sound() {
+        let audio = new Audio('./assets/sounds/errorxp.mp3');
+    }
+}
+class Level2 extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
+        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
+        this.programs[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
+        this.programs[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 0);
+        this.programs[1].hasAds = true;
+    }
+    draw() {
+        super.draw(this.game.ctx);
+        this.closeAds();
+        this.closeProgram();
+        this.clickedIcon();
+    }
+}
+class LoadingScreen extends GameScreen {
+    constructor(game) {
+        super(game);
+    }
+    adjust(game) {
+        if (this.frameCount > 10) {
+            game.switchScreen(new StartScreen(this.game));
+        }
+    }
+    draw(ctx) {
+        this.writeTextToCanvas(ctx, "LOADING...", 140, this.center);
+    }
+}
+class Level1test extends GameScreen {
     constructor(game) {
         super(game);
         this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
@@ -709,12 +829,13 @@ class Level1 extends GameScreen {
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 120, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 20, 1);
         this.storyFlag = 0;
         this.openPrograms = [];
-        this.openPrograms[0] = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.5);
-        this.openPrograms[1] = new Program(new Vector(300, 400), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+        this.openPrograms[0] = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.5, 0);
+        this.openPrograms[1] = new Program(new Vector(300, 400), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 1);
         this.openPrograms[1].isOpen = false;
         this.icons = [];
-        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
+        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/Gloole.png', 1, 1, 1.4);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width - 380, this.game.canvas.height - 350), new Vector(0, 0), this.game.ctx, './assets/textbox.png', 1, 1, 0.5);
     }
     draw() {
         console.log(this.storyFlag);
@@ -727,6 +848,9 @@ class Level1 extends GameScreen {
                 }
                 this.icons[i].update();
             }
+        }
+        if (this.storyFlag > 0) {
+            this.textbox.update();
         }
         this.player.update();
     }
@@ -765,146 +889,15 @@ class Level1 extends GameScreen {
             if (this.openPrograms[i].button) {
                 if (this.openPrograms[i].button.clickedOn(userinput)) {
                     this.openPrograms[i].isOpen = false;
-                    if (this.openPrograms[i].hasAds) {
-                        this.openAds.forEach(element => {
-                            element.isOpen = false;
-                            element.respawning = false;
-                        });
-                    }
                 }
             }
         }
         if (this.icons[0].clickedOn(userinput)) {
-            this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
+            this.openPrograms[0] = new Program(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.5, 0);
         }
         if (this.icons[1].clickedOn(userinput)) {
-            this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
+            this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 1);
         }
-    }
-}
-class LevelScreen extends GameScreen {
-    constructor(game) {
-        super(game);
-        this.shouldSwitchToTitleScreen = false;
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
-        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
-        this.icons = [];
-        this.icons[2] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/placeholder-thispc.png', 1, 1, 1.4);
-        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
-        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
-        this.openAds = [];
-        this.openPrograms = [];
-        this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
-        this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-        this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
-        this.openPrograms[1].hasAds = true;
-    }
-    adjust(game) {
-        if (this.shouldSwitchToTitleScreen) {
-            game.switchScreen(new TitleScreen(game));
-        }
-    }
-    draw(ctx) {
-        for (let i = 0; i < this.icons.length; i++) {
-            this.icons[i].update();
-        }
-        for (let i = 0; i < this.openPrograms.length; i++) {
-            if (this.openPrograms[i].isOpen) {
-                this.openPrograms[i].update();
-            }
-        }
-        this.id.update();
-        if (this.openAds.length < 5) {
-            if (this.randomRoundedNumber(1, 100) == 1) {
-                this.openAds.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2));
-                this.sound();
-            }
-        }
-        for (let i = 0; i < this.openAds.length; i++) {
-            if (this.openAds[i].isOpen) {
-                this.openAds[i].update();
-            }
-        }
-        this.player.update();
-        this.player.playerMove(this.game.canvas);
-    }
-    collide() {
-        let player = this.player.box();
-        let playerbottom = [player[0], player[1], player[3], player[3] + 2];
-        let onground = false;
-        this.openPrograms.forEach(program => {
-            if (program.isOpen) {
-                let programbox = program.box();
-                let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
-                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
-                    onground = true;
-                }
-            }
-        });
-        if (onground) {
-            this.player.vel.y = 0;
-            this.player.standing = true;
-        }
-        else {
-            this.player.standing = false;
-        }
-        let Glooole = this.icons[1].box();
-        if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new BossScreen(this.game));
-        }
-    }
-    listen(userinput) {
-        for (let i = 0; i < this.openPrograms.length; i++) {
-            if (this.openPrograms[i].button) {
-                if (this.openPrograms[i].button.clickedOn(userinput)) {
-                    this.openPrograms[i].isOpen = false;
-                    if (this.openPrograms[i].hasAds) {
-                        this.openAds.forEach(element => {
-                            element.isOpen = false;
-                            element.respawning = false;
-                        });
-                    }
-                }
-            }
-        }
-        for (let i = 0; i < this.openAds.length; i++) {
-            if (this.openAds[i].button) {
-                if (this.openAds[i].button.clickedOn(userinput)) {
-                    this.openAds.splice(i, 1);
-                }
-            }
-        }
-        if (this.icons[0].clickedOn(userinput)) {
-            this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
-            this.openPrograms[0].isOpen;
-        }
-        if (this.icons[1].clickedOn(userinput)) {
-            this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
-            this.openAds.forEach(element => {
-                element.respawning = true;
-            });
-            this.openPrograms[1].isOpen;
-        }
-        if (this.icons[2].clickedOn(userinput)) {
-            this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
-            this.openPrograms[2].isOpen;
-        }
-    }
-    sound() {
-        let audio = new Audio('./assets/sounds/errorxp.mp3');
-    }
-}
-class LoadingScreen extends GameScreen {
-    constructor(game) {
-        super(game);
-    }
-    adjust(game) {
-        if (this.frameCount > 10) {
-            game.switchScreen(new StartScreen(this.game));
-        }
-    }
-    draw(ctx) {
-        this.writeTextToCanvas(ctx, "LOADING...", 140, this.center);
     }
 }
 class StartScreen extends GameScreen {
