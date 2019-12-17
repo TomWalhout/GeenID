@@ -66,11 +66,11 @@ class Game {
             this.currentScreen.listen(this.input);
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
-            if (this.input.isKeyDown(UserInput.KEY_1) && !(this.currentScreen instanceof LevelScreen)) {
-                this.switchScreen(new LevelScreen(this));
+            if (this.input.isKeyDown(UserInput.KEY_1) && !(this.currentScreen instanceof Level1)) {
+                this.switchScreen(new Level1(this));
             }
-            if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof BossScreen)) {
-                this.switchScreen(new BossScreen(this));
+            if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof Level2)) {
+                this.switchScreen(new Level2(this));
             }
             if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level2)) {
                 this.switchScreen(new Level2(this));
@@ -803,7 +803,7 @@ class LevelScreen extends GameScreen {
 class Level1 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 0);
+        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 0);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
         this.programs[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
         this.programs[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 1);
@@ -840,7 +840,7 @@ class Level1 extends LevelScreen {
 class Level2 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
+        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
         this.programs[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
         this.programs[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 0);

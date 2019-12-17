@@ -48,11 +48,11 @@ class Game {
         this.currentScreen.adjust(this);
 
         // switch screen
-        if (this.input.isKeyDown(UserInput.KEY_1) && !(this.currentScreen instanceof LevelScreen)) {
-            this.switchScreen(new LevelScreen(this))
+        if (this.input.isKeyDown(UserInput.KEY_1) && !(this.currentScreen instanceof Level1)) {
+            this.switchScreen(new Level1(this))
         }
-        if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof BossScreen)) {
-            this.switchScreen(new BossScreen(this))
+        if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof Level2)) {
+            this.switchScreen(new Level2(this))
         }
         if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level2)) {
             this.switchScreen(new Level2(this))
