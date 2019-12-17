@@ -10,7 +10,7 @@ class IDcard extends GameObject {
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, game: Game) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
-        this.pos.x -= 300;
+        this.pos.x -= 226;
         this.prevlives = 5;
         this.game = game;
         this.lives = this.game.lives;
@@ -22,7 +22,7 @@ class IDcard extends GameObject {
         if (this.lives < this.prevlives) {
             console.log(this.lives);
             this.prevlives--;
-            this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 0.5);
+            this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 1.5);
         }
         if (this.lives <= 0) {
             console.log("you dead mah boi");

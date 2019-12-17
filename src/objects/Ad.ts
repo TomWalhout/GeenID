@@ -17,15 +17,6 @@ class Ad extends Program {
     }
 
 
-    protected randomNumber(min: number, max: number): number {
-        return Math.random() * (max - min) + min;
-    }
-
-    protected randomRoundedNumber(min: number, max: number): number {
-        return Math.round(this.randomNumber(min, max));
-    }
-
-
     public get respawning(): boolean {
         return this.respawn;
     }

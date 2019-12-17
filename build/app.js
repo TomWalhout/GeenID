@@ -345,12 +345,6 @@ class Ad extends Program {
     }
     spawnEnemy() {
     }
-    randomNumber(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-    randomRoundedNumber(min, max) {
-        return Math.round(this.randomNumber(min, max));
-    }
     get respawning() {
         return this.respawn;
     }
@@ -411,7 +405,7 @@ class Enemy extends GameObject {
             this.pos.x < 0) {
             this.vel.x = -this.vel.x;
         }
-        if (this.pos.y + this.animation.imageWidth >= canvas.height ||
+        if (this.pos.y + this.animation.imageHeight >= canvas.height ||
             this.pos.y < 0) {
             this.vel.y = -this.vel.y;
         }
@@ -422,7 +416,7 @@ class IDcard extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, game) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
-        this.pos.x -= 300;
+        this.pos.x -= 226;
         this.prevlives = 5;
         this.game = game;
         this.lives = this.game.lives;
@@ -432,7 +426,7 @@ class IDcard extends GameObject {
         if (this.lives < this.prevlives) {
             console.log(this.lives);
             this.prevlives--;
-            this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 0.5);
+            this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 1.5);
         }
         if (this.lives <= 0) {
             console.log("you dead mah boi");
@@ -621,7 +615,7 @@ class BossScreen extends GameScreen {
         for (let i = 0; i < 8; i++) {
             this.enemy[i] = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(this.randomNumber(-4, 4), this.randomNumber(-2, 2)), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
         }
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 0.5, game);
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 1.5, game);
         this.enemyLives = 100;
     }
     adjust(game) {
@@ -702,13 +696,15 @@ class LevelScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 0.5, game);
+        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, './assets/Squary.png', 1, 1, 1);
         this.icons = [];
-        this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 0.5);
-        this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/mord.png', 1, 1, 0.5);
+        this.icons[2] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/placeholder-thispc.png', 1, 1, 1.4);
+        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
+        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
         this.openAds = [];
         this.openPrograms = [];
+        this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
         this.openPrograms[1].hasAds = true;
@@ -792,17 +788,22 @@ class LevelScreen extends GameScreen {
         }
         if (this.icons[0].clickedOn(userinput)) {
             this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
+            this.openPrograms[0].isOpen;
         }
         if (this.icons[1].clickedOn(userinput)) {
             this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
             this.openAds.forEach(element => {
                 element.respawning = true;
             });
+            this.openPrograms[1].isOpen;
+        }
+        if (this.icons[2].clickedOn(userinput)) {
+            this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
+            this.openPrograms[2].isOpen;
         }
     }
     sound() {
         let audio = new Audio('./assets/sounds/errorxp.mp3');
-        audio.play();
     }
 }
 class LoadingScreen extends GameScreen {
