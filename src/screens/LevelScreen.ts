@@ -41,29 +41,17 @@ class LevelScreen extends GameScreen {
      */
     public draw(ctx: CanvasRenderingContext2D) {
         this.id.update();
+        for (let i = 0; i < this.programs.length; i++) {
+            if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
+                this.programs[i].update();
+            }
+        }
         for (let i = 0; i < this.icons.length; i++) {
             if (this.icons[i].story <= this.storyFlag) {
                 this.icons[i].update();
             }
         }
 
-        for (let i = 0; i < this.programs.length; i++) {
-            if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
-                this.programs[i].update();
-            }
-        }
-
-        // if (this.ads.length < 5) { // max amount of ads
-        //     if (this.randomRoundedNumber(1, 100) == 1) { // add chance
-        //         this.ads.push(new Ad(new Vector(this.randomNumber(400, 1100), this.randomNumber(300, 750)), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 2));
-        //         this.sound();
-        //     }
-        // }
-        // for (let i = 0; i < this.openAds.length; i++) {
-        //     if (this.openAds[i].isOpen) {
-        //         this.openAds[i].update();
-        //     }
-        // }
 
         this.player.update();
     }
