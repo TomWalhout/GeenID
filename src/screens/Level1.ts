@@ -1,6 +1,6 @@
 /// <reference path="GameScreen.ts"/>
 
-class Level1test extends GameScreen {
+class Level1 extends GameScreen {
     /**
      *  Squary,
      * wizard,
@@ -31,6 +31,7 @@ class Level1test extends GameScreen {
         this.icons = [];
         this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/Gloole.png', 1, 1, 1.4);
+        this.icons[2] = new Icon(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/icons/pijl.png', 1, 1, 0.8);
         this.textbox = new GameObject(new Vector(this.game.canvas.width - 380, this.game.canvas.height - 350), new Vector(0, 0), this.game.ctx, './assets/textbox.png', 1, 1, 0.5);
     }
 
@@ -48,6 +49,7 @@ class Level1test extends GameScreen {
         }
         if (this.storyFlag > 0) {
             this.textbox.update();
+            this.icons[2].update();
         }
         this.player.update();
     }
@@ -83,7 +85,7 @@ class Level1test extends GameScreen {
         // Glooole collision
         let Glooole = this.icons[1].box(); // Glooole
         if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new LevelScreen(this.game))
+            this.game.switchScreen(new Level2(this.game))
         }
     }
 

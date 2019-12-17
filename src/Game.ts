@@ -16,7 +16,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new Level2(this);
+        this.currentScreen = new Level1(this);
         this.input = new UserInput();
         this.Lives = 5;
         this.loop();

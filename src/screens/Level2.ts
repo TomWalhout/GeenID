@@ -21,6 +21,16 @@ class Level2 extends LevelScreen {
         this.closeAds();
         this.closeProgram();
         this.clickedIcon();
+        this.nextLevel();
     }
 
+    public nextLevel() {
+        let player = this.player.box();
+
+        // Glooole collision
+        let Glooole = this.icons[1].box(); // Glooole
+        if (this.collides(Glooole, player)) {
+            this.game.switchScreen(new Level1(this.game)); // WIP => next level
+        }
+    }
 }
