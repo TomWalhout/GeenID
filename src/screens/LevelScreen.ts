@@ -29,7 +29,7 @@ class LevelScreen extends GameScreen {
         this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4)
         this.openAds = [];
         this.openPrograms = [];
-        this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0,0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
+        this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
         this.openPrograms[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7);
         this.openPrograms[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7);
         this.openPrograms[1].hasAds = true;
@@ -105,9 +105,7 @@ class LevelScreen extends GameScreen {
 
         // Glooole collision
         let Glooole = this.icons[1].box(); // Glooole
-        let GloooleBox = [Glooole[0], Glooole[1], Glooole[2], Glooole[3]];
-        let playerBox = [player[0], player[1], player[2], player[3]];
-        if (this.collides(GloooleBox, playerBox)) {
+        if (this.collides(Glooole, player)) {
             this.game.switchScreen(new BossScreen(this.game))
         }
     }
@@ -152,7 +150,7 @@ class LevelScreen extends GameScreen {
 
         }
         if (this.icons[2].clickedOn(userinput)) {
-            this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0,0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
+            this.openPrograms[2] = new Program(new Vector(900, 50), new Vector(0, 0), this.game.ctx, './assets/programs/MINECRAFTEXE.png', 6, 50, 1);
             this.openPrograms[2].isOpen
         }
     }
