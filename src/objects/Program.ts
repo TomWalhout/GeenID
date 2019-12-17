@@ -7,7 +7,7 @@ class Program extends GameObject {
     private ads: boolean;
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, story: number) {
         super(pos, vel, ctx, path, frames, speed, scale, story);
-        this.open = true;
+        this.open = false;
         this.ctx = ctx;
         this.ads = false;
     }

@@ -72,8 +72,8 @@ class Game {
             if (this.input.isKeyDown(UserInput.KEY_2) && !(this.currentScreen instanceof Level2)) {
                 this.switchScreen(new Level2(this));
             }
-            if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level2)) {
-                this.switchScreen(new Level2(this));
+            if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level3)) {
+                this.switchScreen(new Level3(this));
             }
         };
         this.canvas = canvasId;
@@ -306,7 +306,7 @@ class GameObject {
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, story) {
         super(pos, vel, ctx, path, frames, speed, scale, story);
-        this.open = true;
+        this.open = false;
         this.ctx = ctx;
         this.ads = false;
     }
@@ -862,10 +862,11 @@ class Level1Update extends LevelScreen {
 class Level2 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
+        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
-        this.programs[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
-        this.programs[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 0);
+        this.icons[2] = new Icon(new Vector(1450, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 0.3);
+        this.programs[0] = new Program(new Vector(100, 400), new Vector(0, 0), this.game.ctx, './assets/windows/DEZEPC.png', 1, 1, 0.5, 0);
+        this.programs[1] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
         this.programs[1].hasAds = true;
     }
     draw() {
@@ -877,9 +878,30 @@ class Level2 extends LevelScreen {
     }
     nextLevel() {
         let player = this.player.box();
-        let Glooole = this.icons[1].box();
-        if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new Level1(this.game));
+        let file = this.icons[2].box();
+        if (this.collides(file, player)) {
+            this.game.switchScreen(new Level3(this.game));
+        }
+    }
+}
+class Level3 extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/Minecraft.png', 1, 1, 0.4, 0);
+        this.programs[0] = new Program(new Vector(100, 400), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 0.5, 0);
+    }
+    draw() {
+        super.draw(this.game.ctx);
+        this.closeAds();
+        this.closeProgram();
+        this.clickedIcon();
+        this.nextLevel();
+    }
+    nextLevel() {
+        let player = this.player.box();
+        let file = this.icons[0].box();
+        if (this.collides(file, player)) {
+            this.game.switchScreen(new Level3(this.game));
         }
     }
 }
