@@ -1,7 +1,8 @@
 /// <reference path="./Program.ts"/>
 
 class Ad extends Program {
-    private enemy: Array<Enemy>;
+
+
     private respawn: boolean;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
@@ -20,13 +21,7 @@ class Ad extends Program {
     public set respawning(v: boolean) {
         this.respawn = v;
     }
-    
-        /**
-     * Renders a random number between min and max
-     * @param {number} min - minimal time
-     * @param {number} max - maximal time
-     */
-    public randomNumber(min: number, max: number): number {
-        return Math.round(Math.random() * (max - min) + min);
-    }
+
+
+
 }
