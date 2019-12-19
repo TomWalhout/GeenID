@@ -11,16 +11,12 @@ class Ad extends Program {
         this.open = true;
         this.ctx = ctx;
         this.respawn = false;
+           
     }
-
-    public spawnEnemy() {
-    }
-
 
     public get respawning(): boolean {
         return this.respawn;
     }
-
 
     public set respawning(v: boolean) {
         this.respawn = v;

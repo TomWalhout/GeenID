@@ -8,6 +8,7 @@ class Game {
     private currentScreen: GameScreen;
     public Lives: number;
     private squaryString: string;
+    // private playerName: string;
     private squaryBody: string;
 
     public constructor(canvasId: HTMLCanvasElement) {
@@ -122,6 +123,14 @@ class Game {
         return this.input;
     }
 
+    // public get playername() : string {
+    //     return this.playerName;
+    // }
+
+    
+    // public set playername(v : string) {
+    //     this.playerName = v;
+    // }
 
     public get bodySquary(): string {
         return this.squaryBody;

@@ -131,6 +131,4 @@ class LevelScreen extends GameScreen {
     public set story(v: number) {
         this.storyFlag = v;
     }
-
-
 }
