@@ -12,6 +12,7 @@ class Player extends GameObject {
         //Disable this next line for selection
         // path = "./assets/squary.png";
         super(pos, vel, ctx, path, frames, speed, scale)
+        this.faceAnimation = new Animate(ctx, body, 1, 1, this, 1);
         this.UserInput = new UserInput;
         this.hasSword = false;
         this.scale = scale
@@ -19,10 +20,10 @@ class Player extends GameObject {
     }
 
     public update() {
-        super.update();
         if (this.faceAnimation) {
             this.faceAnimation.draw();
         }
+        super.update();
     }
     public playerMove(canvas: HTMLCanvasElement) {
 
