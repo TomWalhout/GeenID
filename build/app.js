@@ -524,6 +524,15 @@ class Player extends GameObject {
         this.standsOnGround = value;
     }
 }
+class SearchBar extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale, 0);
+        this.ctx = ctx;
+    }
+    update() {
+        super.update();
+    }
+}
 class Sword extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -735,6 +744,7 @@ class LevelScreen extends GameScreen {
         this.shouldSwitchToTitleScreen = false;
         this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, this.game.squary, 1, 1, 1, this.game.bodySquary);
+        document.body.style.backgroundImage = "url('./assets/xp-bg.png')";
         this.icons = [];
         this.programs = [];
         this.ads = [];
@@ -768,7 +778,7 @@ class LevelScreen extends GameScreen {
                 }
             }
         });
-        if (onground) {
+        if (onground || this.stand) {
             this.player.vel.y = 0;
             this.player.standing = true;
         }
@@ -819,6 +829,9 @@ class LevelScreen extends GameScreen {
     }
     set story(v) {
         this.storyFlag = v;
+    }
+    set Stand(v) {
+        this.stand = v;
     }
 }
 class Level1 extends LevelScreen {
@@ -912,14 +925,30 @@ class Level2 extends LevelScreen {
 class Level3 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/Minecraft.png', 1, 1, 0.4, 0);
-        this.programs[0] = new Program(new Vector(300, 100), new Vector(0, 0), this.game.ctx, './assets/windows/MINECRAFT.png', 1, 1, 1, 0);
+        this.searchBar = new SearchBar(new Vector(343, 518), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1);
+        document.body.style.backgroundImage = "url('./assets/programs/Glooole.png')";
     }
     draw() {
         super.draw(this.game.ctx);
-        this.closeAds();
-        this.closeProgram();
-        this.clickedIcon();
+        this.searchBarCollision();
+        this.collide();
+    }
+    searchBarCollision() {
+        if (this.searchBar) {
+            this.searchBar.update();
+        }
+        let player = this.player.box();
+        let playerbottom = [player[0], player[1], player[3], player[3] + 2];
+        if (this.searchBar) {
+            let searchBar = this.searchBar.box();
+            let searchBarTop = [searchBar[0], searchBar[1], searchBar[2], searchBar[2] + 10];
+            if (this.collides(playerbottom, searchBarTop) && this.player.vel.y > 0 && !this.player.standing) {
+                this.Stand = true;
+            }
+            else {
+                this.Stand = false;
+            }
+        }
     }
 }
 class SelectionScreen extends GameScreen {
