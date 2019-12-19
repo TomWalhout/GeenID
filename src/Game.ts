@@ -8,7 +8,7 @@ class Game {
     private currentScreen: GameScreen;
     public Lives: number;
     private squaryString: string;
-    // private playerName: string;
+    private playerInfo: Array<string>;
     private squaryBody: string;
 
     public constructor(canvasId: HTMLCanvasElement) {
@@ -22,6 +22,7 @@ class Game {
         this.currentScreen = new SelectionScreen(this); // Level the game starts on
         this.input = new UserInput();
         this.Lives = 5;
+        this.playerInfo = [];
         this.loop();
 
     }
@@ -123,12 +124,11 @@ class Game {
         return this.input;
     }
 
-    // public get playername() : string {
-    //     return this.playerName;
-    // }
+    public get playerinfo(): Array<string> {
+        return this.playerInfo;
+    }
 
-    
-    // public set playername(v : string) {
+    // public set playername(v: string) {
     //     this.playerName = v;
     // }
 
