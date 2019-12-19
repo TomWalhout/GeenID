@@ -367,8 +367,6 @@ class Ad extends Program {
         this.ctx = ctx;
         this.respawn = false;
     }
-    spawnEnemy() {
-    }
     get respawning() {
         return this.respawn;
     }

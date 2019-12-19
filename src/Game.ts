@@ -8,6 +8,7 @@ class Game {
     private currentScreen: GameScreen;
     public Lives: number;
     private squaryString: string;
+    // private playerName: string;
 
     public constructor(canvasId: HTMLCanvasElement) {
         // Construct all of the canvas
@@ -120,6 +121,15 @@ class Game {
     public get userInput(): UserInput {
         return this.input;
     }
+
+    // public get playername() : string {
+    //     return this.playerName;
+    // }
+
+    
+    // public set playername(v : string) {
+    //     this.playerName = v;
+    // }
 }
 
 // This will get an HTML element. I cast this element in de appropriate type using <>

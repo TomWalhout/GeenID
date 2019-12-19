@@ -5,8 +5,7 @@ class Level1 extends LevelScreen {
     // PLAYER, PLATFORMS, ICONS SHOULD NOT BE DECLARED HERE
     private wizard: Wizard;
     private textbox: GameObject;
-
-
+  
     /**
      * Contructes the second level
      * 
@@ -23,7 +22,7 @@ class Level1 extends LevelScreen {
         this.programs[1].isOpen = false;
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 120, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(this.game.canvas.width - 380, this.game.canvas.height - 260), new Vector(0, 0), this.game.ctx, './assets/textbox.png', 1, 1, 2.5);
-    }
+       }
 
     public draw() {
         this.updateOtherThings();
@@ -51,11 +50,21 @@ class Level1 extends LevelScreen {
 
     private updateOtherThings() {
         this.wizard.update();
-
+        // this.writeTextToCanvas(this.game.ctx, this.game.playername, 10, new Vector(900, 100), "center", "black")
         // if we've reached the wizard
         if (this.story > 0) {
             this.textbox.update();
         }
     }
 
+    // public windowPrompt() {
+    //     let person = prompt("Please enter your name", "Harry Potter");
+    //     let txt= "";
+    //     if (person == null || person == "") {
+    //         txt = "User cancelled the prompt.";
+    //     } else {
+    //         txt = "Hello " + person + "! How are you today?";
+    //     }
+    //     this.game.playername = person;
+    // }
 }
