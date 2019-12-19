@@ -6,12 +6,14 @@ class GameObject {
     private exists: boolean;
     protected scale: number;
     private Story: number;
+    private imgpath: string;
     constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path?: string, frames: number = 1, speed: number = 1, scale: number = 1, story: number = 0) {
         this.position = pos;
         this.velocity = vel;
         this.exists = true;
         this.scale = scale;
         this.Story = story;
+        this.imgpath = path;
         if (path) {
             this.animation = new Animate(ctx, path, frames, speed, this, scale);
         } else {
@@ -101,4 +103,10 @@ class GameObject {
     public set exist(v: boolean) {
         this.exists = v;
     }
+
+
+    public get path(): string {
+        return this.imgpath;
+    }
+
 }
