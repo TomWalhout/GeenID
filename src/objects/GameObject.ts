@@ -109,4 +109,8 @@ class GameObject {
         return this.imgpath;
     }
 
+    public set mirror(v: boolean) {
+        this.animation.mirrored = v;
+    }
+
 }

@@ -321,6 +321,9 @@ class GameObject {
     get path() {
         return this.imgpath;
     }
+    set mirror(v) {
+        this.animation.mirrored = v;
+    }
 }
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, story) {
@@ -954,7 +957,7 @@ class Level3 extends LevelScreen {
 class SelectionScreen extends GameScreen {
     constructor(game) {
         super(game);
-        let pos = new Vector(this.game.canvas.width / 2 - 20, this.game.canvas.height / 2 + 50);
+        let pos = new Vector(this.game.canvas.width / 2 - 20, this.game.canvas.height / 2);
         let vel = new Vector(0, 0);
         this.counter = 0;
         this.bodyCounter = 0;
@@ -972,40 +975,78 @@ class SelectionScreen extends GameScreen {
         this.FaceOptions[3] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyPink.png", 1, 1, 1, 0);
         this.FaceOptions[4] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyRed.png", 1, 1, 1, 0);
         this.FaceOptions[5] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyYellow.png", 1, 1, 1, 0);
-        this.toggle = false;
-        this.bodytoggle = false;
+        this.toggle1 = false;
+        this.toggle2 = false;
+        this.bodytoggle1 = false;
+        this.bodytoggle2 = false;
+        this.knop = [];
+        this.knop[0] = new GameObject(new Vector(this.game.canvas.width / 2 - 100, this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[2] = new GameObject(new Vector(this.game.canvas.width / 2 - 100, this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[1] = new GameObject(new Vector(this.game.canvas.width / 2 + 100, this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[3] = new GameObject(new Vector(this.game.canvas.width / 2 + 100, this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[1].mirror = true;
+        this.knop[3].mirror = true;
     }
     draw() {
-        let text = "Hoi ik ben Squary, ik ben vergeten hoe ik eruitzie!!!";
-        this.writeTextToCanvas(this.game.ctx, text, 69, new Vector(this.game.canvas.width / 2, 100), "center", "#FF0000");
-        text = "Kun jij mij helpen?";
-        this.writeTextToCanvas(this.game.ctx, text, 60, new Vector(this.game.canvas.width / 2, 200), "center", "#FF0000");
+        let text = "Kies je speler";
+        this.writeTextToCanvas(this.game.ctx, text, 69, new Vector(this.game.canvas.width / 2, 200), "center", "#FF0000");
+        text = "Druk op enter om te beginnen";
+        this.writeTextToCanvas(this.game.ctx, text, 60, new Vector(this.game.canvas.width / 2, 600), "center", "#FF0000");
         this.BodyOptions[this.bodyCounter].update();
         this.FaceOptions[this.counter].update();
-        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER) && !this.toggle) {
-            this.toggle = true;
+        this.drawButtons();
+        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
+            this.game.squary = this.FaceOptions[this.counter].path;
+            this.game.bodySquary = this.BodyOptions[this.bodyCounter].path;
+            this.game.switchScreen(new Level1(this.game));
+        }
+    }
+    drawButtons() {
+        this.knop.forEach(e => {
+            e.update();
+            if (e.clickedOn(this.game.userInput)) {
+                console.log("orgjkoiernjag");
+            }
+        });
+        if (this.knop[0].clickedOn(this.game.userInput) && !this.toggle1) {
+            this.toggle1 = true;
             this.counter++;
             if (this.counter >= this.FaceOptions.length) {
                 this.counter = 0;
             }
         }
-        if (!this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
-            this.toggle = false;
+        else if (this.knop[1].clickedOn(this.game.userInput) && !this.toggle2) {
+            this.toggle2 = true;
+            this.counter--;
+            if (this.counter < 0) {
+                this.counter = this.FaceOptions.length - 1;
+            }
         }
-        if (this.game.userInput.isKeyDown(UserInput.KEY_S) && !this.bodytoggle) {
-            this.bodytoggle = true;
+        if (!this.knop[0].clickedOn(this.game.userInput)) {
+            this.toggle1 = false;
+        }
+        if (!this.knop[1].clickedOn(this.game.userInput)) {
+            this.toggle2 = false;
+        }
+        if (!this.knop[2].clickedOn(this.game.userInput)) {
+            this.bodytoggle1 = false;
+        }
+        if (!this.knop[3].clickedOn(this.game.userInput)) {
+            this.bodytoggle2 = false;
+        }
+        if (this.knop[2].clickedOn(this.game.userInput) && !this.bodytoggle1) {
+            this.bodytoggle1 = true;
             this.bodyCounter++;
             if (this.bodyCounter >= this.BodyOptions.length) {
                 this.bodyCounter = 0;
             }
         }
-        if (!this.game.userInput.isKeyDown(UserInput.KEY_S)) {
-            this.bodytoggle = false;
-        }
-        if (this.game.userInput.isKeyDown(UserInput.KEY_ESC)) {
-            this.game.squary = this.FaceOptions[this.counter].path;
-            this.game.bodySquary = this.BodyOptions[this.bodyCounter].path;
-            this.game.switchScreen(new Level1(this.game));
+        if (this.knop[3].clickedOn(this.game.userInput) && !this.bodytoggle2) {
+            this.bodytoggle2 = true;
+            this.bodyCounter++;
+            if (this.bodyCounter >= this.BodyOptions.length) {
+                this.bodyCounter = 0;
+            }
         }
     }
 }
