@@ -3,6 +3,7 @@
 class SelectionScreen extends GameScreen {
 
     private FaceOptions: Array<GameObject>;
+    private BodyOptions: Array<GameObject>;
     private counter: number;
     private toggle: boolean;
     /**
@@ -15,11 +16,21 @@ class SelectionScreen extends GameScreen {
         let pos = new Vector(this.game.canvas.width / 2 - 20, this.game.canvas.height / 2 + 50);
         let vel = new Vector(0, 0);
         this.counter = 0;
+        this.BodyOptions = []
+        this.BodyOptions[0] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryBlue.png", 1, 1, 1, 0);
+        this.BodyOptions[1] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squayGreen.png", 1, 1, 1, 0);
+        this.BodyOptions[2] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryPink.png", 1, 1, 1, 0);
+        this.BodyOptions[3] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryRainbow.png", 1, 1, 1, 0);
+        this.BodyOptions[4] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryRed.png", 1, 1, 1, 0);
+        this.BodyOptions[5] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryYellow.png", 1, 1, 1, 0);
         this.FaceOptions = [];
-        this.FaceOptions[0] = new GameObject(pos, vel, this.game.ctx, "./assets/Squary.png", 1, 1, 1, 0);
-        this.FaceOptions[1] = new GameObject(pos, vel, this.game.ctx, "./assets/SquaryHurt.png", 1, 1, 1, 0);
-        this.FaceOptions[2] = new GameObject(pos, vel, this.game.ctx, "./assets/SquaryHurtPixels.png", 1, 1, 1, 0);
-        this.FaceOptions[3] = new GameObject(pos, vel, this.game.ctx, "./assets/SquaryHurtPixels2.png", 1, 1, 1, 0);
+        this.FaceOptions[0] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyBlue.png", 1, 1, 1, 0);
+        this.FaceOptions[1] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyGreen.png", 1, 1, 1, 0);
+        this.FaceOptions[2] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyGrey.png", 1, 1, 1, 0);
+        this.FaceOptions[3] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyPink.png", 1, 1, 1, 0);
+        this.FaceOptions[4] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyRed.png", 1, 1, 1, 0);
+        this.FaceOptions[5] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyYellow.png", 1, 1, 1, 0);
+        this.FaceOptions[6] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyRainbow.png", 1, 1, 1, 0);
         this.toggle = false;
     }
 

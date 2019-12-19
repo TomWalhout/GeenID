@@ -6,17 +6,25 @@ class Player extends GameObject {
     public hasSword: boolean;
     protected scale: number;
     protected standsOnGround: boolean;
+    private faceAnimation: Animate;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
         //Disable this next line for selection
         // path = "./assets/squary.png";
         super(pos, vel, ctx, path, frames, speed, scale)
+        // this.faceAnimation = new Animate(ctx,)
         this.UserInput = new UserInput;
         this.hasSword = false;
         this.scale = scale
         this.standsOnGround = false;
     }
 
+    public update() {
+        super.update();
+        if (this.faceAnimation) {
+            this.faceAnimation.draw();
+        }
+    }
     public playerMove(canvas: HTMLCanvasElement) {
 
         // Walk
