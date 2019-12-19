@@ -118,6 +118,12 @@ class Game {
     get userInput() {
         return this.input;
     }
+    get bodySquary() {
+        return this.squaryBody;
+    }
+    set bodySquary(v) {
+        this.squaryBody = v;
+    }
 }
 let init = function () {
     const game = new Game(document.getElementById("canvas"));
@@ -465,13 +471,19 @@ class IDcard extends GameObject {
 class Icon extends GameObject {
 }
 class Player extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed, scale) {
-        path = "./assets/squary.png";
+    constructor(pos, vel, ctx, path, frames, speed, scale, body) {
         super(pos, vel, ctx, path, frames, speed, scale);
+        this.faceAnimation = new Animate(ctx, body, 1, 1, this, 1);
         this.UserInput = new UserInput;
         this.hasSword = false;
         this.scale = scale;
         this.standsOnGround = false;
+    }
+    update() {
+        if (this.faceAnimation) {
+            this.faceAnimation.draw();
+        }
+        super.update();
     }
     playerMove(canvas) {
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
@@ -637,7 +649,7 @@ class BossScreen extends GameScreen {
         super(game);
         this.shouldSwitchToTitleScreen = false;
         this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
-        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1);
+        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1, this.game.bodySquary);
         this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
         this.enemy = [];
         for (let i = 0; i < 8; i++) {
@@ -722,7 +734,7 @@ class LevelScreen extends GameScreen {
         super(game);
         this.shouldSwitchToTitleScreen = false;
         this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
-        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, this.game.squary, 1, 1, 1);
+        this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, this.game.squary, 1, 1, 1, this.game.bodySquary);
         this.icons = [];
         this.programs = [];
         this.ads = [];
@@ -916,26 +928,54 @@ class SelectionScreen extends GameScreen {
         let pos = new Vector(this.game.canvas.width / 2 - 20, this.game.canvas.height / 2 + 50);
         let vel = new Vector(0, 0);
         this.counter = 0;
+        this.bodyCounter = 0;
+        this.BodyOptions = [];
+        this.BodyOptions[0] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryBlue.png", 1, 1, 1, 0);
+        this.BodyOptions[1] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryGreen.png", 1, 1, 1, 0);
+        this.BodyOptions[2] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryPink.png", 1, 1, 1, 0);
+        this.BodyOptions[3] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryRainbow.png", 1, 1, 1, 0);
+        this.BodyOptions[4] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryRed.png", 1, 1, 1, 0);
+        this.BodyOptions[5] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryYellow.png", 1, 1, 1, 0);
         this.FaceOptions = [];
-        this.FaceOptions[0] = new GameObject(pos, vel, this.game.ctx, "./assets/Squary.png", 1, 1, 1, 0);
-        this.FaceOptions[1] = new GameObject(pos, vel, this.game.ctx, "./assets/SquaryHurt.png", 1, 1, 1, 0);
-        this.FaceOptions[2] = new GameObject(pos, vel, this.game.ctx, "./assets/SquaryHurtPixels.png", 1, 1, 1, 0);
-        this.FaceOptions[3] = new GameObject(pos, vel, this.game.ctx, "./assets/SquaryHurtPixels2.png", 1, 1, 1, 0);
+        this.FaceOptions[0] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyBlue.png", 1, 1, 1, 0);
+        this.FaceOptions[1] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyGreen.png", 1, 1, 1, 0);
+        this.FaceOptions[2] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyGrey.png", 1, 1, 1, 0);
+        this.FaceOptions[3] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyPink.png", 1, 1, 1, 0);
+        this.FaceOptions[4] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyRed.png", 1, 1, 1, 0);
+        this.FaceOptions[5] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyYellow.png", 1, 1, 1, 0);
+        this.toggle = false;
+        this.bodytoggle = false;
     }
     draw() {
         let text = "Hoi ik ben Squary, ik ben vergeten hoe ik eruitzie!!!";
-        this.writeTextToCanvas(this.game.ctx, text, 70, new Vector(this.game.canvas.width / 2, 100), "center", "#FF0000");
+        this.writeTextToCanvas(this.game.ctx, text, 69, new Vector(this.game.canvas.width / 2, 100), "center", "#FF0000");
         text = "Kun jij mij helpen?";
         this.writeTextToCanvas(this.game.ctx, text, 60, new Vector(this.game.canvas.width / 2, 200), "center", "#FF0000");
+        this.BodyOptions[this.bodyCounter].update();
         this.FaceOptions[this.counter].update();
-        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
+        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER) && !this.toggle) {
+            this.toggle = true;
             this.counter++;
             if (this.counter >= this.FaceOptions.length) {
                 this.counter = 0;
             }
         }
+        if (!this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
+            this.toggle = false;
+        }
+        if (this.game.userInput.isKeyDown(UserInput.KEY_S) && !this.bodytoggle) {
+            this.bodytoggle = true;
+            this.bodyCounter++;
+            if (this.bodyCounter >= this.BodyOptions.length) {
+                this.bodyCounter = 0;
+            }
+        }
+        if (!this.game.userInput.isKeyDown(UserInput.KEY_S)) {
+            this.bodytoggle = false;
+        }
         if (this.game.userInput.isKeyDown(UserInput.KEY_ESC)) {
             this.game.squary = this.FaceOptions[this.counter].path;
+            this.game.bodySquary = this.BodyOptions[this.bodyCounter].path;
             this.game.switchScreen(new Level1(this.game));
         }
     }
