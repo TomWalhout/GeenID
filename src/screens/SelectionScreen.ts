@@ -5,7 +5,9 @@ class SelectionScreen extends GameScreen {
     private FaceOptions: Array<GameObject>;
     private BodyOptions: Array<GameObject>;
     private counter: number;
+    private bodyCounter: number;
     private toggle: boolean;
+    private bodytoggle: boolean;
     /**
      * Construct a new GameScreen object.
      *
@@ -16,6 +18,7 @@ class SelectionScreen extends GameScreen {
         let pos = new Vector(this.game.canvas.width / 2 - 20, this.game.canvas.height / 2 + 50);
         let vel = new Vector(0, 0);
         this.counter = 0;
+        this.bodyCounter = 0;
         this.BodyOptions = []
         this.BodyOptions[0] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squaryBlue.png", 1, 1, 1, 0);
         this.BodyOptions[1] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/body/squayGreen.png", 1, 1, 1, 0);
@@ -32,6 +35,7 @@ class SelectionScreen extends GameScreen {
         this.FaceOptions[5] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyYellow.png", 1, 1, 1, 0);
         this.FaceOptions[6] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/happyRainbow.png", 1, 1, 1, 0);
         this.toggle = false;
+        this.bodytoggle = false;
     }
 
     public draw() {
@@ -39,6 +43,7 @@ class SelectionScreen extends GameScreen {
         this.writeTextToCanvas(this.game.ctx, text, 69, new Vector(this.game.canvas.width / 2, 100), "center", "#FF0000");
         text = "Kun jij mij helpen?";
         this.writeTextToCanvas(this.game.ctx, text, 60, new Vector(this.game.canvas.width / 2, 200), "center", "#FF0000");
+        this.BodyOptions[this.bodyCounter].update();
         this.FaceOptions[this.counter].update();
         if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER) && !this.toggle) {
             this.toggle = true;
@@ -47,13 +52,24 @@ class SelectionScreen extends GameScreen {
                 this.counter = 0;
             }
         }
+
         if (!this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
             this.toggle = false;
         }
-        console.log(this.toggle);
+        if (this.game.userInput.isKeyDown(UserInput.KEY_S) && !this.bodytoggle) {
+            this.bodytoggle = true;
+            this.bodyCounter++
+            if (this.bodyCounter >= this.BodyOptions.length) {
+                this.bodyCounter = 0;
+            }
+        }
+        if (!this.game.userInput.isKeyDown(UserInput.KEY_S)) {
+            this.bodytoggle = false;
+        }
 
         if (this.game.userInput.isKeyDown(UserInput.KEY_ESC)) {
             this.game.squary = this.FaceOptions[this.counter].path;
+            this.game.bodySquary = this.BodyOptions[this.bodyCounter].path;
             this.game.switchScreen(new Level1(this.game));
         }
     }

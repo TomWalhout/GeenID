@@ -8,11 +8,10 @@ class Player extends GameObject {
     protected standsOnGround: boolean;
     private faceAnimation: Animate;
 
-    public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
+    public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, body: string) {
         //Disable this next line for selection
         // path = "./assets/squary.png";
         super(pos, vel, ctx, path, frames, speed, scale)
-        // this.faceAnimation = new Animate(ctx,)
         this.UserInput = new UserInput;
         this.hasSword = false;
         this.scale = scale
