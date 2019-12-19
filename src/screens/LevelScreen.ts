@@ -33,12 +33,6 @@ class LevelScreen extends GameScreen {
         this.userinput = new UserInput();
     }
 
-    public spawnEnemy() {
-        this.enemy[0] = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(this.randomNumber(-4, 4), this.randomNumber(-2, 2)), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
-        // console.log('bla 2');
-        // console.log(this.enemy[0]);
-    }
-
     /**
      * Let this screen draw itself and its gameobjects on the given rendering
      * context.
@@ -73,17 +67,6 @@ class LevelScreen extends GameScreen {
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
                 if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
                     onground = true;
-                }
-            }
-        });
-
-        this.openAds.forEach(ad => {
-            if (ad.isOpen) {
-                let adBox = ad.box();
-                let upperbox = [adBox[0], adBox[1], adBox[2], adBox[2] + 10];
-                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
-                    onground = true;
-                    this.spawnEnemy();
                 }
             }
         });
