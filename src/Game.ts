@@ -7,6 +7,7 @@ class Game {
 
     private currentScreen: GameScreen;
     public Lives: number;
+    private squaryString: string;
 
     public constructor(canvasId: HTMLCanvasElement) {
         // Construct all of the canvas
@@ -16,10 +17,11 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new Level1(this); // Level the game starts on
+        this.currentScreen = new SelectionScreen(this); // Level the game starts on
         this.input = new UserInput();
         this.Lives = 5;
         this.loop();
+
     }
 
     private loop = () => {
@@ -106,6 +108,17 @@ class Game {
 
     public set lives(v: number) {
         this.Lives = v;
+    }
+    public get squary(): string {
+        return this.squaryString;
+    }
+
+    public set squary(v: string) {
+        this.squaryString = v;
+    }
+
+    public get userInput(): UserInput {
+        return this.input;
     }
 }
 
