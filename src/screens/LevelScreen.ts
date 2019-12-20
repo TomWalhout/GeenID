@@ -74,7 +74,7 @@ class LevelScreen extends GameScreen {
             }
         });
         
-        if (onground || this.stand) {
+        if (onground) {
             this.player.vel.y = 0;
             this.player.standing = true;
         } else {
