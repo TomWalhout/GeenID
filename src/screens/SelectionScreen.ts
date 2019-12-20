@@ -18,7 +18,7 @@ class SelectionScreen extends GameScreen {
      */
     public constructor(game: Game) {
         super(game);
-        let pos = new Vector(this.game.canvas.width / 2 - 20, this.game.canvas.height / 2);
+        let pos = new Vector(this.game.canvas.width / 2 - 110, this.game.canvas.height / 2);
         let vel = new Vector(0, 0);
         this.counter = 0;
         this.bodyCounter = 0;
@@ -60,19 +60,19 @@ class SelectionScreen extends GameScreen {
         this.bodytoggle1 = false;
         this.bodytoggle2 = false;
         this.knop = [];
-        this.knop[0] = new GameObject(new Vector(this.game.canvas.width / 2 - 100, this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
-        this.knop[2] = new GameObject(new Vector(this.game.canvas.width / 2 - 100, this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
-        this.knop[1] = new GameObject(new Vector(this.game.canvas.width / 2 + 100, this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
-        this.knop[3] = new GameObject(new Vector(this.game.canvas.width / 2 + 100, this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[0] = new GameObject(new Vector(this.game.canvas.width / 2 - 200, this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[2] = new GameObject(new Vector(this.game.canvas.width / 2 - 200, this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[1] = new GameObject(new Vector(this.game.canvas.width / 2 , this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[3] = new GameObject(new Vector(this.game.canvas.width / 2 , this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
         this.knop[1].mirror = true;
         this.knop[3].mirror = true;
     }
 
     public draw() {
         let text = "Kies je speler";
-        this.writeTextToCanvas(this.game.ctx, text, 69, new Vector(this.game.canvas.width / 2, 200), "center", "#FF0000");
+        this.writeTextToCanvas(this.game.ctx, text, 69, new Vector(this.game.canvas.width / 2 - 65, 200), "center", "#FF0000");
         text = "Druk op enter om te beginnen";
-        this.writeTextToCanvas(this.game.ctx, text, 60, new Vector(this.game.canvas.width / 2, 600), "center", "#FF0000");
+        this.writeTextToCanvas(this.game.ctx, text, 60, new Vector(this.game.canvas.width / 2 - 100, 600), "center", "#FF0000");
         this.BodyOptions[this.bodyCounter].update();
         this.FaceOptions[this.counter].update();
         this.drawButtons();
