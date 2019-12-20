@@ -787,7 +787,7 @@ class LevelScreen extends GameScreen {
                 }
             }
         });
-        if (onground || this.stand) {
+        if (onground) {
             this.player.vel.y = 0;
             this.player.standing = true;
         }
@@ -908,9 +908,21 @@ class Level1Update extends LevelScreen {
 class Level2 extends LevelScreen {
     constructor(game) {
         super(game);
+        this.programs[0] = new Program(new Vector(343, 518), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
+        this.programs[0].isOpen = true;
+        document.body.style.backgroundImage = "url('./assets/programs/Glooole.png')";
+    }
+    draw() {
+        super.draw(this.game.ctx);
+        this.collide();
+    }
+}
+class Level3 extends LevelScreen {
+    constructor(game) {
+        super(game);
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
-        this.icons[2] = new Icon(new Vector(1450, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 0.3);
+        this.icons[2] = new Icon(new Vector(1450, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 1.4);
         this.programs[0] = new Program(new Vector(100, 500), new Vector(0, 0), this.game.ctx, './assets/windows/DEZEPC.png', 1, 1, 0.5, 0);
         this.programs[1] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
         this.programs[1].hasAds = true;
@@ -932,35 +944,6 @@ class Level2 extends LevelScreen {
         let file = this.icons[2].box();
         if (this.collides(file, player)) {
             this.game.switchScreen(new Level3(this.game));
-        }
-    }
-}
-class Level3 extends LevelScreen {
-    constructor(game) {
-        super(game);
-        this.searchBar = new SearchBar(new Vector(343, 518), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1);
-        document.body.style.backgroundImage = "url('./assets/programs/Glooole.png')";
-    }
-    draw() {
-        super.draw(this.game.ctx);
-        this.searchBarCollision();
-        this.collide();
-    }
-    searchBarCollision() {
-        if (this.searchBar) {
-            this.searchBar.update();
-        }
-        let player = this.player.box();
-        let playerbottom = [player[0], player[1], player[3], player[3] + 2];
-        if (this.searchBar) {
-            let searchBar = this.searchBar.box();
-            let searchBarTop = [searchBar[0], searchBar[1], searchBar[2], searchBar[2] + 10];
-            if (this.collides(playerbottom, searchBarTop) && this.player.vel.y > 0 && !this.player.standing) {
-                this.Stand = true;
-            }
-            else {
-                this.Stand = false;
-            }
         }
     }
 }
