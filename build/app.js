@@ -895,13 +895,15 @@ class Level1Update extends LevelScreen {
 class Level2 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
-        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
+        this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
+        this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
         this.icons[2] = new Icon(new Vector(1450, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 0.3);
         this.programs[0] = new Program(new Vector(100, 500), new Vector(0, 0), this.game.ctx, './assets/windows/DEZEPC.png', 1, 1, 0.5, 0);
         this.programs[1] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
         this.programs[1].hasAds = true;
         this.programs[2] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
+        this.wizard = new Wizard(new Vector(this.game.canvas.width - 1000, this.game.canvas.height - 550), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 10, 1);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width - 1300, this.game.canvas.height - 700), new Vector(0, 0), this.game.ctx, './assets/textbox2.png', 1, 1, 1.5);
     }
     draw() {
         super.draw(this.game.ctx);
@@ -909,6 +911,8 @@ class Level2 extends LevelScreen {
         this.closeProgram();
         this.clickedIcon();
         this.nextLevel();
+        this.wizard.update();
+        this.textbox.update();
     }
     nextLevel() {
         let player = this.player.box();
@@ -964,12 +968,13 @@ class SelectionScreen extends GameScreen {
         this.FaceOptions[15] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/unicornGrey.png", 1, 1, 1, 0);
         this.FaceOptions[16] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/unicornRed.png", 1, 1, 1, 0);
         this.FaceOptions[17] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/unicornPink.png", 1, 1, 1, 0);
-        this.FaceOptions[18] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaYellow.png", 1, 1, 1, 0);
-        this.FaceOptions[19] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaRed.png", 1, 1, 1, 0);
-        this.FaceOptions[20] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaPink.png", 1, 1, 1, 0);
-        this.FaceOptions[21] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaBlue.png", 1, 1, 1, 0);
-        this.FaceOptions[22] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaGreen.png", 1, 1, 1, 0);
-        this.FaceOptions[23] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaGrey.png", 1, 1, 1, 0);
+        this.FaceOptions[18] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/unicornYellow.png", 1, 1, 1, 0);
+        this.FaceOptions[19] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaYellow.png", 1, 1, 1, 0);
+        this.FaceOptions[20] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaRed.png", 1, 1, 1, 0);
+        this.FaceOptions[21] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaPink.png", 1, 1, 1, 0);
+        this.FaceOptions[22] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaBlue.png", 1, 1, 1, 0);
+        this.FaceOptions[23] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaGreen.png", 1, 1, 1, 0);
+        this.FaceOptions[24] = new GameObject(pos, vel, this.game.ctx, "./assets/squaryArmy/face/ninjaGrey.png", 1, 1, 1, 0);
         this.toggle1 = false;
         this.toggle2 = false;
         this.bodytoggle1 = false;
