@@ -10,8 +10,7 @@ class Ad extends Program {
         // console.log(this.animation.imageWidth);
         this.open = true;
         this.ctx = ctx;
-        this.respawn = false;
-           
+        this.respawn = false;     
     }
 
     public get respawning(): boolean {

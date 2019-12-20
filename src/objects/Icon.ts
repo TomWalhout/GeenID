@@ -2,5 +2,4 @@
 
 class Icon extends GameObject {
 
-    
 }
