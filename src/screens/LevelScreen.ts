@@ -25,7 +25,7 @@ class LevelScreen extends GameScreen {
     public constructor(game: Game) {
         super(game);
 
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
+        this.id = new IDcard(new Vector(this.game.canvas.width - 168, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, this.game.squary, 1, 1, 1, this.game.bodySquary);
         
         document.body.style.backgroundImage = "url('./assets/xp-bg.png')";
