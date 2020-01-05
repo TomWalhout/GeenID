@@ -54,8 +54,8 @@ class LevelScreen extends GameScreen {
                 this.icons[i].update();
             }
         }
-        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[0], 20, new Vector(this.game.canvas.width - 30, 30), "right", "#000000");
-        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[1], 20, new Vector(this.game.canvas.width - 30, 60), "right", "#000000");
+        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[0], 20, new Vector(this.game.canvas.width - 240, 30), "right", "#000000");
+        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[1], 20, new Vector(this.game.canvas.width - 240, 60), "right", "#000000");
         this.player.update();
     }
 
