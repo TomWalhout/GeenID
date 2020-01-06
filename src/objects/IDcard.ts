@@ -23,24 +23,20 @@ class IDcard extends GameObject {
         if (this.invframes > 0) {
             this.invframes--;
         }
+        if (this.lives <= 0) {
+            this.game.switchScreen(new SelectionScreen(this.game));
+        }
         //only update to new image when necessary, not every frame
-        if (this.lives < this.prevlives) {
-            console.log(this.lives);
+        if (this.lives < this.prevlives && this.lives > 1) {
             this.prevlives--;
             this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 1.5);
-        }
-        if (this.lives <= 0) {
-            console.log("you dead mah boi");
-            this.game.switchScreen(new SelectionScreen(this.game));
         }
     }
 
     public set youGotRekt(v: number) {
-        console.log(this.invframes);
         if (this.invframes == 0) {
             this.lives = v;
             this.invframes = 100;
-            console.log("ok");
         }
     }
 

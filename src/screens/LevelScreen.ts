@@ -58,7 +58,9 @@ class LevelScreen extends GameScreen {
                 this.icons[i].update();
             }
         }
-        this.player.update();
+        if (this !instanceof HomeScreen || this !instanceof LevelScreen) {
+            this.player.update();
+        }
     }
 
     public collide() {

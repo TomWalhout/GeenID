@@ -32,6 +32,14 @@ class BossScreen extends LevelScreen {
         if (this.collides(boss, player)) {
             this.id.youGotRekt = this.id.youGotRekt - 1;
         }
+        if (this.boss.Attack) {
+            this.boss.Attack.forEach(e => { 
+            let attack = e.box();
+            if (this.collides(player, attack)){
+                this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
+        })
+        }
     }
 
 }

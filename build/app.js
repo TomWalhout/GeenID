@@ -390,35 +390,35 @@ class Ad extends Program {
 class Boss extends GameObject {
     constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
         super(pos, vel, ctx, path, frames, speed, scale);
-        this.attackTimer = 0;
         this.ctx = ctx;
         this.screen = screen;
-        this.Attack();
+        this.currentAttack = new Array;
+        this.attackTimer = 0;
+        this.newAttack();
     }
     update() {
-        this.vel.x = Math.random() - .5;
-        this.vel.y = Math.random() - .5;
         super.update();
+        if (this.nextAttack) {
+            this.newAttack();
+            this.nextAttack = false;
+        }
+        else {
+            this.attackTimer++;
+            if (this.attackTimer >= 120) {
+                this.nextAttack = true;
+            }
+        }
+        this.currentAttack.forEach(e => { e.update(); });
+        console.log(this.attackTimer);
     }
-    Attack() {
-        let chance = 0;
-        switch (chance) {
-            case 0:
-                this.currentAttack = new Array;
-                for (let i = 1; i < 8; i++) {
-                    console.log("apoejrgiajerg");
-                    this.currentAttack[i] = new Codebeam(new Vector(i * 100, 0), new Vector(0, .1 * i * Math.random()), this.ctx);
-                }
-                break;
-            case 1:
-                break;
-            default:
-                console.log("jammerjoh");
-                break;
+    newAttack() {
+        this.attackTimer = 0;
+        for (let i = 0; i < 8; i++) {
+            this.currentAttack[i] = new Codebeam(new Vector(i * 80, 0), new Vector(0, 5), this.ctx, "./assets/enemiesAndAllies/testing.png", 4, 3, 1);
         }
     }
-    get attack() {
-        return this.currentAttack[0];
+    get Attack() {
+        return this.currentAttack;
     }
 }
 class Enemy extends GameObject {
@@ -457,22 +457,18 @@ class IDcard extends GameObject {
         if (this.invframes > 0) {
             this.invframes--;
         }
-        if (this.lives < this.prevlives) {
-            console.log(this.lives);
+        if (this.lives <= 0) {
+            this.game.switchScreen(new SelectionScreen(this.game));
+        }
+        if (this.lives < this.prevlives && this.lives > 1) {
             this.prevlives--;
             this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 1.5);
         }
-        if (this.lives <= 0) {
-            console.log("you dead mah boi");
-            this.game.switchScreen(new SelectionScreen(this.game));
-        }
     }
     set youGotRekt(v) {
-        console.log(this.invframes);
         if (this.invframes == 0) {
             this.lives = v;
             this.invframes = 100;
-            console.log("ok");
         }
     }
     get youGotRekt() {
@@ -572,37 +568,14 @@ class Wizard extends GameObject {
         super(pos, vel, ctx, path, frames, speed, scale);
     }
 }
-class Codebeam extends GameObject {
-    constructor(pos, vel, ctx, path = "./transparent.png", frames = 1, speed = 1) {
-        super(pos, vel, ctx, path, frames, speed);
-        this.ctx = ctx;
-        this.attackTimer = 0;
-        this.waveTimer = 0;
-        this.rays = new Array;
-        this.animation.height = 500;
+class Attack extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
     }
-    init() {
-        for (let j = 0; j < Math.floor(Math.random() * 10 + 1); j++) {
-            this.rays[j] = new Array;
-            for (let i = 0; i < Math.floor(Math.random() * 25 + 5); i++) {
-                this.rays[j][i] = Math.random().toString(36).replace(/[^a-z]+/g, '').charAt(0);
-                this.writeTextToCanvas(this.rays[j][i], 20, j * 20 + this.pos.x, i * 20 + this.pos.y * 20, 'center', '#00FF00');
-            }
-        }
-    }
-    draw() {
-        this.drawBox();
-        this.init();
-    }
-    update() {
-        this.draw();
-        super.update();
-    }
-    writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
-        this.ctx.font = `${fontSize}px Minecraft`;
-        this.ctx.fillStyle = color;
-        this.ctx.textAlign = alignment;
-        this.ctx.fillText(text, xCoordinate, yCoordinate);
+}
+class Codebeam extends Attack {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
     }
 }
 class GameScreen {
@@ -702,7 +675,9 @@ class LevelScreen extends GameScreen {
                 this.icons[i].update();
             }
         }
-        this.player.update();
+        if (this instanceof HomeScreen || this instanceof LevelScreen) {
+            this.player.update();
+        }
     }
     collide() {
         let player = this.player.box();
@@ -786,6 +761,14 @@ class BossScreen extends LevelScreen {
         if (this.collides(boss, player)) {
             this.id.youGotRekt = this.id.youGotRekt - 1;
         }
+        if (this.boss.Attack) {
+            this.boss.Attack.forEach(e => {
+                let attack = e.box();
+                if (this.collides(player, attack)) {
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+            });
+        }
     }
 }
 class HomeScreen extends LevelScreen {
@@ -829,7 +812,7 @@ class Level1 extends LevelScreen {
         }
         let Glooole = this.icons[1].box();
         if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new Level1(this.game));
+            this.game.switchScreen(new BossScreen(this.game));
         }
     }
     updateOtherThings() {

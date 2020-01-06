@@ -44,7 +44,7 @@ class Level1 extends LevelScreen {
         // Checks if the level is done (IE collide with glooole)
         let Glooole = this.icons[1].box(); // Glooole
         if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new Level1(this.game));
+            this.game.switchScreen(new BossScreen(this.game));
         }
     }
 
