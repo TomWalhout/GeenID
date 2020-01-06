@@ -23,7 +23,8 @@ class Animate {
                 this.counter = 0;
                 if (this.currentFrame < this.noOfFrames - 1) {
                     this.currentFrame += 1;
-                } else {
+                }
+                else {
                     this.currentFrame = 0;
                 }
             }
@@ -31,7 +32,8 @@ class Animate {
             if (this.mirror) {
                 this.ctx.scale(-1, 1);
                 this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x * -1 - this.imageWidth * this.scale, this.object.pos.y, this.img.width * this.scale, this.frameHeight * this.scale);
-            } else {
+            }
+            else {
                 this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width * this.scale, this.frameHeight * this.scale);
             }
             this.ctx.restore();
@@ -79,7 +81,7 @@ class Game {
         this.canvas.height = 768;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new SelectionScreen(this);
+        this.currentScreen = new HomeScreen(this);
         this.input = new UserInput();
         this.Lives = 5;
         this.playerInfo = [];
@@ -127,7 +129,7 @@ class Game {
         this.squaryBody = v;
     }
 }
-let init = function() {
+let init = function () {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
@@ -256,7 +258,8 @@ class GameObject {
         this.imgpath = path;
         if (path) {
             this.animation = new Animate(ctx, path, frames, speed, this, scale);
-        } else {
+        }
+        else {
             this.animation = new Animate(ctx, "", 1, 1, this);
         }
     }
@@ -395,11 +398,6 @@ class Boss extends GameObject {
     update() {
         this.vel.x = Math.random() - .5;
         this.vel.y = Math.random() - .5;
-        if (this.currentAttack) {
-            this.currentAttack.forEach(element => {
-                element.update();
-            });
-        }
         super.update();
     }
     Attack() {
@@ -452,9 +450,13 @@ class IDcard extends GameObject {
         this.prevlives = 5;
         this.game = game;
         this.lives = this.game.lives;
+        this.invframes = 0;
     }
     update() {
         super.update();
+        if (this.invframes > 0) {
+            this.invframes--;
+        }
         if (this.lives < this.prevlives) {
             console.log(this.lives);
             this.prevlives--;
@@ -462,17 +464,23 @@ class IDcard extends GameObject {
         }
         if (this.lives <= 0) {
             console.log("you dead mah boi");
-            this.game.switchScreen(new LevelScreen(this.game));
+            this.game.switchScreen(new SelectionScreen(this.game));
         }
     }
     set youGotRekt(v) {
-        this.lives = v;
+        console.log(this.invframes);
+        if (this.invframes == 0) {
+            this.lives = v;
+            this.invframes = 100;
+            console.log("ok");
+        }
     }
     get youGotRekt() {
         return this.lives;
     }
 }
-class Icon extends GameObject {}
+class Icon extends GameObject {
+}
 class Player extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, body) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -493,17 +501,20 @@ class Player extends GameObject {
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
             this.pos.x += 5;
             this.animation.mirrored = false;
-        } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
+        }
+        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
             this.pos.x -= 5;
             this.animation.mirrored = true;
         }
-        if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
+        if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height - 45) {
             this.vel.y = 0;
-            this.pos.y = canvas.height - this.animation.imageHeight * this.scale;
+            this.pos.y = canvas.height - 45 - this.animation.imageHeight * this.scale;
             this.standsOnGround = true;
-        } else if (!this.standsOnGround) {
+        }
+        else if (!this.standsOnGround) {
             this.vel.y += 0.15;
-        } else if (this.standsOnGround) {
+        }
+        else if (this.standsOnGround) {
             this.vel.y = 0;
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
@@ -601,9 +612,12 @@ class GameScreen {
         this.center = new Vector(game.canvas.width / 2, game.canvas.height / 2);
         this.previous_fps_tick = performance.now();
     }
-    listen(input) {}
-    move(canvas) {}
-    collide() {}
+    listen(input) {
+    }
+    move(canvas) {
+    }
+    collide() {
+    }
     collides(a, b) {
         let xoverlap = false;
         let yoverlap = false;
@@ -621,15 +635,18 @@ class GameScreen {
         }
         return xoverlap && yoverlap;
     }
-    adjust(game) {}
-    draw(ctx) {}
+    adjust(game) {
+    }
+    draw(ctx) {
+    }
     drawDebugInfo(ctx) {
         const time_diff = performance.now() - this.previous_fps_tick;
         if (time_diff >= 1000) {
             this.current_fps = this.fps_count;
             this.fps_count = 0;
             this.previous_fps_tick = performance.now();
-        } else {
+        }
+        else {
             this.fps_count++;
         }
         const text = `${this.current_fps} FPS`;
@@ -656,95 +673,11 @@ class GameScreen {
         return [left, right, up, down];
     }
 }
-class BossScreen extends GameScreen {
-    constructor(game) {
-        super(game);
-        this.shouldSwitchToTitleScreen = false;
-        this.boss = new Boss(new Vector(100, 400), new Vector(0, 0), this.game.ctx, "./assets/urawizardgandalf.png", this, 6, 20);
-        this.player = new Player(new Vector(100, 900), new Vector(0, 0), this.game.ctx, "./assets/Squary.png", 1, 1, 1, this.game.bodySquary);
-        this.sword = new Sword(new Vector(140, 675), new Vector(0, 0), this.game.ctx, "./assets/mastersword.png", 1, 1, 0.1);
-        this.enemy = [];
-        for (let i = 0; i < 8; i++) {
-            this.enemy[i] = new Enemy(new Vector(this.randomNumber(100, this.game.canvas.width - 100), this.randomNumber(100, this.game.canvas.height - 100)), new Vector(this.randomNumber(-4, 4), this.randomNumber(-2, 2)), this.game.ctx, "./assets/Enemy.png", this, 1, 1);
-        }
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard5.png', 1, 1, 1.5, game);
-        this.enemyLives = 100;
-    }
-    adjust(game) {
-        for (let i = 0; i < this.enemy.length; i++) {
-            this.enemy[i].enemyMove(this.game.canvas);
-        }
-        this.player.playerMove(this.game.canvas);
-    }
-    draw(ctx) {
-        for (let i = 0; i < this.enemy.length; i++) {
-            this.enemy[i].update();
-        }
-        this.boss.update();
-        this.player.update();
-        if (this.player.hasSword) {
-            this.sword.movePos(this.player);
-            this.sword.update();
-        }
-        this.id.update();
-    }
-    listen(userinput) {
-        if (this.player.clickedOn(userinput)) {
-            console.log("omg");
-        };
-        if (this.boss.clickedOn(userinput)) {
-            console.log("aiergjoiajgn");
-        }
-    }
-    collide() {
-        let player = this.player.box();
-        let boss = this.boss.box();
-        let sword = this.sword.box();
-        for (let i = 0; i < this.enemy.length; i++) {
-            let enemy = this.enemy[i].box();
-            if (this.collides(player, enemy)) {
-                if (this.enemy[i].exist) {
-                    this.enemy[i].exist = false;
-                    this.id.youGotRekt = this.id.youGotRekt - 1;
-                }
-                this.playerLives--;
-                this.sound();
-            }
-            if (this.collides(sword, enemy) && this.player.hasSword) {
-                this.enemyLives--;
-            }
-            if (this.enemyLives < 1) {
-                this.enemy[i].exist = false;
-            }
-            if (this.collides(player, enemy)) {
-                if (this.enemy[i].exist) {
-                    this.enemy[i].exist = false;
-                    this.id.youGotRekt = this.id.youGotRekt - 1;
-                }
-            }
-        }
-        if (this.collides(player, boss)) {
-            if (this.boss.exist) {
-                this.boss.exist = false;
-                this.id.youGotRekt = this.id.youGotRekt - 1;
-            }
-        }
-        if (this.boss.attack) {
-            if (this.collides(player, this.boss.attack.box())) {
-                console.log("ohmygodtheykilledSquary!!");
-            }
-        }
-    }
-    sound() {
-        let audio = new Audio('./assets/sounds/oof.mp3');
-        audio.play();
-    }
-}
 class LevelScreen extends GameScreen {
     constructor(game) {
         super(game);
         this.shouldSwitchToTitleScreen = false;
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
+        this.id = new IDcard(new Vector(this.game.canvas.width + 1, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, this.game.squary, 1, 1, 1, this.game.bodySquary);
         document.body.style.backgroundImage = "url('./assets/xp-bg.png')";
         this.icons = [];
@@ -754,7 +687,11 @@ class LevelScreen extends GameScreen {
         this.userinput = new UserInput();
     }
     draw(ctx) {
-        this.id.update();
+        if (this.game.playerinfo[0] != undefined) {
+            this.id.update();
+            this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[0], 20, new Vector(this.game.canvas.width - 50, 30), "right", "#000000");
+            this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[1], 20, new Vector(this.game.canvas.width - 50, 60), "right", "#000000");
+        }
         for (let i = 0; i < this.programs.length; i++) {
             if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
                 this.programs[i].update();
@@ -765,9 +702,6 @@ class LevelScreen extends GameScreen {
                 this.icons[i].update();
             }
         }
-        this.ads.forEach(e => { e.update(); });
-        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[0], 20, new Vector(this.game.canvas.width - 30, 30), "right", "#000000");
-        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[1], 20, new Vector(this.game.canvas.width - 30, 60), "right", "#000000");
         this.player.update();
     }
     collide() {
@@ -784,18 +718,11 @@ class LevelScreen extends GameScreen {
                 }
             }
         });
-        this.ads.forEach(ad => {
-            let adbox = ad.box();
-            ad.drawBox();
-            let upperbox = [adbox[0], adbox[1], adbox[2], adbox[2] + 10];
-            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
-                onground = true;
-            }
-        });
         if (onground) {
             this.player.vel.y = 0;
             this.player.standing = true;
-        } else {
+        }
+        else {
             this.player.standing = false;
         }
     }
@@ -844,17 +771,47 @@ class LevelScreen extends GameScreen {
         this.storyFlag = v;
     }
 }
+class BossScreen extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.boss = new Boss(new Vector(600, 100), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5);
+    }
+    draw(ctx) {
+        super.draw(ctx);
+        this.boss.update();
+    }
+    collide() {
+        let boss = this.boss.box();
+        let player = this.player.box();
+        if (this.collides(boss, player)) {
+            this.id.youGotRekt = this.id.youGotRekt - 1;
+        }
+    }
+}
+class HomeScreen extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/finalHomeScreen.png', 2, 50, 1.5);
+    }
+    draw() {
+        super.draw(this.game.ctx);
+        this.collide();
+        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
+            this.game.switchScreen(new SelectionScreen(this.game));
+        }
+    }
+}
 class Level1 extends LevelScreen {
     constructor(game) {
         super(game);
         this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 0);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
         this.icons[2] = new Icon(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/icons/pijl.png', 5, 10, 1.4, 1);
-        this.programs[0] = new Program(new Vector(400, 550), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
-        this.programs[1] = new Program(new Vector(100, 400), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.4, 1);
+        this.programs[0] = new Program(new Vector(400, 500), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
+        this.programs[1] = new Program(new Vector(100, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.4, 1);
         this.programs[1].isOpen = false;
-        this.wizard = new Wizard(new Vector(this.game.canvas.width - 120, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 20, 1);
-        this.textbox = new GameObject(new Vector(this.game.canvas.width - 380, this.game.canvas.height - 260), new Vector(0, 0), this.game.ctx, './assets/textbox.png', 1, 1, 2.5);
+        this.wizard = new Wizard(new Vector(this.game.canvas.width - 275, this.game.canvas.height - 150), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 310), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
     }
     draw() {
         this.updateOtherThings();
@@ -872,7 +829,7 @@ class Level1 extends LevelScreen {
         }
         let Glooole = this.icons[1].box();
         if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new Level2(this.game));
+            this.game.switchScreen(new Level1(this.game));
         }
     }
     updateOtherThings() {
@@ -882,36 +839,12 @@ class Level1 extends LevelScreen {
         }
     }
 }
-class Level1Update extends LevelScreen {
-    constructor(game) {
-        super(game);
-        this.icons[0] = new Icon(new Vector(0, 200), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4);
-        this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
-        this.programs[0] = new Program(new Vector(100, 20), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
-        this.programs[1] = new Program(new Vector(400, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.7, 0);
-        this.programs[1].hasAds = true;
-    }
-    draw() {
-        super.draw(this.game.ctx);
-        this.closeAds();
-        this.closeProgram();
-        this.clickedIcon();
-        this.nextLevel();
-    }
-    nextLevel() {
-        let player = this.player.box();
-        let Glooole = this.icons[1].box();
-        if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new Level1(this.game));
-        }
-    }
-}
 class Level2 extends LevelScreen {
     constructor(game) {
         super(game);
         this.programs[0] = new Program(new Vector(343, 518), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
         this.programs[0].isOpen = true;
-        document.body.style.backgroundImage = "url('./assets/programs/Glooole.png')";
+        document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
     }
     draw() {
         super.draw(this.game.ctx);
@@ -923,15 +856,16 @@ class Level3 extends LevelScreen {
         super(game);
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
-        this.icons[2] = new Icon(new Vector(1450, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 1.4);
-        this.programs[0] = new Program(new Vector(100, 500), new Vector(0, 0), this.game.ctx, './assets/windows/DEZEPC.png', 1, 1, 0.5, 0);
-        this.programs[1] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
+        this.icons[2] = new Icon(new Vector(1250, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 1.4);
+        this.programs[0] = new Program(new Vector(0, 500), new Vector(0, 0), this.game.ctx, './assets/windows/DEZEPC.png', 1, 1, 0.5, 0);
+        this.programs[1] = new Program(new Vector(700, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
         this.programs[1].hasAds = true;
         this.programs[2] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 1000, this.game.canvas.height - 550), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 10, 1);
         this.textbox = new GameObject(new Vector(this.game.canvas.width - 1300, this.game.canvas.height - 700), new Vector(0, 0), this.game.ctx, './assets/textbox2.png', 1, 1, 1.5);
     }
     draw() {
+        this.programs[0].drawBox();
         super.draw(this.game.ctx);
         this.closeAds();
         this.closeProgram();
@@ -948,24 +882,10 @@ class Level3 extends LevelScreen {
         }
     }
 }
-class Level3 extends LevelScreen {
-    constructor(game) {
-        super(game);
-        this.programs[0] = new Program(new Vector(300, 480), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
-        document.body.style.backgroundImage = "url('./assets/Glooole-bg.png')";
-        this.programs[0].isOpen = true;
-        this.programs[0].hasAds = true;
-        this.ads[0] = new Ad(new Vector(300, 300), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 1);
-    }
-    draw() {
-        this.programs[0].drawBox();
-        super.draw(this.game.ctx);
-    }
-}
 class SelectionScreen extends GameScreen {
     constructor(game) {
         super(game);
-        let pos = new Vector(this.game.canvas.width / 2 - 20, this.game.canvas.height / 2);
+        let pos = new Vector(this.game.canvas.width / 2 - 25, this.game.canvas.height / 2 - 25);
         let vel = new Vector(0, 0);
         this.counter = 0;
         this.bodyCounter = 0;
@@ -1007,12 +927,13 @@ class SelectionScreen extends GameScreen {
         this.bodytoggle1 = false;
         this.bodytoggle2 = false;
         this.knop = [];
-        this.knop[0] = new GameObject(new Vector(this.game.canvas.width / 2 - 100, this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
-        this.knop[2] = new GameObject(new Vector(this.game.canvas.width / 2 - 100, this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
-        this.knop[1] = new GameObject(new Vector(this.game.canvas.width / 2 + 100, this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
-        this.knop[3] = new GameObject(new Vector(this.game.canvas.width / 2 + 100, this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[0] = new GameObject(new Vector(this.game.canvas.width / 2 - 200, this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[2] = new GameObject(new Vector(this.game.canvas.width / 2 - 200, this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[1] = new GameObject(new Vector(this.game.canvas.width / 2 + 200, this.game.canvas.height / 2 - 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
+        this.knop[3] = new GameObject(new Vector(this.game.canvas.width / 2 + 200, this.game.canvas.height / 2 + 20), new Vector(0, 0), this.game.ctx, "./button.png", 1, 1, .5, 0);
         this.knop[1].mirror = true;
         this.knop[3].mirror = true;
+        this.next = 0;
     }
     draw() {
         let text = "Kies je speler";
@@ -1022,13 +943,14 @@ class SelectionScreen extends GameScreen {
         this.BodyOptions[this.bodyCounter].update();
         this.FaceOptions[this.counter].update();
         this.drawButtons();
-        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
+        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER) && this.next > 60) {
             this.game.playerinfo[0] = prompt("Wacht even! Wat is je naam?", "Squary");
             this.game.playerinfo[1] = prompt("En hoe oud ben je?", "10") + " jaar";
             this.game.squary = this.FaceOptions[this.counter].path;
             this.game.bodySquary = this.BodyOptions[this.bodyCounter].path;
             this.game.switchScreen(new Level1(this.game));
         }
+        this.next++;
     }
     drawButtons() {
         this.knop.forEach(e => {
@@ -1040,7 +962,8 @@ class SelectionScreen extends GameScreen {
             if (this.counter >= this.FaceOptions.length) {
                 this.counter = 0;
             }
-        } else if (this.knop[0].clickedOn(this.game.userInput) && !this.toggle2) {
+        }
+        else if (this.knop[0].clickedOn(this.game.userInput) && !this.toggle2) {
             this.toggle2 = true;
             this.counter--;
             if (this.counter < 0) {
