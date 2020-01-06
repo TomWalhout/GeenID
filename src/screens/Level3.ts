@@ -2,7 +2,7 @@
 
 class Level3 extends LevelScreen {
 
-    private wizard: Wizard; 
+    private wizard: Wizard;
     private textbox: GameObject;
     /**
      * Contructes the second level
@@ -25,6 +25,7 @@ class Level3 extends LevelScreen {
     }
 
     public draw() {
+        this.programs[0].drawBox();
         super.draw(this.game.ctx);
         this.closeAds();
         this.closeProgram();
