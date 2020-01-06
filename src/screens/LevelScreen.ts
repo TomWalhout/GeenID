@@ -23,7 +23,8 @@ class LevelScreen extends GameScreen {
      */
     public constructor(game: Game) {
         super(game);
-        this.id = new IDcard(new Vector(this.game.canvas.width, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
+
+        this.id = new IDcard(new Vector(this.game.canvas.width - 168, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, this.game.squary, 1, 1, 1, this.game.bodySquary);
 
         document.body.style.backgroundImage = "url('./assets/xp-bg.png')";
@@ -52,9 +53,8 @@ class LevelScreen extends GameScreen {
                 this.icons[i].update();
             }
         }
-        this.ads.forEach(e => { e.update() });
-        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[0], 20, new Vector(this.game.canvas.width - 30, 30), "right", "#000000");
-        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[1], 20, new Vector(this.game.canvas.width - 30, 60), "right", "#000000");
+        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[0], 20, new Vector(this.game.canvas.width - 240, 30), "right", "#000000");
+        this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[1], 20, new Vector(this.game.canvas.width - 240, 60), "right", "#000000");
         this.player.update();
     }
 
@@ -70,14 +70,6 @@ class LevelScreen extends GameScreen {
                 if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
                     onground = true;
                 }
-            }
-        });
-        this.ads.forEach(ad => {
-            let adbox = ad.box();
-            ad.drawBox();
-            let upperbox = [adbox[0], adbox[1], adbox[2], adbox[2] + 10];
-            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
-                onground = true;
             }
         });
 

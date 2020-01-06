@@ -23,8 +23,7 @@ class Animate {
                 this.counter = 0;
                 if (this.currentFrame < this.noOfFrames - 1) {
                     this.currentFrame += 1;
-                }
-                else {
+                } else {
                     this.currentFrame = 0;
                 }
             }
@@ -32,8 +31,7 @@ class Animate {
             if (this.mirror) {
                 this.ctx.scale(-1, 1);
                 this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x * -1 - this.imageWidth * this.scale, this.object.pos.y, this.img.width * this.scale, this.frameHeight * this.scale);
-            }
-            else {
+            } else {
                 this.ctx.drawImage(this.img, 0, this.currentFrame * this.frameHeight, this.img.width, this.frameHeight, this.object.pos.x, this.object.pos.y, this.img.width * this.scale, this.frameHeight * this.scale);
             }
             this.ctx.restore();
@@ -129,7 +127,7 @@ class Game {
         this.squaryBody = v;
     }
 }
-let init = function () {
+let init = function() {
     const game = new Game(document.getElementById("canvas"));
 };
 window.addEventListener("load", init);
@@ -258,8 +256,7 @@ class GameObject {
         this.imgpath = path;
         if (path) {
             this.animation = new Animate(ctx, path, frames, speed, this, scale);
-        }
-        else {
+        } else {
             this.animation = new Animate(ctx, "", 1, 1, this);
         }
     }
@@ -475,8 +472,7 @@ class IDcard extends GameObject {
         return this.lives;
     }
 }
-class Icon extends GameObject {
-}
+class Icon extends GameObject {}
 class Player extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, body) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -497,8 +493,7 @@ class Player extends GameObject {
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
             this.pos.x += 5;
             this.animation.mirrored = false;
-        }
-        else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
+        } else if (this.UserInput.isKeyDown(UserInput.KEY_LEFT) && this.pos.x >= 0) {
             this.pos.x -= 5;
             this.animation.mirrored = true;
         }
@@ -506,11 +501,9 @@ class Player extends GameObject {
             this.vel.y = 0;
             this.pos.y = canvas.height - this.animation.imageHeight * this.scale;
             this.standsOnGround = true;
-        }
-        else if (!this.standsOnGround) {
+        } else if (!this.standsOnGround) {
             this.vel.y += 0.15;
-        }
-        else if (this.standsOnGround) {
+        } else if (this.standsOnGround) {
             this.vel.y = 0;
         }
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
@@ -608,12 +601,9 @@ class GameScreen {
         this.center = new Vector(game.canvas.width / 2, game.canvas.height / 2);
         this.previous_fps_tick = performance.now();
     }
-    listen(input) {
-    }
-    move(canvas) {
-    }
-    collide() {
-    }
+    listen(input) {}
+    move(canvas) {}
+    collide() {}
     collides(a, b) {
         let xoverlap = false;
         let yoverlap = false;
@@ -631,18 +621,15 @@ class GameScreen {
         }
         return xoverlap && yoverlap;
     }
-    adjust(game) {
-    }
-    draw(ctx) {
-    }
+    adjust(game) {}
+    draw(ctx) {}
     drawDebugInfo(ctx) {
         const time_diff = performance.now() - this.previous_fps_tick;
         if (time_diff >= 1000) {
             this.current_fps = this.fps_count;
             this.fps_count = 0;
             this.previous_fps_tick = performance.now();
-        }
-        else {
+        } else {
             this.fps_count++;
         }
         const text = `${this.current_fps} FPS`;
@@ -704,8 +691,7 @@ class BossScreen extends GameScreen {
     listen(userinput) {
         if (this.player.clickedOn(userinput)) {
             console.log("omg");
-        }
-        ;
+        };
         if (this.boss.clickedOn(userinput)) {
             console.log("aiergjoiajgn");
         }
@@ -809,8 +795,7 @@ class LevelScreen extends GameScreen {
         if (onground) {
             this.player.vel.y = 0;
             this.player.standing = true;
-        }
-        else {
+        } else {
             this.player.standing = false;
         }
     }
@@ -924,9 +909,21 @@ class Level1Update extends LevelScreen {
 class Level2 extends LevelScreen {
     constructor(game) {
         super(game);
+        this.programs[0] = new Program(new Vector(343, 518), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
+        this.programs[0].isOpen = true;
+        document.body.style.backgroundImage = "url('./assets/programs/Glooole.png')";
+    }
+    draw() {
+        super.draw(this.game.ctx);
+        this.collide();
+    }
+}
+class Level3 extends LevelScreen {
+    constructor(game) {
+        super(game);
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
-        this.icons[2] = new Icon(new Vector(1450, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 0.3);
+        this.icons[2] = new Icon(new Vector(1450, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 1.4);
         this.programs[0] = new Program(new Vector(100, 500), new Vector(0, 0), this.game.ctx, './assets/windows/DEZEPC.png', 1, 1, 0.5, 0);
         this.programs[1] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
         this.programs[1].hasAds = true;
@@ -1043,8 +1040,7 @@ class SelectionScreen extends GameScreen {
             if (this.counter >= this.FaceOptions.length) {
                 this.counter = 0;
             }
-        }
-        else if (this.knop[0].clickedOn(this.game.userInput) && !this.toggle2) {
+        } else if (this.knop[0].clickedOn(this.game.userInput) && !this.toggle2) {
             this.toggle2 = true;
             this.counter--;
             if (this.counter < 0) {

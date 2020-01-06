@@ -17,11 +17,11 @@ class Level1 extends LevelScreen {
         this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 0)
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
         this.icons[2] = new Icon(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/icons/pijl.png', 5, 10, 1.4, 1);
-        this.programs[0] = new Program(new Vector(400, 550), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
-        this.programs[1] = new Program(new Vector(100, 400), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.4, 1);
+        this.programs[0] = new Program(new Vector(400, 500), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
+        this.programs[1] = new Program(new Vector(100, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.4, 1);
         this.programs[1].isOpen = false;
-        this.wizard = new Wizard(new Vector(this.game.canvas.width - 120, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 20, 1);
-        this.textbox = new GameObject(new Vector(this.game.canvas.width - 380, this.game.canvas.height - 260), new Vector(0, 0), this.game.ctx, './assets/textbox.png', 1, 1, 2.5);
+        this.wizard = new Wizard(new Vector(this.game.canvas.width - 275, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 260), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
        }
 
     public draw() {
