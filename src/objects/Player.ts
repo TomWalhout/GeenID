@@ -7,7 +7,6 @@ class Player extends GameObject {
     protected scale: number;
     protected standsOnGround: boolean;
     private faceAnimation: Animate;
-    private walljump: boolean;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, body: string) {
         //Disable this next line for selection
@@ -18,7 +17,6 @@ class Player extends GameObject {
         this.hasSword = false;
         this.scale = scale
         this.standsOnGround = false;
-        this.walljump = false;
     }
 
     public update() {
@@ -55,17 +53,6 @@ class Player extends GameObject {
             this.standing = false;
         }
 
-        //wall jump
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && !this.walljump && (this.pos.x < 2 || this.pos.x + this.animation.imageWidth > 1364)) {
-            this.vel.y -= 5;
-            this.standing = false;
-            this.walljump = true;
-        }
-
-        //wall jump cooldown
-        if (this.standing) {
-            this.walljump = false;
-        }
         // Attack
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
             console.log('Hiyaa!');
@@ -76,7 +63,8 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA')
             this.hasSword = true;
         }
-
+        //  console.log(this.standsOnGround) 
+        //  console.log(this.vel.y);
     }
 
     public get standing(): boolean {

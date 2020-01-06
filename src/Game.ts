@@ -14,8 +14,8 @@ class Game {
     public constructor(canvasId: HTMLCanvasElement) {
         // Construct all of the canvas
         this.canvas = canvasId;
-        this.canvas.width = 1366;
-        this.canvas.height = 768;
+        this.canvas.width = 1536;
+        this.canvas.height = 722;
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
