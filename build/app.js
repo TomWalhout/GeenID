@@ -868,7 +868,7 @@ class Level3 extends LevelScreen {
 class SelectionScreen extends GameScreen {
     constructor(game) {
         super(game);
-        let pos = new Vector(this.game.canvas.width / 2 - 25, this.game.canvas.height / 2 - 25);
+        let pos = new Vector(this.game.canvas.width / 2 - 10, this.game.canvas.height / 2 - 10);
         let vel = new Vector(0, 0);
         this.counter = 0;
         this.bodyCounter = 0;
@@ -917,12 +917,9 @@ class SelectionScreen extends GameScreen {
         this.knop[1].mirror = true;
         this.knop[3].mirror = true;
         this.next = 0;
+        document.body.style.backgroundImage = "url('./assets/selectionScreen.png')";
     }
     draw() {
-        let text = "Kies je speler";
-        this.writeTextToCanvas(this.game.ctx, text, 69, new Vector(this.game.canvas.width / 2, 200), "center", "#FF0000");
-        text = "Druk op enter om te beginnen";
-        this.writeTextToCanvas(this.game.ctx, text, 60, new Vector(this.game.canvas.width / 2, 600), "center", "#FF0000");
         this.BodyOptions[this.bodyCounter].update();
         this.FaceOptions[this.counter].update();
         this.drawButtons();
