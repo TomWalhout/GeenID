@@ -7,6 +7,7 @@ class IDcard extends GameObject {
     private images: Array<string>;
     protected ctx: CanvasRenderingContext2D;
     private game: Game;
+    private invframes: number;
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, game: Game) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
@@ -14,10 +15,14 @@ class IDcard extends GameObject {
         this.prevlives = 5;
         this.game = game;
         this.lives = this.game.lives;
+        this.invframes = 0;
     }
 
     public update() {
         super.update();
+        if (this.invframes > 0) {
+            this.invframes--;
+        }
         //only update to new image when necessary, not every frame
         if (this.lives < this.prevlives) {
             console.log(this.lives);
@@ -26,12 +31,17 @@ class IDcard extends GameObject {
         }
         if (this.lives <= 0) {
             console.log("you dead mah boi");
-            this.game.switchScreen(new LevelScreen(this.game));
+            this.game.switchScreen(new SelectionScreen(this.game));
         }
     }
 
     public set youGotRekt(v: number) {
-        this.lives = v;
+        console.log(this.invframes);
+        if (this.invframes == 0) {
+            this.lives = v;
+            this.invframes = 100;
+            console.log("ok");
+        }
     }
 
     public get youGotRekt(): number {

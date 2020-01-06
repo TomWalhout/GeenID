@@ -19,11 +19,11 @@ class Boss extends GameObject {
         this.vel.x = Math.random() - .5;
         this.vel.y = Math.random() - .5;
 
-        if (this.currentAttack) {
-            this.currentAttack.forEach(element => {
-                element.update();
-            });
-        }
+        // if (this.currentAttack) {
+        //     this.currentAttack.forEach(element => {
+        //         element.update();
+        //     });
+        // }
         super.update();
     }
 

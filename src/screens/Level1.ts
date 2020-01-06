@@ -5,7 +5,7 @@ class Level1 extends LevelScreen {
     // PLAYER, PLATFORMS, ICONS SHOULD NOT BE DECLARED HERE
     private wizard: Wizard;
     private textbox: GameObject;
-  
+
     /**
      * Contructes the second level
      * 
@@ -22,7 +22,7 @@ class Level1 extends LevelScreen {
         this.programs[1].isOpen = false;
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 275, this.game.canvas.height - 100), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 260), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
-       }
+    }
 
     public draw() {
         this.updateOtherThings();
@@ -44,7 +44,7 @@ class Level1 extends LevelScreen {
         // Checks if the level is done (IE collide with glooole)
         let Glooole = this.icons[1].box(); // Glooole
         if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new Level2(this.game));
+            this.game.switchScreen(new Level1(this.game));
         }
     }
 
