@@ -19,7 +19,7 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
-        this.currentScreen = new SelectionScreen(this); // Level the game starts on
+        this.currentScreen = new HomeScreen(this); // Level the game starts on
         this.input = new UserInput();
         this.Lives = 5;
         this.playerInfo = [];
