@@ -5,7 +5,7 @@ class HomeScreen extends LevelScreen{
     public constructor(game: Game) {
 
         super(game);
-        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/finalHomeScreen.png', 1, 2, 1)
+        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/finalHomeScreen.png', 1, 0.5, 1)
     }
 
     public draw() {
