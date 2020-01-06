@@ -39,9 +39,9 @@ class Player extends GameObject {
         }
 
         // Gravity + floor
-        if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height) {
+        if (this.pos.y + (this.animation.imageHeight * this.scale) >= canvas.height - 45) { // 45 is de balk aan de onderkant van het scherm
             this.vel.y = 0
-            this.pos.y = canvas.height - this.animation.imageHeight * this.scale
+            this.pos.y = canvas.height - 45 - this.animation.imageHeight * this.scale
             this.standsOnGround = true;
         } else if (!this.standsOnGround) {
             this.vel.y += 0.15
