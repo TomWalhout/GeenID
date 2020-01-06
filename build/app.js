@@ -75,8 +75,8 @@ class Game {
             }
         };
         this.canvas = canvasId;
-        this.canvas.width = 1536;
-        this.canvas.height = 722;
+        this.canvas.width = 1366;
+        this.canvas.height = 768;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
         this.currentScreen = new SelectionScreen(this);
@@ -481,6 +481,7 @@ class Player extends GameObject {
         this.hasSword = false;
         this.scale = scale;
         this.standsOnGround = false;
+        this.walljump = false;
     }
     update() {
         if (this.faceAnimation) {
@@ -508,6 +509,14 @@ class Player extends GameObject {
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && this.standing) {
             this.vel.y -= 8;
             this.standing = false;
+        }
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && !this.walljump && (this.pos.x < 2 || this.pos.x + this.animation.imageWidth > 1364)) {
+            this.vel.y -= 5;
+            this.standing = false;
+            this.walljump = true;
+        }
+        if (this.standing) {
+            this.walljump = false;
         }
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
             console.log('Hiyaa!');
@@ -756,6 +765,7 @@ class LevelScreen extends GameScreen {
                 this.icons[i].update();
             }
         }
+        this.ads.forEach(e => { e.update(); });
         this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[0], 20, new Vector(this.game.canvas.width - 30, 30), "right", "#000000");
         this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[1], 20, new Vector(this.game.canvas.width - 30, 60), "right", "#000000");
         this.player.update();
@@ -767,13 +777,22 @@ class LevelScreen extends GameScreen {
         this.programs.forEach(program => {
             if (program.isOpen) {
                 let programbox = program.box();
+                program.drawBox();
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
                 if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
                     onground = true;
                 }
             }
         });
-        if (onground || this.stand) {
+        this.ads.forEach(ad => {
+            let adbox = ad.box();
+            ad.drawBox();
+            let upperbox = [adbox[0], adbox[1], adbox[2], adbox[2] + 10];
+            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
+                onground = true;
+            }
+        });
+        if (onground) {
             this.player.vel.y = 0;
             this.player.standing = true;
         } else {
@@ -823,9 +842,6 @@ class LevelScreen extends GameScreen {
     }
     set story(v) {
         this.storyFlag = v;
-    }
-    set Stand(v) {
-        this.stand = v;
     }
 }
 class Level1 extends LevelScreen {
@@ -935,30 +951,15 @@ class Level3 extends LevelScreen {
 class Level3 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.searchBar = new SearchBar(new Vector(343, 518), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1);
-        document.body.style.backgroundImage = "url('./assets/programs/Glooole.png')";
+        this.programs[0] = new Program(new Vector(300, 480), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
+        document.body.style.backgroundImage = "url('./assets/Glooole-bg.png')";
+        this.programs[0].isOpen = true;
+        this.programs[0].hasAds = true;
+        this.ads[0] = new Ad(new Vector(300, 300), new Vector(0, 0), this.game.ctx, './assets/ad1.png', 1, 1, 1);
     }
     draw() {
+        this.programs[0].drawBox();
         super.draw(this.game.ctx);
-        this.searchBarCollision();
-        this.collide();
-    }
-    searchBarCollision() {
-        if (this.searchBar) {
-            this.searchBar.update();
-        }
-        let player = this.player.box();
-        let playerbottom = [player[0], player[1], player[3], player[3] + 2];
-        if (this.searchBar) {
-            let searchBar = this.searchBar.box();
-            let searchBarTop = [searchBar[0], searchBar[1], searchBar[2], searchBar[2] + 10];
-            if (this.collides(playerbottom, searchBarTop) && this.player.vel.y > 0 && !this.player.standing) {
-                this.Stand = true;
-            }
-            else {
-                this.Stand = false;
-            }
-        }
     }
 }
 class SelectionScreen extends GameScreen {
