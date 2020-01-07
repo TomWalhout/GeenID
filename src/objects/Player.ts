@@ -27,6 +27,7 @@ class Player extends GameObject {
         }
         super.update();
     }
+
     public playerMove(canvas: HTMLCanvasElement) {
 
         // Walk

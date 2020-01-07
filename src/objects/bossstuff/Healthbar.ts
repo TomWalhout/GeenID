@@ -1,4 +1,4 @@
-/// <reference path="./GameObject.ts"/>
+/// <reference path="../GameObject.ts"/>
 
 class Healthbar extends GameObject {
     private maxHealth: number;
@@ -21,7 +21,6 @@ class Healthbar extends GameObject {
         if (this.greenBar.naturalHeight > 0) {
             this.live = this.boss.health;
             let drawfromx = this.greenBar.width - (this.live / this.maxHealth) * this.greenBar.width;
-            console.log(drawfromx);
             this.ctx.drawImage(this.greenBar, drawfromx, 0, this.greenBar.width, this.greenBar.height, this.pos.x, this.pos.y, this.greenBar.width * this.scale, this.greenBar.height * this.scale);
         }
         this.pos.x = this.boss.pos.x + 50;

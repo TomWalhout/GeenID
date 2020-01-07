@@ -68,7 +68,6 @@ class SelectionScreen extends GameScreen {
         this.knop[1].mirror = true;
         this.knop[3].mirror = true;
         this.next = 0;
-
         document.body.style.backgroundImage = "url('./assets/selectionScreen.png')";
     }
 
@@ -82,6 +81,7 @@ class SelectionScreen extends GameScreen {
             this.game.playerinfo[1] = prompt("En hoe oud ben je?", "10") + " jaar";
             this.game.squary = this.FaceOptions[this.counter].path;
             this.game.bodySquary = this.BodyOptions[this.bodyCounter].path;
+            this.game.Lives = 5;
             this.game.switchScreen(new Level1(this.game));
         }
         this.next++;
@@ -129,7 +129,7 @@ class SelectionScreen extends GameScreen {
                 this.bodyCounter = 0;
             }
         }
-        
+
         if (this.knop[3].clickedOn(this.game.userInput) && !this.bodytoggle2) {
             this.bodytoggle2 = true;
             this.bodyCounter--;
