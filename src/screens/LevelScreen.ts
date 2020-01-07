@@ -76,7 +76,7 @@ class LevelScreen extends GameScreen {
         this.programs.forEach(program => {
             if (program.isOpen) {
                 let programbox = program.box();
-                program.drawBox();
+                // program.drawBox();
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
                 if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
                     onground = true;
