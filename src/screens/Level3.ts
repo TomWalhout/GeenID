@@ -41,7 +41,7 @@ class Level3 extends LevelScreen {
         // bugFile collision
         let file = this.icons[2].box(); // Glooole
         if (this.collides(file, player)) {
-            this.game.switchScreen(new Level3(this.game)); // WIP => next level
+            this.game.switchScreen(new Level4(this.game));
         }
     }
 }

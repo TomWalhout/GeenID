@@ -66,6 +66,9 @@ class Game {
         if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level3)) {
             this.switchScreen(new Level3(this))
         }
+        if (this.input.isKeyDown(UserInput.KEY_4) && !(this.currentScreen instanceof Level4)) {
+            this.switchScreen(new Level4(this))
+        }
     }
 
     /**

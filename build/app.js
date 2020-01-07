@@ -75,6 +75,9 @@ class Game {
             if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level3)) {
                 this.switchScreen(new Level3(this));
             }
+            if (this.input.isKeyDown(UserInput.KEY_4) && !(this.currentScreen instanceof Level4)) {
+                this.switchScreen(new Level4(this));
+            }
         };
         this.canvas = canvasId;
         this.canvas.width = 1366;
@@ -228,6 +231,7 @@ UserInput.KEY_ENTER = 13;
 UserInput.KEY_1 = 49;
 UserInput.KEY_2 = 50;
 UserInput.KEY_3 = 51;
+UserInput.KEY_4 = 52;
 class Vector {
     constructor(xpos = 0, ypos = 0) {
         this.xpos = xpos;
@@ -718,7 +722,6 @@ class LevelScreen extends GameScreen {
         this.programs.forEach(program => {
             if (program.isOpen) {
                 let programbox = program.box();
-                program.drawBox();
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
                 if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
                     onground = true;
@@ -858,13 +861,16 @@ class Level1 extends LevelScreen {
 class Level2 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.programs[0] = new Program(new Vector(343, 518), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
+        this.programs[0] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
         this.programs[0].isOpen = true;
+        this.ads[0] = new Ad(new Vector(this.randomNumber(0, 768), this.randomNumber(0, 1366)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1);
+        this.ads[0].isOpen = true;
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
     }
     draw() {
         super.draw(this.game.ctx);
-        this.collide();
+        this.ads[0].update();
+        this.closeAds();
     }
 }
 class Level3 extends LevelScreen {
@@ -877,11 +883,10 @@ class Level3 extends LevelScreen {
         this.programs[1] = new Program(new Vector(700, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
         this.programs[1].hasAds = true;
         this.programs[2] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
-        this.wizard = new Wizard(new Vector(this.game.canvas.width - 1000, this.game.canvas.height - 550), new Vector(0, 0), this.game.ctx, './assets/urawizardgandalf.png', 6, 10, 1);
-        this.textbox = new GameObject(new Vector(this.game.canvas.width - 1300, this.game.canvas.height - 700), new Vector(0, 0), this.game.ctx, './assets/textbox2.png', 1, 1, 1.5);
+        this.wizard = new Wizard(new Vector(this.game.canvas.width - 850, this.game.canvas.height - 550), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 10, 1);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width - 1150, this.game.canvas.height - 700), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.5);
     }
     draw() {
-        this.programs[0].drawBox();
         super.draw(this.game.ctx);
         this.closeAds();
         this.closeProgram();
@@ -894,8 +899,24 @@ class Level3 extends LevelScreen {
         let player = this.player.box();
         let file = this.icons[2].box();
         if (this.collides(file, player)) {
-            this.game.switchScreen(new Level3(this.game));
+            this.game.switchScreen(new Level4(this.game));
         }
+    }
+}
+class Level4 extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.enemies = new Array;
+        this.enemies[0] = new Enemy(new Vector(100, 100), new Vector(1, 1), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+    }
+    draw() {
+        super.draw(this.game.ctx);
+        this.closeAds();
+        this.closeProgram();
+        this.clickedIcon();
+        this.enemies.forEach(element => {
+            element.update();
+        });
     }
 }
 class SelectionScreen extends GameScreen {
