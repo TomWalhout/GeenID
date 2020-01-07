@@ -22,7 +22,7 @@ class Level2 extends LevelScreen {
 
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
         }
-
+  
     public draw() {
         super.draw(this.game.ctx);
         this.ads.forEach(element => {
