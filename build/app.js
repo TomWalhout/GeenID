@@ -78,6 +78,9 @@ class Game {
             if (this.input.isKeyDown(UserInput.KEY_4) && !(this.currentScreen instanceof Level4)) {
                 this.switchScreen(new Level4(this));
             }
+            if (this.input.isKeyDown(UserInput.KEY_5) && !(this.currentScreen instanceof BossScreen)) {
+                this.switchScreen(new BossScreen(this));
+            }
         };
         this.canvas = canvasId;
         this.canvas.width = 1366;
@@ -232,6 +235,7 @@ UserInput.KEY_1 = 49;
 UserInput.KEY_2 = 50;
 UserInput.KEY_3 = 51;
 UserInput.KEY_4 = 52;
+UserInput.KEY_5 = 53;
 class Vector {
     constructor(xpos = 0, ypos = 0) {
         this.xpos = xpos;
@@ -406,12 +410,16 @@ class Boss extends GameObject {
         this.currentAttack = new Array;
         this.attackTimer = 0;
         this.attackLimit = 120;
-        this.bossHealth = 30;
         this.game = game;
+        this.healthbar = new Healthbar(new Vector(0, 0), new Vector(0, 0), ctx, "./assets/enemiesAndAllies/healthbar-red.png", 1, 1, 0.5, this);
+        this.bossHealth = 30;
+        this.healthbar.MaxHealth = this.bossHealth;
         this.newAttack();
     }
     update() {
         super.update();
+        this.pos.x += Math.random() * 2 - 1;
+        this.pos.y += Math.random() * 2 - 1;
         if (this.nextAttack || this.currentAttack.length === 0) {
             this.newAttack();
             this.nextAttack = false;
@@ -431,6 +439,7 @@ class Boss extends GameObject {
         this.checkBossHealth();
     }
     checkBossHealth() {
+        this.healthbar.update();
         if (this.bossHealth <= 0) {
             this.game.switchScreen(new WinScreen(this.game));
         }
@@ -504,6 +513,32 @@ class Enemy extends Attack {
         this.pos.x += this.vel.x;
     }
 }
+class Healthbar extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale, boss) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
+        this.live = boss.health;
+        this.maxHealth = 30;
+        this.scale = scale;
+        this.boss = boss;
+        this.greenBar = new Image();
+        this.greenBar.src = "./assets/enemiesAndAllies/healthbar-green.png";
+    }
+    update() {
+        super.update();
+        if (this.greenBar.naturalHeight > 0) {
+            this.live = this.boss.health;
+            let drawfromx = this.greenBar.width - (this.live / this.maxHealth) * this.greenBar.width;
+            console.log(drawfromx);
+            this.ctx.drawImage(this.greenBar, drawfromx, 0, this.greenBar.width, this.greenBar.height, this.pos.x, this.pos.y, this.greenBar.width * this.scale, this.greenBar.height * this.scale);
+        }
+        this.pos.x = this.boss.pos.x + 50;
+        this.pos.y = this.boss.pos.y - 50;
+    }
+    set MaxHealth(v) {
+        this.maxHealth = v;
+    }
+}
 class IDcard extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, game) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -530,6 +565,7 @@ class IDcard extends GameObject {
     set youGotRekt(v) {
         if (this.invframes == 0) {
             this.lives = v;
+            this.game.Lives = v;
             this.invframes = 100;
         }
     }
@@ -1001,7 +1037,6 @@ class Level4 extends LevelScreen {
             console.log(this.timeInFrames);
         }
         else if (this.timeInFrames <= 0 && this.story === 0) {
-            console.log('GODVERDOMME KYLER HOUD JE BEK NOU EENS OF IK GOOI JOU UIT HET RAAM');
             this.story = 1;
         }
         if (this.story === 1) {

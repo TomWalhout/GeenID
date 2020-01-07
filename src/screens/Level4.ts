@@ -40,7 +40,6 @@ class Level4 extends LevelScreen {
             console.log(this.timeInFrames);
         }
         else if (this.timeInFrames <= 0 && this.story === 0) {
-            console.log('GODVERDOMME KYLER HOUD JE BEK NOU EENS OF IK GOOI JOU UIT HET RAAM');
             this.story = 1;
         }
 
