@@ -75,6 +75,9 @@ class Game {
             if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level3)) {
                 this.switchScreen(new Level3(this));
             }
+            if (this.input.isKeyDown(UserInput.KEY_4) && !(this.currentScreen instanceof Level4)) {
+                this.switchScreen(new Level4(this));
+            }
         };
         this.canvas = canvasId;
         this.canvas.width = 1366;
@@ -224,6 +227,7 @@ UserInput.KEY_ENTER = 13;
 UserInput.KEY_1 = 49;
 UserInput.KEY_2 = 50;
 UserInput.KEY_3 = 51;
+UserInput.KEY_4 = 52;
 class Vector {
     constructor(xpos = 0, ypos = 0) {
         this.xpos = xpos;
@@ -861,8 +865,24 @@ class Level3 extends LevelScreen {
         let player = this.player.box();
         let file = this.icons[2].box();
         if (this.collides(file, player)) {
-            this.game.switchScreen(new Level3(this.game));
+            this.game.switchScreen(new Level4(this.game));
         }
+    }
+}
+class Level4 extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.enemies = new Array;
+        this.enemies[0] = new Enemy(new Vector(100, 100), new Vector(1, 1), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+    }
+    draw() {
+        super.draw(this.game.ctx);
+        this.closeAds();
+        this.closeProgram();
+        this.clickedIcon();
+        this.enemies.forEach(element => {
+            element.update();
+        });
     }
 }
 class SelectionScreen extends GameScreen {
