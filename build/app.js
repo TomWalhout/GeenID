@@ -550,6 +550,7 @@ class IDcard extends GameObject {
         this.invframes = 0;
     }
     update() {
+        this.hurtScreen();
         super.update();
         if (this.invframes > 0) {
             this.invframes--;
@@ -560,6 +561,7 @@ class IDcard extends GameObject {
         if (this.lives < this.prevlives && this.lives > 1) {
             this.prevlives--;
             this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 1.5);
+            this.ouch = 10;
         }
     }
     set youGotRekt(v) {
@@ -571,6 +573,18 @@ class IDcard extends GameObject {
     }
     get youGotRekt() {
         return this.lives;
+    }
+    hurtScreen() {
+        if (this.ouch == 10) {
+            this.ouchImage = new GameObject(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/damage.png', 1, 1, 1);
+        }
+        if (this.ouch > 0) {
+            this.ouchImage.update();
+            this.ouch--;
+        }
+        else {
+            this.ouchImage = new GameObject(new Vector(0, 0), new Vector(0, 0), this.game.ctx, '', 1, 1, 1);
+        }
     }
 }
 class Icon extends GameObject {
