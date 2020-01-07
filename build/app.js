@@ -403,12 +403,16 @@ class Boss extends GameObject {
         this.currentAttack = new Array;
         this.attackTimer = 0;
         this.attackLimit = 120;
-        this.bossHealth = 30;
         this.game = game;
+        this.healthbar = new Healthbar(new Vector(0, 0), new Vector(0, 0), ctx, "./assets/enemiesAndAllies/healthbar-green.png", 1, 1, 0.5, this);
+        this.bossHealth = 30;
+        this.healthbar.MaxHealth = this.bossHealth;
         this.newAttack();
     }
     update() {
         super.update();
+        this.pos.x += Math.random() * 2 - 1;
+        this.pos.y += Math.random() * 2 - 1;
         if (this.nextAttack || this.currentAttack.length === 0) {
             this.newAttack();
             this.nextAttack = false;
@@ -428,6 +432,7 @@ class Boss extends GameObject {
         this.checkBossHealth();
     }
     checkBossHealth() {
+        this.healthbar.update();
         if (this.bossHealth <= 0) {
             this.game.switchScreen(new WinScreen(this.game));
         }
@@ -501,6 +506,22 @@ class Enemy extends Attack {
         this.pos.x += this.vel.x;
     }
 }
+class Healthbar extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale, boss) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
+        this.live = boss.health;
+        this.boss = boss;
+    }
+    update() {
+        super.update();
+        this.pos.x = this.boss.pos.x + 50;
+        this.pos.y = this.boss.pos.y - 50;
+    }
+    set MaxHealth(v) {
+        this.maxHealth = v;
+    }
+}
 class IDcard extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, game) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -527,6 +548,7 @@ class IDcard extends GameObject {
     set youGotRekt(v) {
         if (this.invframes == 0) {
             this.lives = v;
+            this.game.Lives = v;
             this.invframes = 100;
         }
     }
