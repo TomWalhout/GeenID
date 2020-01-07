@@ -1029,6 +1029,7 @@ class Level4 extends LevelScreen {
             element.drawBox();
         });
         this.timer();
+        this.enemyCollision();
     }
     timer() {
         if (this.timeInFrames > 0) {
@@ -1043,6 +1044,13 @@ class Level4 extends LevelScreen {
             let scanner = this.icons[0].box();
             if (this.collides(this.player.box(), scanner)) {
                 this.game.switchScreen(new BossScreen(this.game));
+            }
+        }
+    }
+    enemyCollision() {
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.collides(this.player.box(), this.enemies[i].box())) {
+                this.id.youGotRekt = this.id.youGotRekt - 1;
             }
         }
     }
