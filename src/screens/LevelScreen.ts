@@ -54,16 +54,19 @@ class LevelScreen extends GameScreen {
             }
             // console.log(this.game.playerinfo)
         }
+        
         for (let i = 0; i < this.programs.length; i++) {
             if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
                 this.programs[i].update();
             }
         }
+
         for (let i = 0; i < this.icons.length; i++) {
             if (this.icons[i].story <= this.storyFlag) {
                 this.icons[i].update();
             }
         }
+
         if (!(this instanceof HomeScreen)) {
             this.player.update();
         }
@@ -75,6 +78,7 @@ class LevelScreen extends GameScreen {
         let onground = false;
         this.programs.forEach(program => {
             if (program.isOpen) {
+                
                 let programbox = program.box();
                 // program.drawBox();
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
@@ -91,6 +95,7 @@ class LevelScreen extends GameScreen {
             this.player.standing = false;
         }
     }
+
     protected closeProgram() {
         for (let i = 0; i < this.programs.length; i++) {
             if (this.programs[i].button) {
@@ -134,14 +139,29 @@ class LevelScreen extends GameScreen {
         audio.play();
     }
 
-
     public get story(): number {
         return this.storyFlag;
     }
-
 
     public set story(v: number) {
         this.storyFlag = v;
     }
 
+    public multilineText(ctx : CanvasRenderingContext2D, str : string, xPos : number, yPos : number) {
+        ctx.font = '20px fantasy';
+        ctx.textAlign = "center";
+        // str = 'first line \nsecond line...';
+        // xPos = 30; //starting x coordinate
+        // yPos = 30; //starting y coordinate
+        let lineheight = 20; //the height of a line for the sentence
+
+        // use \n as a delimiter (you can choose any delimter), the split function uses this delimiter to cut the string into two strings
+        // lines is an array with all the strings
+        let lines = str.split('\n');
+
+        // loop over all the strings and write each string a number of lineheights under eacht oter 
+        for (let j = 0; j < lines.length; j++) {
+            ctx.fillText(lines[j], xPos, yPos + (j * lineheight));
+        }
+    }
 }
