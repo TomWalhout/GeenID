@@ -892,13 +892,18 @@ class Level2 extends LevelScreen {
         super(game);
         this.programs[0] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
         this.programs[0].isOpen = true;
-        this.ads[0] = new Ad(new Vector(this.randomNumber(0, 768), this.randomNumber(0, 1366)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1);
-        this.ads[0].isOpen = true;
+        let adsAmount = 5;
+        for (let i = 0; i < adsAmount; i++) {
+            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 3);
+            this.ads[i].isOpen = true;
+        }
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
     }
     draw() {
         super.draw(this.game.ctx);
-        this.ads[0].update();
+        this.ads.forEach(element => {
+            element.update();
+        });
         this.closeAds();
     }
 }
