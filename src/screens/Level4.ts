@@ -39,13 +39,12 @@ class Level4 extends LevelScreen {
             console.log(this.timeInFrames);
         }
         else if (this.timeInFrames <= 0 && this.story === 0) {
-            console.log('GODVERDOMME KYLER HOUD JE BEK NOU EENS OF IK GOOI JOU UIT HET RAAM');
             this.story = 1;
         }
 
         //next step
         if (this.story === 1) {
-            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4)    
+            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4)
             let scanner = this.icons[0].box();
             if (this.collides(this.player.box(), scanner)) {
                 this.game.switchScreen(new BossScreen(this.game))

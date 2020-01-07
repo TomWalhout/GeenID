@@ -411,7 +411,7 @@ class Boss extends GameObject {
         this.attackTimer = 0;
         this.attackLimit = 120;
         this.game = game;
-        this.healthbar = new Healthbar(new Vector(0, 0), new Vector(0, 0), ctx, "./assets/enemiesAndAllies/healthbar-green.png", 1, 1, 0.5, this);
+        this.healthbar = new Healthbar(new Vector(0, 0), new Vector(0, 0), ctx, "./assets/enemiesAndAllies/healthbar-red.png", 1, 1, 0.5, this);
         this.bossHealth = 30;
         this.healthbar.MaxHealth = this.bossHealth;
         this.newAttack();
@@ -518,10 +518,20 @@ class Healthbar extends GameObject {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
         this.live = boss.health;
+        this.maxHealth = 30;
+        this.scale = scale;
         this.boss = boss;
+        this.greenBar = new Image();
+        this.greenBar.src = "./assets/enemiesAndAllies/healthbar-green.png";
     }
     update() {
         super.update();
+        if (this.greenBar.naturalHeight > 0) {
+            this.live = this.boss.health;
+            let drawfromx = this.greenBar.width - (this.live / this.maxHealth) * this.greenBar.width;
+            console.log(drawfromx);
+            this.ctx.drawImage(this.greenBar, drawfromx, 0, this.greenBar.width, this.greenBar.height, this.pos.x, this.pos.y, this.greenBar.width * this.scale, this.greenBar.height * this.scale);
+        }
         this.pos.x = this.boss.pos.x + 50;
         this.pos.y = this.boss.pos.y - 50;
     }
@@ -1026,7 +1036,6 @@ class Level4 extends LevelScreen {
             console.log(this.timeInFrames);
         }
         else if (this.timeInFrames <= 0 && this.story === 0) {
-            console.log('GODVERDOMME KYLER HOUD JE BEK NOU EENS OF IK GOOI JOU UIT HET RAAM');
             this.story = 1;
         }
         if (this.story === 1) {

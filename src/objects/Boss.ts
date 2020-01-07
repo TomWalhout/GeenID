@@ -18,7 +18,7 @@ class Boss extends GameObject {
         this.attackTimer = 0;
         this.attackLimit = 120;
         this.game = game;
-        this.healthbar = new Healthbar(new Vector(0, 0), new Vector(0, 0), ctx, "./assets/enemiesAndAllies/healthbar-green.png", 1, 1, 0.5, this);
+        this.healthbar = new Healthbar(new Vector(0, 0), new Vector(0, 0), ctx, "./assets/enemiesAndAllies/healthbar-red.png", 1, 1, 0.5, this);
         this.bossHealth = 30;
         this.healthbar.MaxHealth = this.bossHealth;
         this.newAttack();
