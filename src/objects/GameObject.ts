@@ -113,4 +113,7 @@ class GameObject {
         this.animation.mirrored = v;
     }
 
+    public get ani(): Animate {
+        return this.animation
+    }
 }

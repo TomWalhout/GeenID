@@ -5,7 +5,7 @@ class Enemy extends Attack {
     private health: number;
     private screen: GameScreen;
 
-    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, screen: GameScreen, frames: number = 0, speed: number = 0, scale: number = 1) {
+    constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, screen: GameScreen, frames: number = 1, speed: number = 1, scale: number = 1) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
         this.screen = screen;
@@ -23,7 +23,7 @@ class Enemy extends Attack {
             this.vel.x = -this.vel.x;
         }
         if (
-            this.pos.y + this.animation.imageHeight >= canvas.height ||
+            this.pos.y + this.animation.imageHeight >= canvas.height - 45|| // 45 is de bar aan de onderkant
             this.pos.y < 0
         ) {
             this.vel.y = -this.vel.y;

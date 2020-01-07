@@ -336,6 +336,9 @@ class GameObject {
     set mirror(v) {
         this.animation.mirrored = v;
     }
+    get ani() {
+        return this.animation;
+    }
 }
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, story) {
@@ -461,7 +464,7 @@ class Attack extends GameObject {
     }
 }
 class Enemy extends Attack {
-    constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
+    constructor(pos, vel, ctx, path, screen, frames = 1, speed = 1, scale = 1) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
         this.screen = screen;
@@ -474,7 +477,7 @@ class Enemy extends Attack {
             this.pos.x < 0) {
             this.vel.x = -this.vel.x;
         }
-        if (this.pos.y + this.animation.imageHeight >= canvas.height ||
+        if (this.pos.y + this.animation.imageHeight >= canvas.height - 45 ||
             this.pos.y < 0) {
             this.vel.y = -this.vel.y;
         }
@@ -907,7 +910,10 @@ class Level4 extends LevelScreen {
     constructor(game) {
         super(game);
         this.enemies = new Array;
-        this.enemies[0] = new Enemy(new Vector(100, 100), new Vector(1, 1), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+        this.numberOfEnemies = 5;
+        for (let i = 0; i < this.numberOfEnemies; i++) {
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+        }
     }
     draw() {
         super.draw(this.game.ctx);
@@ -916,6 +922,8 @@ class Level4 extends LevelScreen {
         this.clickedIcon();
         this.enemies.forEach(element => {
             element.update();
+            element.enemyMove(this.game.canvas);
+            element.drawBox();
         });
     }
 }
