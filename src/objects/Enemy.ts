@@ -1,6 +1,6 @@
-/// <reference path="./GameObject.ts"/>
+/// <reference path="./bossattacks/Attack.ts"/>
 
-class Enemy extends GameObject {
+class Enemy extends Attack {
     protected ctx: CanvasRenderingContext2D;
     private health: number;
     private screen: GameScreen;

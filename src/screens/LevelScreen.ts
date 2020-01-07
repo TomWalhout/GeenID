@@ -26,8 +26,9 @@ class LevelScreen extends GameScreen {
 
         this.id = new IDcard(new Vector(this.game.canvas.width + 1, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, this.game.squary, 1, 1, 1, this.game.bodySquary);
-
-        document.body.style.backgroundImage = "url('./assets/xp-bg.png')";
+        if (!(this instanceof BossScreen)) {
+            document.body.style.backgroundImage = "url('./assets/xp-bg.png')";
+        }
         this.icons = [];
         this.programs = [];
         this.ads = [];
@@ -58,7 +59,7 @@ class LevelScreen extends GameScreen {
                 this.icons[i].update();
             }
         }
-        if (this !instanceof HomeScreen || this !instanceof LevelScreen) {
+        if (!(this instanceof HomeScreen)) {
             this.player.update();
         }
     }
@@ -70,7 +71,7 @@ class LevelScreen extends GameScreen {
         this.programs.forEach(program => {
             if (program.isOpen) {
                 let programbox = program.box();
-                program.drawBox();
+                // program.drawBox();
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
                 if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
                     onground = true;
