@@ -9,7 +9,6 @@ class HomeScreen extends LevelScreen{
     }
 
     public draw() {
-
         super.draw(this.game.ctx);
         this.collide();
 

@@ -78,6 +78,9 @@ class Game {
             if (this.input.isKeyDown(UserInput.KEY_4) && !(this.currentScreen instanceof Level4)) {
                 this.switchScreen(new Level4(this));
             }
+            if (this.input.isKeyDown(UserInput.KEY_5) && !(this.currentScreen instanceof BossScreen)) {
+                this.switchScreen(new BossScreen(this));
+            }
         };
         this.canvas = canvasId;
         this.canvas.width = 1366;
@@ -232,6 +235,7 @@ UserInput.KEY_1 = 49;
 UserInput.KEY_2 = 50;
 UserInput.KEY_3 = 51;
 UserInput.KEY_4 = 52;
+UserInput.KEY_5 = 53;
 class Vector {
     constructor(xpos = 0, ypos = 0) {
         this.xpos = xpos;
@@ -406,12 +410,16 @@ class Boss extends GameObject {
         this.currentAttack = new Array;
         this.attackTimer = 0;
         this.attackLimit = 120;
-        this.bossHealth = 30;
         this.game = game;
+        this.healthbar = new Healthbar(new Vector(0, 0), new Vector(0, 0), ctx, "./assets/enemiesAndAllies/healthbar-red.png", 1, 1, 0.5, this);
+        this.bossHealth = 30;
+        this.healthbar.MaxHealth = this.bossHealth;
         this.newAttack();
     }
     update() {
         super.update();
+        this.pos.x += Math.random() * 2 - 1;
+        this.pos.y += Math.random() * 2 - 1;
         if (this.nextAttack || this.currentAttack.length === 0) {
             this.newAttack();
             this.nextAttack = false;
@@ -431,6 +439,7 @@ class Boss extends GameObject {
         this.checkBossHealth();
     }
     checkBossHealth() {
+        this.healthbar.update();
         if (this.bossHealth <= 0) {
             this.game.switchScreen(new WinScreen(this.game));
         }
@@ -504,6 +513,32 @@ class Enemy extends Attack {
         this.pos.x += this.vel.x;
     }
 }
+class Healthbar extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale, boss) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
+        this.live = boss.health;
+        this.maxHealth = 30;
+        this.scale = scale;
+        this.boss = boss;
+        this.greenBar = new Image();
+        this.greenBar.src = "./assets/enemiesAndAllies/healthbar-green.png";
+    }
+    update() {
+        super.update();
+        if (this.greenBar.naturalHeight > 0) {
+            this.live = this.boss.health;
+            let drawfromx = this.greenBar.width - (this.live / this.maxHealth) * this.greenBar.width;
+            console.log(drawfromx);
+            this.ctx.drawImage(this.greenBar, drawfromx, 0, this.greenBar.width, this.greenBar.height, this.pos.x, this.pos.y, this.greenBar.width * this.scale, this.greenBar.height * this.scale);
+        }
+        this.pos.x = this.boss.pos.x + 50;
+        this.pos.y = this.boss.pos.y - 50;
+    }
+    set MaxHealth(v) {
+        this.maxHealth = v;
+    }
+}
 class IDcard extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, game) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -520,7 +555,7 @@ class IDcard extends GameObject {
             this.invframes--;
         }
         if (this.lives <= 0) {
-            this.game.switchScreen(new SelectionScreen(this.game));
+            this.game.switchScreen(new DeathScreen(this.game));
         }
         if (this.lives < this.prevlives && this.lives > 1) {
             this.prevlives--;
@@ -530,6 +565,7 @@ class IDcard extends GameObject {
     set youGotRekt(v) {
         if (this.invframes == 0) {
             this.lives = v;
+            this.game.Lives = v;
             this.invframes = 100;
         }
     }
@@ -809,6 +845,15 @@ class LevelScreen extends GameScreen {
     set story(v) {
         this.storyFlag = v;
     }
+    multilineText(ctx, str, xPos, yPos) {
+        ctx.font = '20px fantasy';
+        ctx.textAlign = "center";
+        let lineheight = 20;
+        let lines = str.split('\n');
+        for (let j = 0; j < lines.length; j++) {
+            ctx.fillText(lines[j], xPos, yPos + (j * lineheight));
+        }
+    }
 }
 class BossScreen extends LevelScreen {
     constructor(game) {
@@ -836,6 +881,17 @@ class BossScreen extends LevelScreen {
         }
     }
 }
+class DeathScreen extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.wizard = new Wizard(new Vector(300, 0), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 8);
+        document.body.style.backgroundImage = "url('./assets/verloren.png')";
+    }
+    draw(ctx) {
+        super.draw(ctx);
+        this.wizard.update();
+    }
+}
 class HomeScreen extends LevelScreen {
     constructor(game) {
         super(game);
@@ -852,14 +908,17 @@ class HomeScreen extends LevelScreen {
 class Level1 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 0);
+        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 1);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
         this.icons[2] = new Icon(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/icons/pijl.png', 5, 10, 1.4, 1);
         this.programs[0] = new Program(new Vector(400, 500), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
         this.programs[1] = new Program(new Vector(100, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.4, 1);
+        this.programs[0].isOpen = false;
         this.programs[1].isOpen = false;
+        this.programs[2] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 275, this.game.canvas.height - 150), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 310), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.story = 0;
     }
     draw() {
         this.updateOtherThings();
@@ -867,6 +926,8 @@ class Level1 extends LevelScreen {
         this.closeProgram();
         this.clickedIcon();
         this.storyCheck();
+        this.storyText();
+        console.log(this.story);
         super.draw(this.game.ctx);
     }
     storyCheck() {
@@ -875,15 +936,38 @@ class Level1 extends LevelScreen {
         if (this.collides(player, wiz) && this.story < 1) {
             this.story = this.story + 1;
         }
+        if (this.programs[1].isOpen) {
+            this.story = 2;
+        }
+        if (this.programs[0].isOpen && this.programs[1].isOpen) {
+            this.story = 3;
+        }
         let Glooole = this.icons[1].box();
         if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new BossScreen(this.game));
+            this.game.switchScreen(new Level2(this.game));
         }
     }
     updateOtherThings() {
         this.wizard.update();
         if (this.story > 0) {
             this.textbox.update();
+        }
+    }
+    storyText() {
+        if (this.story == 1) {
+            this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het gloole icoon.\n`, 1000, 500);
+            console.log(this.story);
+        }
+        else if (this.story == 2) {
+            this.multilineText(this.game.ctx, 'Perfect!\nKlik nu op Fort.', 1000, 500);
+            this.icons[2].pos.y = 0;
+            console.log(this.story);
+        }
+        else if (this.story == 3) {
+            this.multilineText(this.game.ctx, 'Spring nu naar\nhet Glooole programma', 1000, 400);
+            this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 420), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+            this.icons[2].pos.y = 100;
+            console.log(this.story);
         }
     }
 }
@@ -894,10 +978,30 @@ class Level2 extends LevelScreen {
         this.programs[0].isOpen = true;
         let adsAmount = 5;
         for (let i = 0; i < adsAmount; i++) {
-            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 3);
+            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1.5);
             this.ads[i].isOpen = true;
         }
+        this.icons[0] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
+    }
+    nextLevel() {
+        let player = this.player.box();
+        let file = this.icons[0].box();
+        if (this.collides(file, player)) {
+            this.game.switchScreen(new Level3(this.game));
+        }
+    }
+    collide() {
+        super.collide();
+        let player = this.player.box();
+        if (this.ads) {
+            this.ads.forEach(e => {
+                let ads = e.box();
+                if (this.collides(player, ads)) {
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+            });
+        }
     }
     draw() {
         super.draw(this.game.ctx);
@@ -905,6 +1009,7 @@ class Level2 extends LevelScreen {
             element.update();
         });
         this.closeAds();
+        this.nextLevel();
     }
 }
 class Level3 extends LevelScreen {
@@ -945,6 +1050,8 @@ class Level4 extends LevelScreen {
         for (let i = 0; i < this.numberOfEnemies; i++) {
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
         }
+        this.story = 0;
+        this.timeInFrames = 20;
     }
     draw() {
         super.draw(this.game.ctx);
@@ -956,6 +1063,31 @@ class Level4 extends LevelScreen {
             element.enemyMove(this.game.canvas);
             element.drawBox();
         });
+        this.timer();
+        this.enemyCollision();
+    }
+    timer() {
+        if (this.timeInFrames > 0) {
+            this.timeInFrames--;
+            console.log(this.timeInFrames);
+        }
+        else if (this.timeInFrames <= 0 && this.story === 0) {
+            this.story = 1;
+        }
+        if (this.story === 1) {
+            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
+            let scanner = this.icons[0].box();
+            if (this.collides(this.player.box(), scanner)) {
+                this.game.switchScreen(new BossScreen(this.game));
+            }
+        }
+    }
+    enemyCollision() {
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.collides(this.player.box(), this.enemies[i].box())) {
+                this.id.youGotRekt = this.id.youGotRekt - 1;
+            }
+        }
     }
 }
 class SelectionScreen extends GameScreen {

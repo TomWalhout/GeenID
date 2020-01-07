@@ -9,6 +9,7 @@ class Boss extends GameObject {
     private attackTimer: number;
     private attackLimit: number;
     private game: Game;
+    private healthbar: Healthbar;
     constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, screen: BossScreen, frames: number = 0, speed: number = 0, scale: number = 1, game: Game) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
@@ -16,13 +17,17 @@ class Boss extends GameObject {
         this.currentAttack = new Array;
         this.attackTimer = 0;
         this.attackLimit = 120;
-        this.bossHealth = 30;
         this.game = game;
+        this.healthbar = new Healthbar(new Vector(0, 0), new Vector(0, 0), ctx, "./assets/enemiesAndAllies/healthbar-red.png", 1, 1, 0.5, this);
+        this.bossHealth = 30;
+        this.healthbar.MaxHealth = this.bossHealth;
         this.newAttack();
     }
 
     public update() {
         super.update();
+        this.pos.x += Math.random() * 2 - 1;
+        this.pos.y += Math.random() * 2 - 1;
         if (this.nextAttack || this.currentAttack.length === 0) {
             this.newAttack();
             this.nextAttack = false;
@@ -44,6 +49,7 @@ class Boss extends GameObject {
     }
 
     private checkBossHealth() {
+        this.healthbar.update();
         if (this.bossHealth <= 0) {
             this.game.switchScreen(new WinScreen(this.game));
         }
