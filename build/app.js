@@ -933,10 +933,30 @@ class Level2 extends LevelScreen {
         this.programs[0].isOpen = true;
         let adsAmount = 5;
         for (let i = 0; i < adsAmount; i++) {
-            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 3);
+            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1.5);
             this.ads[i].isOpen = true;
         }
+        this.icons[0] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
+    }
+    nextLevel() {
+        let player = this.player.box();
+        let file = this.icons[0].box();
+        if (this.collides(file, player)) {
+            this.game.switchScreen(new Level3(this.game));
+        }
+    }
+    collide() {
+        super.collide();
+        let player = this.player.box();
+        if (this.ads) {
+            this.ads.forEach(e => {
+                let ads = e.box();
+                if (this.collides(player, ads)) {
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+            });
+        }
     }
     draw() {
         super.draw(this.game.ctx);
@@ -944,6 +964,7 @@ class Level2 extends LevelScreen {
             element.update();
         });
         this.closeAds();
+        this.nextLevel();
     }
 }
 class Level3 extends LevelScreen {
@@ -984,6 +1005,8 @@ class Level4 extends LevelScreen {
         for (let i = 0; i < this.numberOfEnemies; i++) {
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
         }
+        this.story = 0;
+        this.timeInFrames = 20;
     }
     draw() {
         super.draw(this.game.ctx);
@@ -995,6 +1018,24 @@ class Level4 extends LevelScreen {
             element.enemyMove(this.game.canvas);
             element.drawBox();
         });
+        this.timer();
+    }
+    timer() {
+        if (this.timeInFrames > 0) {
+            this.timeInFrames--;
+            console.log(this.timeInFrames);
+        }
+        else if (this.timeInFrames <= 0 && this.story === 0) {
+            console.log('GODVERDOMME KYLER HOUD JE BEK NOU EENS OF IK GOOI JOU UIT HET RAAM');
+            this.story = 1;
+        }
+        if (this.story === 1) {
+            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
+            let scanner = this.icons[0].box();
+            if (this.collides(this.player.box(), scanner)) {
+                this.game.switchScreen(new BossScreen(this.game));
+            }
+        }
     }
 }
 class SelectionScreen extends GameScreen {

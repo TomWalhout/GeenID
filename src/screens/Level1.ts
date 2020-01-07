@@ -61,5 +61,4 @@ class Level1 extends LevelScreen {
             this.textbox.update();
         }
     }
-
 }
