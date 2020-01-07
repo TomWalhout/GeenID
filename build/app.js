@@ -336,6 +336,9 @@ class GameObject {
     set mirror(v) {
         this.animation.mirrored = v;
     }
+    get ani() {
+        return this.animation;
+    }
 }
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, story) {
@@ -486,7 +489,7 @@ class Attack extends GameObject {
     }
 }
 class Enemy extends Attack {
-    constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
+    constructor(pos, vel, ctx, path, screen, frames = 1, speed = 1, scale = 1) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
         this.screen = screen;
@@ -499,7 +502,7 @@ class Enemy extends Attack {
             this.pos.x < 0) {
             this.vel.x = -this.vel.x;
         }
-        if (this.pos.y + this.animation.imageHeight >= canvas.height ||
+        if (this.pos.y + this.animation.imageHeight >= canvas.height - 45 ||
             this.pos.y < 0) {
             this.vel.y = -this.vel.y;
         }
@@ -911,13 +914,18 @@ class Level2 extends LevelScreen {
         super(game);
         this.programs[0] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
         this.programs[0].isOpen = true;
-        this.ads[0] = new Ad(new Vector(this.randomNumber(0, 768), this.randomNumber(0, 1366)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1);
-        this.ads[0].isOpen = true;
+        let adsAmount = 5;
+        for (let i = 0; i < adsAmount; i++) {
+            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 3);
+            this.ads[i].isOpen = true;
+        }
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
     }
     draw() {
         super.draw(this.game.ctx);
-        this.ads[0].update();
+        this.ads.forEach(element => {
+            element.update();
+        });
         this.closeAds();
     }
 }
@@ -955,7 +963,10 @@ class Level4 extends LevelScreen {
     constructor(game) {
         super(game);
         this.enemies = new Array;
-        this.enemies[0] = new Enemy(new Vector(100, 100), new Vector(1, 1), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+        this.numberOfEnemies = 5;
+        for (let i = 0; i < this.numberOfEnemies; i++) {
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+        }
     }
     draw() {
         super.draw(this.game.ctx);
@@ -964,6 +975,8 @@ class Level4 extends LevelScreen {
         this.clickedIcon();
         this.enemies.forEach(element => {
             element.update();
+            element.enemyMove(this.game.canvas);
+            element.drawBox();
         });
     }
 }

@@ -144,4 +144,24 @@ class LevelScreen extends GameScreen {
         this.storyFlag = v;
     }
 
+
+    public multilineText(ctx : CanvasRenderingContext2D, str : string, xPos : number, yPos : number) {
+        ctx.font = '20px fantasy';
+        ctx.textAlign = "center";
+        // str = 'first line \nsecond line...';
+        // xPos = 30; //starting x coordinate
+        // yPos = 30; //starting y coordinate
+        let lineheight = 20; //the height of a line for the sentence
+
+        // use \n as a delimiter (you can choose any delimter), the split function uses this delimiter to cut the string into two strings
+        // lines is an array with all the strings
+        let lines = str.split('\n');
+
+        // loop over all the strings and write each string a number of lineheights under eacht oter 
+        for (let j = 0; j < lines.length; j++) {
+            ctx.fillText(lines[j], xPos, yPos + (j * lineheight));
+        }
+
+    }
+
 }
