@@ -945,6 +945,8 @@ class Level4 extends LevelScreen {
         for (let i = 0; i < this.numberOfEnemies; i++) {
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
         }
+        this.story = 0;
+        this.timeInFrames = 20;
     }
     draw() {
         super.draw(this.game.ctx);
@@ -956,6 +958,24 @@ class Level4 extends LevelScreen {
             element.enemyMove(this.game.canvas);
             element.drawBox();
         });
+        this.timer();
+    }
+    timer() {
+        if (this.timeInFrames > 0) {
+            this.timeInFrames--;
+            console.log(this.timeInFrames);
+        }
+        else if (this.timeInFrames <= 0 && this.story === 0) {
+            console.log('GODVERDOMME KYLER HOUD JE BEK NOU EENS OF IK GOOI JOU UIT HET RAAM');
+            this.story = 1;
+        }
+        if (this.story === 1) {
+            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
+            let scanner = this.icons[0].box();
+            if (this.collides(this.player.box(), scanner)) {
+                this.game.switchScreen(new BossScreen(this.game));
+            }
+        }
     }
 }
 class SelectionScreen extends GameScreen {
