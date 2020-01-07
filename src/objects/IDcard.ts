@@ -33,7 +33,7 @@ class IDcard extends GameObject {
         if (this.lives < this.prevlives && this.lives > 1) {
             this.prevlives--;
             this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 1.5);
-            this.ouch = 10; //length of screen
+            this.ouch = 8; //length of screen
         }
     }
 
@@ -50,8 +50,8 @@ class IDcard extends GameObject {
     }
 
     public hurtScreen() {
-        if (this.ouch == 10) {
-            this.ouchImage = new GameObject(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/damage.png', 1, 1, 1)
+        if (this.ouch == 8) {
+            this.ouchImage = new GameObject(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/damage.png', 1, 1, 2)
         }
         if (this.ouch > 0) {
             this.ouchImage.update();
