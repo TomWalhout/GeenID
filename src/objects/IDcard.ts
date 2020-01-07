@@ -24,7 +24,7 @@ class IDcard extends GameObject {
             this.invframes--;
         }
         if (this.lives <= 0) {
-            this.game.switchScreen(new SelectionScreen(this.game));
+            this.game.switchScreen(new DeathScreen(this.game));
         }
         //only update to new image when necessary, not every frame
         if (this.lives < this.prevlives && this.lives > 1) {
