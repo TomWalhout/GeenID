@@ -446,12 +446,15 @@ class Boss extends GameObject {
     }
     newAttack() {
         this.attackTimer = 0;
-        switch (Math.floor(Math.random() * 2)) {
+        switch (Math.floor(Math.random() * 3)) {
             case 0:
                 this.codeBeamAttack();
                 break;
             case 1:
                 this.enemyFlyBy();
+                break;
+            case 2:
+                this.popUpOfDeath();
                 break;
         }
     }
@@ -475,6 +478,12 @@ class Boss extends GameObject {
             for (let i = 0; i < 5; i++) {
                 this.currentAttack[i] = new Enemy(new Vector(-150, this.ctx.canvas.height - i * 80 - 50), new Vector(5, 0), this.ctx, "./assets/enemiesAndAllies/Enemy.png", this.screen, 1, 1, 1);
             }
+        }
+    }
+    popUpOfDeath() {
+        this.attackLimit = 500;
+        for (let i = 0; i < 3; i++) {
+            this.currentAttack[i] = new BossAD(new Vector(this.pos.x + 75, this.pos.y + 75), new Vector(0, 0), this.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1);
         }
     }
     get Attack() {
@@ -511,32 +520,6 @@ class Enemy extends Attack {
             this.vel.y = -this.vel.y;
         }
         this.pos.x += this.vel.x;
-    }
-}
-class Healthbar extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed, scale, boss) {
-        super(pos, vel, ctx, path, frames, speed, scale);
-        this.ctx = ctx;
-        this.live = boss.health;
-        this.maxHealth = 30;
-        this.scale = scale;
-        this.boss = boss;
-        this.greenBar = new Image();
-        this.greenBar.src = "./assets/enemiesAndAllies/healthbar-green.png";
-    }
-    update() {
-        super.update();
-        if (this.greenBar.naturalHeight > 0) {
-            this.live = this.boss.health;
-            let drawfromx = this.greenBar.width - (this.live / this.maxHealth) * this.greenBar.width;
-            console.log(drawfromx);
-            this.ctx.drawImage(this.greenBar, drawfromx, 0, this.greenBar.width, this.greenBar.height, this.pos.x, this.pos.y, this.greenBar.width * this.scale, this.greenBar.height * this.scale);
-        }
-        this.pos.x = this.boss.pos.x + 50;
-        this.pos.y = this.boss.pos.y - 50;
-    }
-    set MaxHealth(v) {
-        this.maxHealth = v;
     }
 }
 class IDcard extends GameObject {
@@ -666,9 +649,47 @@ class Wizard extends GameObject {
         super(pos, vel, ctx, path, frames, speed, scale);
     }
 }
+class BossAD extends Attack {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.setSpeed();
+    }
+    setSpeed() {
+        this.vel.x = (Math.random() * 2 - 1) * 5;
+        this.vel.y = (Math.random() * 2 - 1) * 5;
+    }
+    update() {
+        super.update();
+    }
+}
 class Codebeam extends Attack {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
         super(pos, vel, ctx, path, frames, speed, scale);
+    }
+}
+class Healthbar extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale, boss) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+        this.ctx = ctx;
+        this.live = boss.health;
+        this.maxHealth = 30;
+        this.scale = scale;
+        this.boss = boss;
+        this.greenBar = new Image();
+        this.greenBar.src = "./assets/enemiesAndAllies/healthbar-green.png";
+    }
+    update() {
+        super.update();
+        if (this.greenBar.naturalHeight > 0) {
+            this.live = this.boss.health;
+            let drawfromx = this.greenBar.width - (this.live / this.maxHealth) * this.greenBar.width;
+            this.ctx.drawImage(this.greenBar, drawfromx, 0, this.greenBar.width, this.greenBar.height, this.pos.x, this.pos.y, this.greenBar.width * this.scale, this.greenBar.height * this.scale);
+        }
+        this.pos.x = this.boss.pos.x + 50;
+        this.pos.y = this.boss.pos.y - 50;
+    }
+    set MaxHealth(v) {
+        this.maxHealth = v;
     }
 }
 class GameScreen {
@@ -827,7 +848,7 @@ class LevelScreen extends GameScreen {
     }
     clickedIcon() {
         for (let i = 0; i < this.icons.length; i++) {
-            if (this.icons[i].clickedOn(this.userinput)) {
+            if (this.icons[i].clickedOn(this.userinput) && this.icons[i].story >= this.storyFlag) {
                 this.programs[i].isOpen = true;
             }
         }
@@ -875,7 +896,12 @@ class BossScreen extends LevelScreen {
             this.boss.Attack.forEach(e => {
                 let attack = e.box();
                 if (this.collides(player, attack)) {
-                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                    if (e instanceof BossAD) {
+                        e.vel = new Vector(0, 0);
+                    }
+                    else {
+                        this.id.youGotRekt = this.id.youGotRekt - 1;
+                    }
                 }
             });
         }
@@ -1153,6 +1179,7 @@ class SelectionScreen extends GameScreen {
             this.game.playerinfo[1] = prompt("En hoe oud ben je?", "10") + " jaar";
             this.game.squary = this.FaceOptions[this.counter].path;
             this.game.bodySquary = this.BodyOptions[this.bodyCounter].path;
+            this.game.Lives = 5;
             this.game.switchScreen(new Level1(this.game));
         }
         this.next++;

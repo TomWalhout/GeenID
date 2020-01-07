@@ -54,7 +54,7 @@ class LevelScreen extends GameScreen {
             }
             // console.log(this.game.playerinfo)
         }
-        
+
         for (let i = 0; i < this.programs.length; i++) {
             if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
                 this.programs[i].update();
@@ -78,7 +78,7 @@ class LevelScreen extends GameScreen {
         let onground = false;
         this.programs.forEach(program => {
             if (program.isOpen) {
-                
+
                 let programbox = program.box();
                 // program.drawBox();
                 let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
@@ -124,7 +124,7 @@ class LevelScreen extends GameScreen {
 
     protected clickedIcon() {
         for (let i = 0; i < this.icons.length; i++) {
-            if (this.icons[i].clickedOn(this.userinput)) {
+            if (this.icons[i].clickedOn(this.userinput) && this.icons[i].story >= this.storyFlag) {
                 this.programs[i].isOpen = true;
             }
         }
@@ -147,7 +147,7 @@ class LevelScreen extends GameScreen {
         this.storyFlag = v;
     }
 
-    public multilineText(ctx : CanvasRenderingContext2D, str : string, xPos : number, yPos : number) {
+    public multilineText(ctx: CanvasRenderingContext2D, str: string, xPos: number, yPos: number) {
         ctx.font = '20px fantasy';
         ctx.textAlign = "center";
         // str = 'first line \nsecond line...';

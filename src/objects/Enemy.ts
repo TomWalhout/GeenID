@@ -1,4 +1,4 @@
-/// <reference path="./bossattacks/Attack.ts"/>
+/// <reference path="./bossstuff/Attack.ts"/>
 
 class Enemy extends Attack {
     protected ctx: CanvasRenderingContext2D;
@@ -23,7 +23,7 @@ class Enemy extends Attack {
             this.vel.x = -this.vel.x;
         }
         if (
-            this.pos.y + this.animation.imageHeight >= canvas.height - 45|| // 45 is de bar aan de onderkant
+            this.pos.y + this.animation.imageHeight >= canvas.height - 45 || // 45 is de bar aan de onderkant
             this.pos.y < 0
         ) {
             this.vel.y = -this.vel.y;
