@@ -57,12 +57,15 @@ class Boss extends GameObject {
     private newAttack() {
         this.attackTimer = 0;
         // This will become a list of attacks of which it will choose one
-        switch (Math.floor(Math.random() * 2)) {
+        switch (Math.floor(Math.random() * 3)) {
             case 0:
                 this.codeBeamAttack();
                 break;
             case 1:
                 this.enemyFlyBy();
+                break;
+            case 2:
+                this.popUpOfDeath();
                 break;
         }
     }
@@ -89,6 +92,14 @@ class Boss extends GameObject {
             for (let i = 0; i < 5; i++) {
                 this.currentAttack[i] = new Enemy(new Vector(-150, this.ctx.canvas.height - i * 80 - 50), new Vector(5, 0), this.ctx, "./assets/enemiesAndAllies/Enemy.png", this.screen, 1, 1, 1);
             }
+        }
+    }
+
+
+    private popUpOfDeath() {
+        this.attackLimit = 500;
+        for (let i = 0; i < 3; i++) {
+            this.currentAttack[i] = new BossAD(new Vector(this.pos.x + 75, this.pos.y + 75), new Vector(0, 0), this.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1);
         }
     }
 
