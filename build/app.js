@@ -78,6 +78,9 @@ class Game {
             if (this.input.isKeyDown(UserInput.KEY_4) && !(this.currentScreen instanceof Level4)) {
                 this.switchScreen(new Level4(this));
             }
+            if (this.input.isKeyDown(UserInput.KEY_5) && !(this.currentScreen instanceof BossScreen)) {
+                this.switchScreen(new BossScreen(this));
+            }
         };
         this.canvas = canvasId;
         this.canvas.width = 1366;
@@ -232,6 +235,7 @@ UserInput.KEY_1 = 49;
 UserInput.KEY_2 = 50;
 UserInput.KEY_3 = 51;
 UserInput.KEY_4 = 52;
+UserInput.KEY_5 = 53;
 class Vector {
     constructor(xpos = 0, ypos = 0) {
         this.xpos = xpos;
@@ -831,6 +835,15 @@ class LevelScreen extends GameScreen {
     set story(v) {
         this.storyFlag = v;
     }
+    multilineText(ctx, str, xPos, yPos) {
+        ctx.font = '20px fantasy';
+        ctx.textAlign = "center";
+        let lineheight = 20;
+        let lines = str.split('\n');
+        for (let j = 0; j < lines.length; j++) {
+            ctx.fillText(lines[j], xPos, yPos + (j * lineheight));
+        }
+    }
 }
 class BossScreen extends LevelScreen {
     constructor(game) {
@@ -880,6 +893,7 @@ class Level1 extends LevelScreen {
         this.programs[0] = new Program(new Vector(400, 500), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
         this.programs[1] = new Program(new Vector(100, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.4, 1);
         this.programs[1].isOpen = false;
+        this.programs[2] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 275, this.game.canvas.height - 150), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 310), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
     }
@@ -889,6 +903,9 @@ class Level1 extends LevelScreen {
         this.closeProgram();
         this.clickedIcon();
         this.storyCheck();
+        if (this.story >= 1) {
+            this.multilineText(this.game.ctx, 'Squary!\nKlik op de icoontjes\nJe kan springen\nop de programmas', 1000, 500);
+        }
         super.draw(this.game.ctx);
     }
     storyCheck() {
@@ -899,7 +916,7 @@ class Level1 extends LevelScreen {
         }
         let Glooole = this.icons[1].box();
         if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new BossScreen(this.game));
+            this.game.switchScreen(new Level2(this.game));
         }
     }
     updateOtherThings() {
