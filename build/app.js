@@ -81,10 +81,14 @@ class Game {
         this.canvas.height = 768;
         document.documentElement.style.overflow = 'hidden';
         this.ctx = this.canvas.getContext("2d");
+        this.squaryString = "./assets/squaryArmy/face/happyBlue.png";
+        this.squaryBody = "./assets/squaryArmy/body/squaryBlue.png";
         this.currentScreen = new HomeScreen(this);
         this.input = new UserInput();
         this.Lives = 5;
         this.playerInfo = [];
+        this.playerInfo[0] = "Squary";
+        this.playerInfo[1] = "12";
         this.loop();
     }
     writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "white") {
@@ -394,34 +398,65 @@ class Boss extends GameObject {
         this.screen = screen;
         this.currentAttack = new Array;
         this.attackTimer = 0;
+        this.attackLimit = 120;
+        this.bossHealth = 30;
         this.newAttack();
     }
     update() {
         super.update();
-        if (this.nextAttack) {
+        if (this.nextAttack || this.currentAttack.length === 0) {
             this.newAttack();
             this.nextAttack = false;
         }
         else {
             this.attackTimer++;
-            if (this.attackTimer >= 120) {
+            if (this.attackTimer >= this.attackLimit) {
                 this.nextAttack = true;
             }
         }
-        this.currentAttack.forEach(e => { e.update(); });
-        console.log(this.attackTimer);
+        for (let i = this.currentAttack.length - 1; i >= 0; i--) {
+            this.currentAttack[i].update();
+            if (this.currentAttack[i].pos.y > this.ctx.canvas.height || this.currentAttack[i].pos.x < 0) {
+                this.currentAttack.splice(i, 1);
+            }
+        }
+        console.log(this.bossHealth);
     }
     newAttack() {
         this.attackTimer = 0;
-        for (let i = 0; i < 8; i++) {
-            this.currentAttack[i] = new Codebeam(new Vector(i * 80, 0), new Vector(0, 5), this.ctx, "./assets/enemiesAndAllies/testing.png", 4, 3, 1);
+        this.enemyFlyBy();
+    }
+    codeBeamAttack() {
+        this.attackLimit = 3000;
+        for (let i = 0; i < 13; i++) {
+            this.currentAttack[i] = new Codebeam(new Vector(i * 120 + Math.random() * 40, -(Math.random() * 100)), new Vector(0, 5 + Math.random() * 3), this.ctx, "./assets/enemiesAndAllies/testing.png", 4, 3, 1);
+            if (this.currentAttack[i].pos.y >= 300) {
+                this.currentAttack[i].pos.y = 300;
+            }
+        }
+    }
+    enemyFlyBy() {
+        this.attackLimit = 3000;
+        for (let i = 0; i < 5; i++) {
+            this.currentAttack[i] = new Enemy(new Vector(this.ctx.canvas.width, this.ctx.canvas.height - i * 50 - 50), new Vector(-5, 0), this.ctx, "./assets/enemiesAndAllies/Enemy.png", this.screen, 1, 1, 1);
         }
     }
     get Attack() {
         return this.currentAttack;
     }
+    get health() {
+        return this.bossHealth;
+    }
+    set health(v) {
+        this.bossHealth = v;
+    }
 }
-class Enemy extends GameObject {
+class Attack extends GameObject {
+    constructor(pos, vel, ctx, path, frames, speed, scale) {
+        super(pos, vel, ctx, path, frames, speed, scale);
+    }
+}
+class Enemy extends Attack {
     constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
@@ -568,11 +603,6 @@ class Wizard extends GameObject {
         super(pos, vel, ctx, path, frames, speed, scale);
     }
 }
-class Attack extends GameObject {
-    constructor(pos, vel, ctx, path, frames, speed, scale) {
-        super(pos, vel, ctx, path, frames, speed, scale);
-    }
-}
 class Codebeam extends Attack {
     constructor(pos, vel, ctx, path, frames, speed, scale) {
         super(pos, vel, ctx, path, frames, speed, scale);
@@ -652,7 +682,9 @@ class LevelScreen extends GameScreen {
         this.shouldSwitchToTitleScreen = false;
         this.id = new IDcard(new Vector(this.game.canvas.width + 1, 0), new Vector(0, 0), this.game.ctx, './assets/idcard/idCard.png', 1, 1, 1.5, game);
         this.player = new Player(new Vector(100, 1000), new Vector(0, 0), this.game.ctx, this.game.squary, 1, 1, 1, this.game.bodySquary);
-        document.body.style.backgroundImage = "url('./assets/xp-bg.png')";
+        if (!(this instanceof BossScreen)) {
+            document.body.style.backgroundImage = "url('./assets/xp-bg.png')";
+        }
         this.icons = [];
         this.programs = [];
         this.ads = [];
@@ -675,7 +707,7 @@ class LevelScreen extends GameScreen {
                 this.icons[i].update();
             }
         }
-        if (this instanceof HomeScreen || this instanceof LevelScreen) {
+        if (!(this instanceof HomeScreen)) {
             this.player.update();
         }
     }
@@ -749,7 +781,8 @@ class LevelScreen extends GameScreen {
 class BossScreen extends LevelScreen {
     constructor(game) {
         super(game);
-        this.boss = new Boss(new Vector(600, 100), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5);
+        document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
+        this.boss = new Boss(new Vector(600, 250), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5);
     }
     draw(ctx) {
         super.draw(ctx);
@@ -759,7 +792,7 @@ class BossScreen extends LevelScreen {
         let boss = this.boss.box();
         let player = this.player.box();
         if (this.collides(boss, player)) {
-            this.id.youGotRekt = this.id.youGotRekt - 1;
+            this.boss.health = this.boss.health - 1;
         }
         if (this.boss.Attack) {
             this.boss.Attack.forEach(e => {
