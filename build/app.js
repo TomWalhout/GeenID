@@ -890,7 +890,7 @@ class Level1 extends LevelScreen {
         }
         let Glooole = this.icons[1].box();
         if (this.collides(Glooole, player)) {
-            this.game.switchScreen(new BossScreen(this.game));
+            this.game.switchScreen(new Level2(this.game));
         }
     }
     updateOtherThings() {
@@ -907,7 +907,7 @@ class Level2 extends LevelScreen {
         this.programs[0].isOpen = true;
         let adsAmount = 5;
         for (let i = 0; i < adsAmount; i++) {
-            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 3);
+            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1.5);
             this.ads[i].isOpen = true;
         }
         this.icons[0] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
@@ -921,6 +921,7 @@ class Level2 extends LevelScreen {
         }
     }
     collide() {
+        super.collide();
         let player = this.player.box();
         if (this.ads) {
             this.ads.forEach(e => {
@@ -992,6 +993,7 @@ class Level4 extends LevelScreen {
             element.drawBox();
         });
         this.timer();
+        this.enemyCollision();
     }
     timer() {
         if (this.timeInFrames > 0) {
@@ -1007,6 +1009,13 @@ class Level4 extends LevelScreen {
             let scanner = this.icons[0].box();
             if (this.collides(this.player.box(), scanner)) {
                 this.game.switchScreen(new BossScreen(this.game));
+            }
+        }
+    }
+    enemyCollision() {
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.collides(this.player.box(), this.enemies[i].box())) {
+                this.id.youGotRekt = this.id.youGotRekt - 1;
             }
         }
     }

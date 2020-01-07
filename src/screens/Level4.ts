@@ -31,6 +31,7 @@ class Level4 extends LevelScreen {
             element.drawBox()
         })
         this.timer();
+        this.enemyCollision();
     }
 
     public timer() {
@@ -45,10 +46,18 @@ class Level4 extends LevelScreen {
 
         //next step
         if (this.story === 1) {
-            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4)    
+            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4)
             let scanner = this.icons[0].box();
             if (this.collides(this.player.box(), scanner)) {
                 this.game.switchScreen(new BossScreen(this.game))
+            }
+        }
+    }
+
+    public enemyCollision() {
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.collides(this.player.box(), this.enemies[i].box())) {
+                this.id.youGotRekt = this.id.youGotRekt - 1;
             }
         }
     }
