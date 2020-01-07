@@ -809,6 +809,15 @@ class LevelScreen extends GameScreen {
     set story(v) {
         this.storyFlag = v;
     }
+    multilineText(ctx, str, xPos, yPos) {
+        ctx.font = '20px fantasy';
+        ctx.textAlign = "center";
+        let lineheight = 20;
+        let lines = str.split('\n');
+        for (let j = 0; j < lines.length; j++) {
+            ctx.fillText(lines[j], xPos, yPos + (j * lineheight));
+        }
+    }
 }
 class BossScreen extends LevelScreen {
     constructor(game) {
@@ -858,6 +867,7 @@ class Level1 extends LevelScreen {
         this.programs[0] = new Program(new Vector(400, 500), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
         this.programs[1] = new Program(new Vector(100, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.4, 1);
         this.programs[1].isOpen = false;
+        this.programs[2] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 275, this.game.canvas.height - 150), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 310), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
     }
@@ -867,6 +877,9 @@ class Level1 extends LevelScreen {
         this.closeProgram();
         this.clickedIcon();
         this.storyCheck();
+        if (this.story >= 1) {
+            this.multilineText(this.game.ctx, 'Squary!\nKlik op de icoontjes\nJe kan springen\nop de programmas', 1000, 500);
+        }
         super.draw(this.game.ctx);
     }
     storyCheck() {
@@ -892,14 +905,39 @@ class Level2 extends LevelScreen {
         super(game);
         this.programs[0] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
         this.programs[0].isOpen = true;
-        this.ads[0] = new Ad(new Vector(this.randomNumber(0, 768), this.randomNumber(0, 1366)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1);
-        this.ads[0].isOpen = true;
+        let adsAmount = 5;
+        for (let i = 0; i < adsAmount; i++) {
+            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 3);
+            this.ads[i].isOpen = true;
+        }
+        this.icons[0] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
+    }
+    nextLevel() {
+        let player = this.player.box();
+        let file = this.icons[0].box();
+        if (this.collides(file, player)) {
+            this.game.switchScreen(new Level3(this.game));
+        }
+    }
+    collide() {
+        let player = this.player.box();
+        if (this.ads) {
+            this.ads.forEach(e => {
+                let ads = e.box();
+                if (this.collides(player, ads)) {
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+            });
+        }
     }
     draw() {
         super.draw(this.game.ctx);
-        this.ads[0].update();
+        this.ads.forEach(element => {
+            element.update();
+        });
         this.closeAds();
+        this.nextLevel();
     }
 }
 class Level3 extends LevelScreen {

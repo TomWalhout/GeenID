@@ -25,7 +25,6 @@ class Level3 extends LevelScreen {
     }
 
     public draw() {
-        // this.programs[0].drawBox();
         super.draw(this.game.ctx);
         this.closeAds();
         this.closeProgram();

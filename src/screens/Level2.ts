@@ -12,12 +12,15 @@ class Level2 extends LevelScreen {
         // fill this boi up
         this.programs[0] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
         this.programs[0].isOpen = true;
-        this.programs[0].hasAds = true;
-        this.ads[0] = new Ad (new Vector(this.randomNumber(100, 1266), this.randomNumber(100, 668)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1.3)
-        this.ads[1] = new Ad (new Vector(this.randomNumber(100, 1266), this.randomNumber(100, 668)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1.3)
-        this.ads[2] = new Ad (new Vector(this.randomNumber(100, 1266), this.randomNumber(100, 668)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1.3)
+
+        let adsAmount = 5; // amount of ads
+        for (let i = 0; i < adsAmount; i++) {
+            
+            this.ads[i] = new Ad (new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 3) //150 is adWidth, 95 is adHeight + windowsBarHeight
+            this.ads[i].isOpen = true;
+        }
+
         this.icons[0] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
-        
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
         }
 
@@ -47,13 +50,10 @@ class Level2 extends LevelScreen {
   
     public draw() {
         super.draw(this.game.ctx);
-        if (this.ads.length > 0) {
-            this.ads.forEach(e => {
-                e.update();
-            })
-        }
-
+        this.ads.forEach(element => {
+            element.update()
+        })
+        this.closeAds();
         this.nextLevel();
-        this.closeAds()
         }
 }
