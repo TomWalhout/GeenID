@@ -13,7 +13,8 @@ class BossScreen extends LevelScreen {
      */
     public constructor(game: Game) {
         super(game);
-        this.boss = new Boss(new Vector(600, 100), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5);
+        document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
+        this.boss = new Boss(new Vector(600, 250), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
     }
     /**
      * Let this screen draw itself and its gameobjects on the given rendering
@@ -30,15 +31,15 @@ class BossScreen extends LevelScreen {
         let boss = this.boss.box();
         let player = this.player.box();
         if (this.collides(boss, player)) {
-            this.id.youGotRekt = this.id.youGotRekt - 1;
+            this.boss.health = this.boss.health - 1;
         }
         if (this.boss.Attack) {
-            this.boss.Attack.forEach(e => { 
-            let attack = e.box();
-            if (this.collides(player, attack)){
-                this.id.youGotRekt = this.id.youGotRekt - 1;
-            }
-        })
+            this.boss.Attack.forEach(e => {
+                let attack = e.box();
+                if (this.collides(player, attack)) {
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+            })
         }
     }
 

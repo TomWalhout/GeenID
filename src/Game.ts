@@ -19,10 +19,14 @@ class Game {
         document.documentElement.style.overflow = 'hidden';
         // Set the context of the canvas
         this.ctx = this.canvas.getContext("2d");
+        this.squaryString = "./assets/squaryArmy/face/happyBlue.png";
+        this.squaryBody = "./assets/squaryArmy/body/squaryBlue.png";
         this.currentScreen = new HomeScreen(this); // Level the game starts on
         this.input = new UserInput();
         this.Lives = 5;
         this.playerInfo = [];
+        this.playerInfo[0] = "Squary";
+        this.playerInfo[1] = "12";
         this.loop();
 
     }
@@ -61,6 +65,9 @@ class Game {
         }
         if (this.input.isKeyDown(UserInput.KEY_3) && !(this.currentScreen instanceof Level3)) {
             this.switchScreen(new Level3(this))
+        }
+        if (this.input.isKeyDown(UserInput.KEY_4) && !(this.currentScreen instanceof Level4)) {
+            this.switchScreen(new Level4(this))
         }
     }
 
