@@ -336,6 +336,9 @@ class GameObject {
     set mirror(v) {
         this.animation.mirrored = v;
     }
+    get ani() {
+        return this.animation;
+    }
 }
 class Program extends GameObject {
     constructor(pos, vel, ctx, path, frames, speed, scale, story) {
@@ -396,7 +399,7 @@ class Ad extends Program {
     }
 }
 class Boss extends GameObject {
-    constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
+    constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1, game) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
         this.screen = screen;
@@ -404,6 +407,7 @@ class Boss extends GameObject {
         this.attackTimer = 0;
         this.attackLimit = 120;
         this.bossHealth = 30;
+        this.game = game;
         this.newAttack();
     }
     update() {
@@ -420,15 +424,27 @@ class Boss extends GameObject {
         }
         for (let i = this.currentAttack.length - 1; i >= 0; i--) {
             this.currentAttack[i].update();
-            if (this.currentAttack[i].pos.y > this.ctx.canvas.height || this.currentAttack[i].pos.x < 0) {
+            if (this.currentAttack[i].pos.y > this.ctx.canvas.height || this.currentAttack[i].pos.x < -150 || this.currentAttack[i].pos.x > this.ctx.canvas.width) {
                 this.currentAttack.splice(i, 1);
             }
         }
-        console.log(this.bossHealth);
+        this.checkBossHealth();
+    }
+    checkBossHealth() {
+        if (this.bossHealth <= 0) {
+            this.game.switchScreen(new WinScreen(this.game));
+        }
     }
     newAttack() {
         this.attackTimer = 0;
-        this.enemyFlyBy();
+        switch (Math.floor(Math.random() * 2)) {
+            case 0:
+                this.codeBeamAttack();
+                break;
+            case 1:
+                this.enemyFlyBy();
+                break;
+        }
     }
     codeBeamAttack() {
         this.attackLimit = 3000;
@@ -441,8 +457,15 @@ class Boss extends GameObject {
     }
     enemyFlyBy() {
         this.attackLimit = 3000;
-        for (let i = 0; i < 5; i++) {
-            this.currentAttack[i] = new Enemy(new Vector(this.ctx.canvas.width, this.ctx.canvas.height - i * 50 - 50), new Vector(-5, 0), this.ctx, "./assets/enemiesAndAllies/Enemy.png", this.screen, 1, 1, 1);
+        if ((Math.floor(Math.random() * 2) + 1) > 1) {
+            for (let i = 0; i < 5; i++) {
+                this.currentAttack[i] = new Enemy(new Vector(this.ctx.canvas.width, this.ctx.canvas.height - i * 80 - 50), new Vector(-5, 0), this.ctx, "./assets/enemiesAndAllies/Enemy.png", this.screen, 1, 1, 1);
+            }
+        }
+        else {
+            for (let i = 0; i < 5; i++) {
+                this.currentAttack[i] = new Enemy(new Vector(-150, this.ctx.canvas.height - i * 80 - 50), new Vector(5, 0), this.ctx, "./assets/enemiesAndAllies/Enemy.png", this.screen, 1, 1, 1);
+            }
         }
     }
     get Attack() {
@@ -461,7 +484,7 @@ class Attack extends GameObject {
     }
 }
 class Enemy extends Attack {
-    constructor(pos, vel, ctx, path, screen, frames = 0, speed = 0, scale = 1) {
+    constructor(pos, vel, ctx, path, screen, frames = 1, speed = 1, scale = 1) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
         this.screen = screen;
@@ -474,7 +497,7 @@ class Enemy extends Attack {
             this.pos.x < 0) {
             this.vel.x = -this.vel.x;
         }
-        if (this.pos.y + this.animation.imageHeight >= canvas.height ||
+        if (this.pos.y + this.animation.imageHeight >= canvas.height - 45 ||
             this.pos.y < 0) {
             this.vel.y = -this.vel.y;
         }
@@ -700,6 +723,12 @@ class LevelScreen extends GameScreen {
             this.id.update();
             this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[0], 20, new Vector(this.game.canvas.width - 50, 30), "right", "#000000");
             this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[1], 20, new Vector(this.game.canvas.width - 50, 60), "right", "#000000");
+            if (this.id.youGotRekt > 1) {
+                this.writeTextToCanvas(this.game.ctx, `${this.id.youGotRekt} levens over`, 20, new Vector(this.game.canvas.width - 25, 90), "right", "#000000");
+            }
+            else {
+                this.writeTextToCanvas(this.game.ctx, `${this.id.youGotRekt} leven over`, 20, new Vector(this.game.canvas.width - 25, 90), "right", "#000000");
+            }
         }
         for (let i = 0; i < this.programs.length; i++) {
             if (this.programs[i].isOpen && this.programs[i].storyFlag <= this.storyFlag) {
@@ -785,7 +814,7 @@ class BossScreen extends LevelScreen {
     constructor(game) {
         super(game);
         document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
-        this.boss = new Boss(new Vector(600, 250), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5);
+        this.boss = new Boss(new Vector(600, 250), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
     }
     draw(ctx) {
         super.draw(ctx);
@@ -907,7 +936,10 @@ class Level4 extends LevelScreen {
     constructor(game) {
         super(game);
         this.enemies = new Array;
-        this.enemies[0] = new Enemy(new Vector(100, 100), new Vector(1, 1), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+        this.numberOfEnemies = 5;
+        for (let i = 0; i < this.numberOfEnemies; i++) {
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+        }
     }
     draw() {
         super.draw(this.game.ctx);
@@ -916,6 +948,8 @@ class Level4 extends LevelScreen {
         this.clickedIcon();
         this.enemies.forEach(element => {
             element.update();
+            element.enemyMove(this.game.canvas);
+            element.drawBox();
         });
     }
 }
@@ -1030,6 +1064,17 @@ class SelectionScreen extends GameScreen {
                 this.bodyCounter = this.BodyOptions.length - 1;
             }
         }
+    }
+}
+class WinScreen extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.wizard = new Wizard(new Vector(300, 0), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 8);
+        document.body.style.backgroundImage = "url('./assets/gewonnen-bg.png')";
+    }
+    draw(ctx) {
+        super.draw(ctx);
+        this.wizard.update();
     }
 }
 //# sourceMappingURL=app.js.map

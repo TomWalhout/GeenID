@@ -3,13 +3,17 @@
 class Level4 extends LevelScreen {
 
     private enemies: Array<Enemy>
-    private enemy: Enemy;
+    private numberOfEnemies: number;
 
     public constructor(game: Game) {
         super(game)
 
         this.enemies = new Array;
-        this.enemies[0] = new Enemy(new Vector(100, 100), new Vector(1, 1), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+        this.numberOfEnemies = 5 //number of enemies
+
+        for (let i = 0; i < this.numberOfEnemies; i++) {
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this); // 145 = enemyWidth, 190 = enemyHeight + windowsbarHeight
+        }
 
     }
 
@@ -20,6 +24,8 @@ class Level4 extends LevelScreen {
         this.clickedIcon();
         this.enemies.forEach(element => {
             element.update()
+            element.enemyMove(this.game.canvas)
+            element.drawBox()
         })
     }
 }

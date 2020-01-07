@@ -43,4 +43,6 @@ class IDcard extends GameObject {
     public get youGotRekt(): number {
         return this.lives;
     }
+
+
 }
