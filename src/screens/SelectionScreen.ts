@@ -97,6 +97,7 @@ class SelectionScreen extends GameScreen {
             if (this.counter >= this.FaceOptions.length) {
                 this.counter = 0;
             }
+
         } else if (this.knop[0].clickedOn(this.game.userInput) && !this.toggle2) {
             this.toggle2 = true;
             this.counter--;
@@ -104,15 +105,19 @@ class SelectionScreen extends GameScreen {
                 this.counter = this.FaceOptions.length - 1;
             }
         }
+
         if (!this.knop[1].clickedOn(this.game.userInput)) {
             this.toggle1 = false;
         }
+
         if (!this.knop[0].clickedOn(this.game.userInput)) {
             this.toggle2 = false;
         }
+
         if (!this.knop[2].clickedOn(this.game.userInput)) {
             this.bodytoggle1 = false;
         }
+
         if (!this.knop[3].clickedOn(this.game.userInput)) {
             this.bodytoggle2 = false;
         }
@@ -124,6 +129,7 @@ class SelectionScreen extends GameScreen {
                 this.bodyCounter = 0;
             }
         }
+        
         if (this.knop[3].clickedOn(this.game.userInput) && !this.bodytoggle2) {
             this.bodytoggle2 = true;
             this.bodyCounter--;
