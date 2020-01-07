@@ -538,7 +538,7 @@ class IDcard extends GameObject {
             this.invframes--;
         }
         if (this.lives <= 0) {
-            this.game.switchScreen(new SelectionScreen(this.game));
+            this.game.switchScreen(new DeathScreen(this.game));
         }
         if (this.lives < this.prevlives && this.lives > 1) {
             this.prevlives--;
@@ -907,6 +907,17 @@ class BossScreen extends LevelScreen {
         }
     }
 }
+class DeathScreen extends LevelScreen {
+    constructor(game) {
+        super(game);
+        this.wizard = new Wizard(new Vector(300, 0), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 8);
+        document.body.style.backgroundImage = "url('./assets/verloren.png')";
+    }
+    draw(ctx) {
+        super.draw(ctx);
+        this.wizard.update();
+    }
+}
 class HomeScreen extends LevelScreen {
     constructor(game) {
         super(game);
@@ -923,15 +934,17 @@ class HomeScreen extends LevelScreen {
 class Level1 extends LevelScreen {
     constructor(game) {
         super(game);
-        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 0);
+        this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 1);
         this.icons[1] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
         this.icons[2] = new Icon(new Vector(100, 100), new Vector(0, 0), this.game.ctx, './assets/icons/pijl.png', 5, 10, 1.4, 1);
         this.programs[0] = new Program(new Vector(400, 500), new Vector(0, 0), this.game.ctx, './assets/windows/Word.png', 1, 1, 0.7, 0);
         this.programs[1] = new Program(new Vector(100, 300), new Vector(0, 0), this.game.ctx, './assets/programs/Glooole.png', 1, 1, 0.4, 1);
+        this.programs[0].isOpen = false;
         this.programs[1].isOpen = false;
         this.programs[2] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
         this.wizard = new Wizard(new Vector(this.game.canvas.width - 275, this.game.canvas.height - 150), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 310), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.story = 0;
     }
     draw() {
         this.updateOtherThings();
@@ -939,9 +952,8 @@ class Level1 extends LevelScreen {
         this.closeProgram();
         this.clickedIcon();
         this.storyCheck();
-        if (this.story >= 1) {
-            this.multilineText(this.game.ctx, 'Squary!\nKlik op de icoontjes\nJe kan springen\nop de programmas', 1000, 500);
-        }
+        this.storyText();
+        console.log(this.story);
         super.draw(this.game.ctx);
     }
     storyCheck() {
@@ -949,6 +961,12 @@ class Level1 extends LevelScreen {
         let wiz = this.wizard.box();
         if (this.collides(player, wiz) && this.story < 1) {
             this.story = this.story + 1;
+        }
+        if (this.programs[1].isOpen) {
+            this.story = 2;
+        }
+        if (this.programs[0].isOpen && this.programs[1].isOpen) {
+            this.story = 3;
         }
         let Glooole = this.icons[1].box();
         if (this.collides(Glooole, player)) {
@@ -959,6 +977,23 @@ class Level1 extends LevelScreen {
         this.wizard.update();
         if (this.story > 0) {
             this.textbox.update();
+        }
+    }
+    storyText() {
+        if (this.story == 1) {
+            this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het gloole icoon.\n`, 1000, 500);
+            console.log(this.story);
+        }
+        else if (this.story == 2) {
+            this.multilineText(this.game.ctx, 'Perfect!\nKlik nu op Fort.', 1000, 500);
+            this.icons[2].pos.y = 0;
+            console.log(this.story);
+        }
+        else if (this.story == 3) {
+            this.multilineText(this.game.ctx, 'Spring nu naar\nhet Glooole programma', 1000, 400);
+            this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 420), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+            this.icons[2].pos.y = 100;
+            console.log(this.story);
         }
     }
 }
@@ -1055,6 +1090,7 @@ class Level4 extends LevelScreen {
             element.drawBox();
         });
         this.timer();
+        this.enemyCollision();
     }
     timer() {
         if (this.timeInFrames > 0) {
@@ -1069,6 +1105,13 @@ class Level4 extends LevelScreen {
             let scanner = this.icons[0].box();
             if (this.collides(this.player.box(), scanner)) {
                 this.game.switchScreen(new BossScreen(this.game));
+            }
+        }
+    }
+    enemyCollision() {
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.collides(this.player.box(), this.enemies[i].box())) {
+                this.id.youGotRekt = this.id.youGotRekt - 1;
             }
         }
     }
