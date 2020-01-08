@@ -1092,6 +1092,18 @@ class Level2 extends LevelScreen {
         if (this.story < 1) {
             this.story = this.story + 1;
         }
+        if (this.game.Lives == 4) {
+            this.story = 2;
+        }
+        else if (this.game.lives == 3) {
+            this.story = 3;
+        }
+        else if (this.game.lives == 2) {
+            this.story = 4;
+        }
+        else if (this.game.lives == 1) {
+            this.story = 5;
+        }
     }
     updateOtherThings() {
         this.wizard.update();
@@ -1102,8 +1114,25 @@ class Level2 extends LevelScreen {
     storyText() {
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
+            console.log(this.story);
         }
-        if (this.story == 2) {
+        else if (this.story == 2) {
+            this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, 175, 220);
+        }
+        else if (this.story == 3) {
+            this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}?\n`, 175, 220);
+            this.wizard.pos.x += Math.random() * 2 - 1;
+            this.wizard.pos.y += Math.random() * 2 - 1;
+        }
+        else if (this.story == 4) {
+            this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}! luister je wel?\n`, 175, 220);
+            this.wizard.pos.x += Math.random() * 4 - 2;
+            this.wizard.pos.y += Math.random() * 4 - 2;
+        }
+        else if (this.story == 5) {
+            this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}... g-gaat het wel?\n`, 175, 220);
+            this.wizard.pos.x += Math.random() * 6 - 3;
+            this.wizard.pos.y += Math.random() * 6 - 3;
         }
     }
 }
@@ -1128,7 +1157,6 @@ class Level3 extends LevelScreen {
         this.clickedIcon();
         this.textbox.update();
         this.nextLevel();
-        this.storyCheck();
         this.storyText();
         this.wizard.update();
     }
@@ -1145,12 +1173,10 @@ class Level3 extends LevelScreen {
             this.game.switchScreen(new Level4(this.game));
         }
     }
-    storyCheck() {
+    storyText() {
         if (this.story < 1) {
             this.story = this.story + 1;
         }
-    }
-    storyText() {
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `W-Wacht! ${this.game.playerinfo[0]}!\nDat i-is een bug file\nIk denk dat we gehackt zijn\nWat je ook doet...\nGA NIET NAAR DE BUGFILE\n`, 400, 90);
         }
