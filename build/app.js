@@ -1112,6 +1112,8 @@ class Level4 extends LevelScreen {
         for (let i = 0; i < this.numberOfEnemies; i++) {
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
         }
+        this.programs[0] = new Program(new Vector(300, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.5, 0);
+        this.programs[0].isOpen = true;
         this.story = 0;
         this.timeInFrames = 20;
     }
@@ -1131,7 +1133,6 @@ class Level4 extends LevelScreen {
     timer() {
         if (this.timeInFrames > 0) {
             this.timeInFrames--;
-            console.log(this.timeInFrames);
         }
         else if (this.timeInFrames <= 0 && this.story === 0) {
             this.story = 1;
