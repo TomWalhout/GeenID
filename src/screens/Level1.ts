@@ -34,7 +34,7 @@ class Level1 extends LevelScreen {
         this.clickedIcon();
         this.storyCheck();
         this.storyText();
-        console.log(this.story);
+        // console.log(this.story);
 
         super.draw(this.game.ctx);
     }
@@ -70,16 +70,16 @@ class Level1 extends LevelScreen {
     public storyText() {
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het gloole icoon.\n`, 1000, 500); //1200 en 500
-            console.log(this.story);
+            // console.log(this.story);
         } else if (this.story == 2) {
             this.multilineText(this.game.ctx, 'Perfect!\nKlik nu op Fort.', 1000, 500); 
             this.icons[2].pos.y = 0;
-            console.log(this.story);
+            // console.log(this.story);
         } else if (this.story == 3) {
             this.multilineText(this.game.ctx, 'Spring nu naar\nhet Glooole programma', 1000, 400); 
             this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 420), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
             this.icons[2].pos.y = 100;
-            console.log(this.story);
+            // console.log(this.story);
         }
 
     }
