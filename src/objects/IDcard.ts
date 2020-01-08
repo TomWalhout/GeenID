@@ -36,7 +36,6 @@ class IDcard extends GameObject {
             this.ouch = 8; //length of screen
         }
     }
-
     public set youGotRekt(v: number) {
         if (this.invframes == 0) {
             this.lives = v;

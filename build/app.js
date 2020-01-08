@@ -667,12 +667,10 @@ class BossAD extends Attack {
     constructor(pos, vel, ctx, path, frames, speed, scale, screen) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.setSpeed();
-        this.player = screen.Player;
-        this.doCollision = false;
     }
     setSpeed() {
         this.vel.x = (Math.random() * 2 - 1) * 5;
-        this.vel.y = (Math.random()) * 5;
+        this.vel.y = Math.random() * 5;
     }
     update() {
         super.update();
@@ -927,7 +925,7 @@ class BossScreen extends LevelScreen {
         this.boss.Attack.forEach(program => {
             let programbox = program.box();
             let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
-            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
+            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing && program instanceof BossAD) {
                 onground = true;
             }
             if (onground) {
@@ -1123,7 +1121,6 @@ class Level4 extends LevelScreen {
         this.enemies.forEach(element => {
             element.update();
             element.enemyMove(this.game.canvas);
-            element.drawBox();
         });
         this.timer();
         this.enemyCollision();

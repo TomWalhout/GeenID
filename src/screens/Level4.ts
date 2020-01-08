@@ -26,9 +26,8 @@ class Level4 extends LevelScreen {
         this.closeProgram();
         this.clickedIcon();
         this.enemies.forEach(element => {
-            element.update()
-            element.enemyMove(this.game.canvas)
-            element.drawBox()
+            element.update();
+            element.enemyMove(this.game.canvas);
         })
         this.timer();
         this.enemyCollision();

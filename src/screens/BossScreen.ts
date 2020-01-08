@@ -53,7 +53,7 @@ class BossScreen extends LevelScreen {
         this.boss.Attack.forEach(program => {
             let programbox = program.box();
             let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
-            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
+            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing && program instanceof BossAD) {
                 onground = true;
             }
 
