@@ -124,7 +124,7 @@ class LevelScreen extends GameScreen {
 
     protected clickedIcon() {
         for (let i = 0; i < this.icons.length; i++) {
-            if (this.icons[i].clickedOn(this.userinput) && this.icons[i].story >= this.storyFlag) {
+            if (this.icons[i].clickedOn(this.userinput)) {
                 this.programs[i].isOpen = true;
             }
         }

@@ -14,7 +14,8 @@ class BossScreen extends LevelScreen {
     public constructor(game: Game) {
         super(game);
         document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
-        this.boss = new Boss(new Vector(600, 250), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
+        this.boss = new Boss(new Vector(600, 100), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
+        this.Player.pos = new Vector(this.game.canvas.width / 2 - this.player.ani.imageWidth / 2, this.game.canvas.height);
     }
     /**
      * Let this screen draw itself and its gameobjects on the given rendering
@@ -46,5 +47,28 @@ class BossScreen extends LevelScreen {
                 }
             })
         }
+
+        let playerbottom = [player[0], player[1], player[3], player[3] + 2];
+        let onground = false;
+        this.boss.Attack.forEach(program => {
+            let programbox = program.box();
+            let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
+            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
+                onground = true;
+            }
+
+            if (onground) {
+                this.player.vel.y = 0;
+                this.player.standing = true;
+            } else {
+                this.player.standing = false;
+            }
+        })
     }
+
+
+    public get Player(): Player {
+        return this.player;
+    }
+
 }
