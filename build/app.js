@@ -1164,14 +1164,15 @@ class Level4 extends LevelScreen {
         for (let i = 0; i < this.numberOfEnemies; i++) {
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
         }
-        this.programs[0] = new Program(new Vector(300, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.5, 0);
+        this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;
         this.story = 0;
-        this.timeInFrames = 200;
+        this.timeInFrames = 400;
         this.wizard = new Wizard(new Vector(300, this.game.canvas.height - 145), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 10, 1);
         this.textbox = new GameObject(new Vector(50, 400), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.5);
     }
     draw() {
+        super.draw(this.game.ctx);
         this.wizard.update();
         this.textbox.update();
         this.storyText();
@@ -1188,7 +1189,6 @@ class Level4 extends LevelScreen {
         if (this.story < 2) {
             this.enemyCollision();
         }
-        super.draw(this.game.ctx);
     }
     timer() {
         if (this.timeInFrames > 0) {
@@ -1209,8 +1209,11 @@ class Level4 extends LevelScreen {
         if (this.story === 1) {
             this.text = this.multilineText(this.game.ctx, `Goedzo! Ga nu snel\nnaar de scanner toe!`, 200, 450);
         }
-        if (this.story >= 2) {
-            this.text = this.multilineText(this.game.ctx, `hahahahaha\nHAHAHAHAHAHA!`, 200, 450);
+        if (this.story === 2 || this.story === 3) {
+            this.text = this.multilineText(this.game.ctx, `Oh nee!\nWe worden gehacked!`, 200, 450);
+        }
+        if (this.story === 4) {
+            this.text = this.multilineText(this.game.ctx, `De hacker is binnen!\nKijk uit ${this.game.playerinfo[0]}!`, 200, 450);
         }
     }
     storyAdvance() {

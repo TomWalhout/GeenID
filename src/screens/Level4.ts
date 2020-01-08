@@ -20,17 +20,18 @@ class Level4 extends LevelScreen {
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this); // 145 = enemyWidth, 190 = enemyHeight + windowsbarHeight
         }
 
-        this.programs[0] = new Program(new Vector(300, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.5, 0);
+        this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;
 
         this.story = 0;
-        this.timeInFrames = 200; // timer
+        this.timeInFrames = 400; // timer
         this.wizard = new Wizard(new Vector(300, this.game.canvas.height - 145), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 10, 1);
         this.textbox = new GameObject(new Vector(50, 400), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.5);
     }
 
     public draw() {
         // story
+        super.draw(this.game.ctx);
         this.wizard.update();
         this.textbox.update();
         this.storyText();
@@ -48,7 +49,6 @@ class Level4 extends LevelScreen {
         if (this.story < 2) {
             this.enemyCollision();
         }
-        super.draw(this.game.ctx);
     }
 
     public timer() {
@@ -73,9 +73,13 @@ class Level4 extends LevelScreen {
         if (this.story === 1) {
             this.text = this.multilineText(this.game.ctx, `Goedzo! Ga nu snel\nnaar de scanner toe!`, 200, 450);
         }
-        if (this.story >= 2) {
-            this.text = this.multilineText(this.game.ctx, `hahahahaha\nHAHAHAHAHAHA!`, 200, 450);
+        if (this.story === 2 || this.story === 3) {
+            this.text = this.multilineText(this.game.ctx, `Oh nee!\nWe worden gehacked!`, 200, 450);
         }
+        if (this.story === 4) {
+            this.text = this.multilineText(this.game.ctx, `De hacker is binnen!\nKijk uit ${this.game.playerinfo[0]}!`, 200, 450);
+        }
+        
 
     }
 
@@ -112,7 +116,7 @@ class Level4 extends LevelScreen {
             this.timeInFrames = 200;
             this.story = 4;
         }
-        if (this.story ===4) {
+        if (this.story === 4) {
             this.bossBoi.update();
         }
         if (this.story === 4 && this.timeInFrames <= 0) {
