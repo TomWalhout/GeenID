@@ -1050,10 +1050,15 @@ class Level2 extends LevelScreen {
         this.programs[0].isOpen = true;
         this.wizard = new Wizard(new Vector(290, 300), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(50, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
-        let adsAmount = 5;
+        let adsAmount = this.randomRoundedNumber(5, 7);
+        let adsAmount2 = this.randomRoundedNumber(5, 7);
         for (let i = 0; i < adsAmount; i++) {
             this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad2.png', 1, 1, 1.5);
             this.ads[i].isOpen = true;
+            for (let j = 0; j < adsAmount2; j++) {
+                this.ads[j] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1.5);
+                this.ads[j].isOpen = true;
+            }
         }
         this.icons[0] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
