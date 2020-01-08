@@ -29,6 +29,7 @@ class Level4 extends LevelScreen {
     }
 
     public draw() {
+        super.draw(this.game.ctx);
         // story
         this.wizard.update();
         this.textbox.update();
@@ -45,7 +46,6 @@ class Level4 extends LevelScreen {
         })
         this.timer();
         this.enemyCollision();
-        super.draw(this.game.ctx);
     }
 
     public timer() {

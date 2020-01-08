@@ -1172,6 +1172,7 @@ class Level4 extends LevelScreen {
         this.textbox = new GameObject(new Vector(50, 400), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.5);
     }
     draw() {
+        super.draw(this.game.ctx);
         this.wizard.update();
         this.textbox.update();
         this.storyText();
@@ -1185,7 +1186,6 @@ class Level4 extends LevelScreen {
         });
         this.timer();
         this.enemyCollision();
-        super.draw(this.game.ctx);
     }
     timer() {
         if (this.timeInFrames > 0) {
