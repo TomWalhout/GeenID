@@ -48,6 +48,11 @@ class IDcard extends GameObject {
         return this.lives;
     }
 
+
+    public set Prev(v: number) {
+        this.prevlives = v;
+    }
+
     public hurtScreen() {
         if (this.ouch == 8) {
             this.ouchImage = new GameObject(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/damage.png', 1, 1, 2)
