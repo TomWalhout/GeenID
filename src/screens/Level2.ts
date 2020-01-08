@@ -71,33 +71,30 @@ class Level2 extends LevelScreen {
         this.nextLevel();
         }
 
+    private storyCheck() {
+        //Checks for story beat
+        // let player = this.player.box();
+        // let wiz = this.wizard.box();
+    
+        if (this.story < 1) {
+            this.story = this.story + 1;
+        }
+    }
+    
+    private updateOtherThings() {
+        this.wizard.update();
+        if (this.story > 0) {
+            this.textbox.update();
+        }
+    }
+    
+    public storyText() {
+        if (this.story == 1) {
+            this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
+            // console.log(this.story);
+        } 
 
-        private storyCheck() {
-            //Checks for story beat
-            // let player = this.player.box();
-            // let wiz = this.wizard.box();
-    
-            if (this.story < 1) {
-                this.story = this.story + 1;
-            }
-        }
-    
-        private updateOtherThings() {
-            this.wizard.update();
-            if (this.story > 0) {
-                this.textbox.update();
-            }
-        }
-    
-        public storyText() {
-    
-            if (this.story == 1) {
-                this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
-                console.log(this.story);
-            } 
-
-            if (this.story == 2) {
-            }
-            
-        }
+        if (this.story == 2) {
+        }   
+    }
 }

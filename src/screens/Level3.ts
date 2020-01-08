@@ -35,7 +35,7 @@ class Level3 extends LevelScreen {
         this.storyCheck();
         this.storyText();
         this.wizard.update();
-        console.log(this.story);
+        // console.log(this.story);
     }
 
     private updateOtherThings() {

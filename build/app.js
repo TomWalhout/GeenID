@@ -999,7 +999,6 @@ class Level1 extends LevelScreen {
         this.clickedIcon();
         this.storyCheck();
         this.storyText();
-        console.log(this.story);
         super.draw(this.game.ctx);
     }
     storyCheck() {
@@ -1028,18 +1027,15 @@ class Level1 extends LevelScreen {
     storyText() {
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het gloole icoon.\n`, 1000, 500);
-            console.log(this.story);
         }
         else if (this.story == 2) {
             this.multilineText(this.game.ctx, 'Perfect!\nKlik nu op Fort.', 1000, 500);
             this.icons[2].pos.y = 0;
-            console.log(this.story);
         }
         else if (this.story == 3) {
             this.multilineText(this.game.ctx, 'Spring nu naar\nhet Glooole programma', 1000, 400);
             this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 420), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
             this.icons[2].pos.y = 100;
-            console.log(this.story);
         }
     }
 }
@@ -1107,7 +1103,6 @@ class Level2 extends LevelScreen {
     storyText() {
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
-            console.log(this.story);
         }
         if (this.story == 2) {
         }
@@ -1137,7 +1132,6 @@ class Level3 extends LevelScreen {
         this.storyCheck();
         this.storyText();
         this.wizard.update();
-        console.log(this.story);
     }
     updateOtherThings() {
         this.wizard.update();
