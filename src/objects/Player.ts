@@ -7,7 +7,9 @@ class Player extends GameObject {
     protected scale: number;
     protected standsOnGround: boolean;
     private faceAnimation: Animate;
-    private walljump: boolean;
+    private walljumpTrigger: boolean;
+    private walljumpCooldown: number;
+    private walljumpUsed: boolean;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, body: string) {
         //Disable this next line for selection
@@ -18,7 +20,7 @@ class Player extends GameObject {
         this.hasSword = false;
         this.scale = scale
         this.standsOnGround = false;
-        this.walljump = false;
+        this.walljumpTrigger = false;
     }
 
     public update() {
@@ -26,6 +28,7 @@ class Player extends GameObject {
             this.faceAnimation.draw();
         }
         super.update();
+        this.walljumpCd();
     }
 
     public playerMove(canvas: HTMLCanvasElement) {
@@ -57,16 +60,21 @@ class Player extends GameObject {
         }
 
         //wall jump
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && !this.walljump && (this.pos.x < 2 || this.pos.x + this.animation.imageWidth > 1364)) {
-            this.vel.y -= 5;
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && !this.walljumpUsed && !this.walljumpTrigger && (this.pos.x < 2 || this.pos.x + this.animation.imageWidth > 1364)) {
+            this.vel.y = -8 ;
             this.standing = false;
-            this.walljump = true;
+            this.walljumpTrigger = true;
+            this.walljumpUsed = true;
         }
 
         //wall jump cooldown
         if (this.standing) {
-            this.walljump = false;
+            this.walljumpTrigger = true;
+            this.walljumpCooldown = 20;
+            this.walljumpUsed = false;
         }
+
+
         // Attack
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
             console.log('Hiyaa!');
@@ -77,7 +85,16 @@ class Player extends GameObject {
             console.log('tadadADADAAAAAA')
             this.hasSword = true;
         }
+    }
 
+    // functie cooldown wall jump
+    public walljumpCd() {
+        if(!this.standing) {
+            this.walljumpCooldown--
+        }
+        if(this.walljumpCooldown <= 0) {
+            this.walljumpTrigger = false
+        }
     }
 
     public get standing(): boolean {
