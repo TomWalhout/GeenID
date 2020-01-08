@@ -8,6 +8,7 @@ class Level4 extends LevelScreen {
     private wizard: Wizard;
     private textbox: GameObject;
     private text: any;
+    private bossBoi: GameObject;
 
     public constructor(game: Game) {
         super(game)
@@ -30,7 +31,7 @@ class Level4 extends LevelScreen {
         this.wizard.update();
         this.textbox.update();
         this.storyText();
-
+        this.storyAdvance();
         // programs
         this.closeAds();
         this.closeProgram();
@@ -41,7 +42,9 @@ class Level4 extends LevelScreen {
             element.drawBox()
         })
         this.timer();
-        this.enemyCollision();
+        if (this.story < 2) {
+            this.enemyCollision();
+        }
         super.draw(this.game.ctx);
     }
 
@@ -49,18 +52,6 @@ class Level4 extends LevelScreen {
         if (this.timeInFrames > 0) {
             this.timeInFrames--
             console.log(this.timeInFrames);
-        }
-        else if (this.timeInFrames <= 0 && this.story === 0) {
-            this.story = 1;
-        }
-
-        //next step
-        if (this.story === 1) {
-            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/virusscanner.png', 1, 1, 0.3)
-            let scanner = this.icons[0].box();
-            if (this.collides(this.player.box(), scanner)) {
-                this.game.switchScreen(new BossScreen(this.game))
-            }
         }
     }
 
@@ -72,12 +63,57 @@ class Level4 extends LevelScreen {
         }
     }
 
-    public storyText(){
-        if (this.story == 0) {
+    public storyText() {
+        if (this.story === 0) {
             this.text = this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}!\nOntwijk de vijanden terwijl ik\neen virusscanner maak!`, 200, 450);
         }
-        if (this.story == 1) {
+        if (this.story === 1) {
             this.text = this.multilineText(this.game.ctx, `Goedzo! Ga nu snel\nnaar de scanner toe!`, 200, 450);
         }
+        if (this.story >= 2) {
+            this.text = this.multilineText(this.game.ctx, `hahahahaha\nHAHAHAHAHAHA!`, 200, 450);
+        }
+
+    }
+
+    public storyAdvance() {
+        //step 0, the start
+        if (this.timeInFrames <= 0 && this.story === 0) {
+            this.story = 1;
+            //step 1, virusscanner appears
+        }
+        if (this.story === 1) {
+            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/virusscanner.png', 1, 1, 0.3)
+            let scanner = this.icons[0].box();
+            // if (this.collides(this.player.box(), scanner)) {
+            //     this.game.switchScreen(new BossScreen(this.game))
+            // }
+        }
+        //step 2, it dissapears when you get close
+        if (this.story === 1 && this.player.pos.x >= 1200) {
+            this.icons.pop();
+
+            for (let i = 0; i < 30; i++) {
+                this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this); // 145 = enemyWidth, 190 = enemyHeight + windowsbarHeight
+            }
+
+            this.timeInFrames = 400;
+            this.story = 2;
+        }
+        //step 3, boss spawns
+        if (this.story === 2 && this.timeInFrames <= 0) {
+            this.bossBoi = new GameObject(new Vector(600, 100), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", 1, 1, .5);
+            this.story = 3;
+        }
+        if (this.story === 3) {
+            this.timeInFrames = 200;
+            this.story = 4;
+        }
+        if (this.story ===4) {
+            this.bossBoi.update();
+        }
+        if (this.story === 4 && this.timeInFrames <= 0) {
+            this.game.switchScreen(new BossScreen(this.game))
+        } 
     }
 }
