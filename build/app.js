@@ -541,7 +541,7 @@ class IDcard extends GameObject {
         if (this.lives <= 0) {
             this.game.switchScreen(new DeathScreen(this.game));
         }
-        if (this.lives < this.prevlives && this.lives > 1) {
+        if (this.lives < this.prevlives && this.lives >= 1) {
             this.prevlives--;
             this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 1.5);
             this.ouch = 8;
@@ -1138,13 +1138,15 @@ class Level2 extends LevelScreen {
         this.programs[0].isOpen = true;
         this.wizard = new Wizard(new Vector(290, 300), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(50, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.textXPos = 175;
+        this.textYPos = 220;
         const adsFileNames = [
             './assets/textboxAndAds/ad1.png',
             './assets/textboxAndAds/ad2.png'
         ];
         for (let i = 0; i < this.randomRoundedNumber(5, 7); i++) {
             const randonmIndex = this.randomRoundedNumber(0, adsFileNames.length);
-            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, adsFileNames[randonmIndex], 1, 1, 1.5);
+            this.ads[i] = new Ad(new Vector(this.randomNumber(100, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 195)), new Vector(0, 0), this.game.ctx, adsFileNames[randonmIndex], 1, 1, 1.5);
             this.ads[i].isOpen = true;
         }
         this.icons[0] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
@@ -1184,6 +1186,18 @@ class Level2 extends LevelScreen {
         if (this.story < 1) {
             this.story = this.story + 1;
         }
+        if (this.game.Lives == 4) {
+            this.story = 2;
+        }
+        else if (this.game.lives == 3) {
+            this.story = 3;
+        }
+        else if (this.game.lives == 2) {
+            this.story = 4;
+        }
+        else if (this.game.lives == 1) {
+            this.story = 5;
+        }
     }
     updateOtherThings() {
         this.wizard.update();
@@ -1192,10 +1206,39 @@ class Level2 extends LevelScreen {
         }
     }
     storyText() {
+        let x1 = Math.random() * 2 - 1;
+        let y1 = Math.random() * 2 - 1;
+        let x2 = Math.random() * 4 - 2;
+        let y2 = Math.random() * 4 - 2;
+        let x3 = Math.random() * 6 - 3;
+        let y3 = Math.random() * 6 - 3;
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
+            console.log(this.story);
         }
-        if (this.story == 2) {
+        else if (this.story == 2) {
+            this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, this.textXPos, this.textYPos);
+        }
+        else if (this.story == 3) {
+            this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}?\n`, this.textXPos += x1, this.textYPos += y1);
+            this.wizard.pos.x += x1;
+            this.wizard.pos.y += y1;
+            this.textbox.pos.x += x1;
+            this.textbox.pos.y += y1;
+        }
+        else if (this.story == 4) {
+            this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}! luister je wel?\n`, this.textXPos += x2, this.textYPos += y2);
+            this.wizard.pos.x += x2;
+            this.wizard.pos.y += y2;
+            this.textbox.pos.x += x2;
+            this.textbox.pos.y += y2;
+        }
+        else if (this.story == 5) {
+            this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}... g-gaat het wel?\n`, this.textXPos += x3, this.textYPos += y3);
+            this.wizard.pos.x += x3;
+            this.wizard.pos.y += y3;
+            this.textbox.pos.x += x3;
+            this.textbox.pos.y += y3;
         }
     }
 }
@@ -1220,7 +1263,6 @@ class Level3 extends LevelScreen {
         this.clickedIcon();
         this.textbox.update();
         this.nextLevel();
-        this.storyCheck();
         this.storyText();
         this.wizard.update();
     }
@@ -1237,12 +1279,10 @@ class Level3 extends LevelScreen {
             this.game.switchScreen(new Level4(this.game));
         }
     }
-    storyCheck() {
+    storyText() {
         if (this.story < 1) {
             this.story = this.story + 1;
         }
-    }
-    storyText() {
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `W-Wacht! ${this.game.playerinfo[0]}!\nDat i-is een bug file\nIk denk dat we gehackt zijn\nWat je ook doet...\nGA NIET NAAR DE BUGFILE\n`, 400, 90);
         }
@@ -1254,7 +1294,7 @@ class Level4 extends LevelScreen {
         this.enemies = new Array;
         this.numberOfEnemies = 5;
         for (let i = 0; i < this.numberOfEnemies; i++) {
-            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
         }
         this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;
