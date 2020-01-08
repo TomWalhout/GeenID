@@ -1199,7 +1199,6 @@ class Level4 extends LevelScreen {
     }
     draw() {
         super.draw(this.game.ctx);
-        super.draw(this.game.ctx);
         this.wizard.update();
         this.textbox.update();
         this.storyText();
