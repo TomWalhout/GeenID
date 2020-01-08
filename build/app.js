@@ -1050,12 +1050,22 @@ class BossScreen extends LevelScreen {
 class DeathScreen extends LevelScreen {
     constructor(game) {
         super(game);
-        this.wizard = new Wizard(new Vector(300, 0), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 8);
-        document.body.style.backgroundImage = "url('./assets/verloren.png')";
+        this.wizard = new Wizard(new Vector(260, 200), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/hackerman.png', 1, 1, 1);
+        this.textbox = new GameObject(new Vector(500, 110), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.textbox.mirror = true;
+        this.story = 0;
+        document.body.style.backgroundImage = "url('./assets/HackerCodeBG.png')";
     }
     draw(ctx) {
         super.draw(ctx);
         this.wizard.update();
+        this.textbox.update();
+        this.storyText();
+    }
+    storyText() {
+        if (this.story == 0) {
+            this.multilineText(this.game.ctx, `Helaas ${this.game.playerinfo[0]}!\nIk heb jouw ID gestolen.\n Als je het nog een\n keer wilt proberen\ndruk dan op F5.\n`, 630, 145);
+        }
     }
 }
 class HomeScreen extends LevelScreen {
