@@ -8,8 +8,10 @@ class BossScreen extends LevelScreen {
     private boss: Boss;
     private wizard: Wizard;
     private textbox: GameObject;
-    private waveSpawn: boolean;
+    private waveSpawned: boolean;
     private tutorialEnemies: Array<GameObject>;
+    private hasStoppedPlatform: boolean;
+    private platformTimer: number;
     /**
      * Construct a new GameScreen object.
      *
@@ -23,9 +25,11 @@ class BossScreen extends LevelScreen {
         this.wizard = new Wizard(new Vector(50, 120), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/urawizardgandalf.png", 6, 10, 1);
         this.textbox = new GameObject(new Vector(150, 10), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1);
         this.textbox.mirror = true;
-        this.waveSpawn = false;
+        this.waveSpawned = false;
         this.tutorialEnemies = new Array;
-        this.story = 1;
+        this.hasStoppedPlatform = false;
+        this.story = 0;
+        this.platformTimer = 0;
     }
 
     /**
@@ -43,14 +47,16 @@ class BossScreen extends LevelScreen {
         } else if (this.story === 1) {
             this.phaseTwo();
         }
+
+
     }
 
     private phaseOne() {
         this.wizard.update();
         this.textbox.update();
         this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}!\nOntwijk de virussen \ndoor een muursprong \nte maken!`, 250, 35);
-        if (!this.waveSpawn) {
-            this.waveSpawn = true;
+        if (!this.waveSpawned) {
+            this.waveSpawned = true;
             //create enemies
             for (let i = 0; i < 5; i++) {
                 this.tutorialEnemies[i] = new Enemy(new Vector(this.game.ctx.canvas.width + 300, this.game.ctx.canvas.height - i * 80 - 50), new Vector(-5, 0), this.game.ctx, "./assets/enemiesAndAllies/Enemy.png", this);
@@ -60,7 +66,7 @@ class BossScreen extends LevelScreen {
             //update enemies
             this.tutorialEnemies[i].update();
             //remove if out of screen
-            if (this.tutorialEnemies[i].pos.x < 0) {
+            if (this.tutorialEnemies[i].pos.x < -175) {
                 this.tutorialEnemies.splice(i, 1);
             }
         }
@@ -71,10 +77,10 @@ class BossScreen extends LevelScreen {
             }
             else {
                 //restart tutorial
-                this.waveSpawn = false;
-                this.id.youGotRekt += 1;
+                this.id.youGotRekt = 5;
                 this.id.Prev = this.id.youGotRekt;
             }
+            this.waveSpawned = false;
         }
     }
 
@@ -82,22 +88,27 @@ class BossScreen extends LevelScreen {
         this.wizard.update();
         this.textbox.update();
         this.multilineText(this.game.ctx, `Goed bezig!\nProbeer nu eens op\neen van deze \nplatforms te springen!`, 250, 35);
-        if (!this.waveSpawn) {
-            this.waveSpawn = true;
+        if (!this.waveSpawned) {
+            this.waveSpawned = true;
             for (let i = 0; i < 3; i++) {
-                this.tutorialEnemies[i] = new BossAD(new Vector(this.game.canvas.width / 2), new Vector(0, 6), this.game.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1, this, false);
+                this.tutorialEnemies[i] = new BossAD(new Vector(i * 150 + 450, - 10), new Vector(0, 6), this.game.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1, this, false);
             }
         }
-        let succes = false;
-        for (let i = this.tutorialEnemies.length - 1; i > 0; i--) {
+
+        this.platformTimer++;
+        for (let i = this.tutorialEnemies.length - 1; i >= 0; i--) {
             this.tutorialEnemies[i].update();
-            if (this.tutorialEnemies[i].pos.y > this.game.canvas.height) {
+            if (this.tutorialEnemies[i].pos.y > this.game.canvas.height || this.platformTimer >= 250) {
                 this.tutorialEnemies.splice(i, 1);
             }
         }
 
         if (this.tutorialEnemies.length === 0) {
-            this.story = 2;
+            if (this.hasStoppedPlatform) {
+                this.story = 10;
+            } else {
+                this.waveSpawned = false;
+            }
         }
     }
 
@@ -109,35 +120,8 @@ class BossScreen extends LevelScreen {
                 this.boss.health = this.boss.health - 1;
             }
 
-            if (this.boss.Attack) {
-                this.boss.Attack.forEach(e => {
-                    let attack = e.box();
-                    if (this.collides(player, attack)) {
-                        if (e instanceof BossAD) {
-                            e.vel = new Vector(0, 0);
-                        } else {
-                            this.id.youGotRekt = this.id.youGotRekt - 1;
-                        }
-                    }
-                })
-            }
-
-            let playerbottom = [player[0], player[1], player[3], player[3] + 2];
-            let onground = false;
-            this.boss.Attack.forEach(program => {
-                let programbox = program.box();
-                let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
-                if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing && program instanceof BossAD) {
-                    onground = true;
-                }
-
-                if (onground) {
-                    this.player.vel.y = 0;
-                    this.player.standing = true;
-                } else {
-                    this.player.standing = false;
-                }
-            });
+            this.boink(player, this.boss.Attack);
+            this.platformCollision(player, this.boss.Attack);
 
         } else if (this.story === 0) {
 
@@ -145,11 +129,46 @@ class BossScreen extends LevelScreen {
                 if (this.collides(player, e.box())) {
                     this.id.youGotRekt = this.id.youGotRekt - 1;
                 }
-
             })
         } else if (this.story === 1) {
-
+            this.boink(player, this.tutorialEnemies);
+            this.platformCollision(player, this.tutorialEnemies);
         }
+    }
+
+    private boink(player: Array<number>, array: Array<GameObject>) {
+        if (array) {
+            array.forEach(e => {
+                let hitbox = e.box();
+                if (this.collides(player, hitbox)) {
+                    if (e instanceof BossAD) {
+                        e.vel = new Vector(0, 0);
+                        this.hasStoppedPlatform = true;
+                    } else {
+                        this.id.youGotRekt = this.id.youGotRekt - 1;
+                    }
+                }
+            })
+        }
+    }
+
+    private platformCollision(player: Array<number>, array: Array<GameObject>) {
+        let playerbottom = [player[0], player[1], player[3], player[3] + 2];
+        let onground = false;
+        array.forEach(platform => {
+            let platformbox = platform.box();
+            let upperbox = [platformbox[0], platformbox[1], platformbox[2], platformbox[2] + 10];
+            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing && platform instanceof BossAD) {
+                onground = true;
+            }
+
+            if (onground) {
+                this.player.vel.y = 0;
+                this.player.standing = true;
+            } else {
+                this.player.standing = false;
+            }
+        });
     }
 
     public get Player(): Player {
