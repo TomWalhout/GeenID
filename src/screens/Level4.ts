@@ -20,6 +20,9 @@ class Level4 extends LevelScreen {
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this); // 145 = enemyWidth, 190 = enemyHeight + windowsbarHeight
         }
 
+        this.programs[0] = new Program(new Vector(300, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.5, 0);
+        this.programs[0].isOpen = true;
+
         this.story = 0;
         this.timeInFrames = 200; // timer
         this.wizard = new Wizard(new Vector(300, this.game.canvas.height - 145), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 10, 1);
@@ -51,7 +54,7 @@ class Level4 extends LevelScreen {
     public timer() {
         if (this.timeInFrames > 0) {
             this.timeInFrames--
-            console.log(this.timeInFrames);
+            // console.log(this.timeInFrames);
         }
     }
 

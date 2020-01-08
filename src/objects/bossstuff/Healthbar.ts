@@ -30,5 +30,4 @@ class Healthbar extends GameObject {
     public set MaxHealth(v: number) {
         this.maxHealth = v;
     }
-
 }

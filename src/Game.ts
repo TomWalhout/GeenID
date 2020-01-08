@@ -28,7 +28,6 @@ class Game {
         this.playerInfo[0] = "Squary";
         this.playerInfo[1] = "12";
         this.loop();
-
     }
 
     private loop = () => {
@@ -146,12 +145,9 @@ class Game {
         return this.squaryBody;
     }
 
-
     public set bodySquary(v: string) {
         this.squaryBody = v;
     }
-
-
 }
 
 // This will get an HTML element. I cast this element in de appropriate type using <>
