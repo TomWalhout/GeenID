@@ -2,6 +2,9 @@
 
 class Level2 extends LevelScreen {
 
+    private wizard: Wizard;
+    private textbox: GameObject;
+
     /**
      * Contructes the third level
      * 
@@ -12,6 +15,8 @@ class Level2 extends LevelScreen {
         // fill this boi up
         this.programs[0] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
         this.programs[0].isOpen = true;
+        this.wizard = new Wizard(new Vector(290, 300), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
+        this.textbox = new GameObject(new Vector(50, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
 
         let adsAmount = 5; // amount of ads
         for (let i = 0; i < adsAmount; i++) {
@@ -53,8 +58,41 @@ class Level2 extends LevelScreen {
         super.draw(this.game.ctx);
         this.ads.forEach(element => {
             element.update()
-        })
+        })        
+        this.updateOtherThings();
+        this.storyCheck();
+        this.storyText();
         this.closeAds();
         this.nextLevel();
+        }
+
+
+        private storyCheck() {
+            //Checks for story beat
+            // let player = this.player.box();
+            // let wiz = this.wizard.box();
+    
+            if (this.story < 1) {
+                this.story = this.story + 1;
+            }
+        }
+    
+        private updateOtherThings() {
+            this.wizard.update();
+            if (this.story > 0) {
+                this.textbox.update();
+            }
+        }
+    
+        public storyText() {
+    
+            if (this.story == 1) {
+                this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
+                console.log(this.story);
+            } 
+
+            if (this.story == 2) {
+            }
+            
         }
 }
