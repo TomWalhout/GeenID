@@ -19,7 +19,7 @@ class Boss extends GameObject {
         this.attackLimit = 120;
         this.game = game;
         this.healthbar = new Healthbar(new Vector(0, 0), new Vector(0, 0), ctx, "./assets/enemiesAndAllies/healthbar-red.png", 1, 1, 0.5, this);
-        this.bossHealth = 30;
+        this.bossHealth = 100;
         this.healthbar.MaxHealth = this.bossHealth;
         this.newAttack();
     }
@@ -28,11 +28,15 @@ class Boss extends GameObject {
         super.update();
         this.pos.x += Math.random() * 2 - 1;
         this.pos.y += Math.random() * 2 - 1;
+        //if the attack is done or there is no longer any attack
         if (this.nextAttack || this.currentAttack.length === 0) {
+            // Attack again
             this.newAttack();
             this.nextAttack = false;
         } else {
+            //Time passes
             this.attackTimer++;
+            //If the attack has gone on for long enough
             if (this.attackTimer >= this.attackLimit) {
                 this.nextAttack = true;
             }
@@ -99,7 +103,7 @@ class Boss extends GameObject {
     private popUpOfDeath() {
         this.attackLimit = 500;
         for (let i = 0; i < 3; i++) {
-            this.currentAttack[i] = new BossAD(new Vector(this.pos.x + 75, this.pos.y + 75), new Vector(0, 0), this.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1);
+            this.currentAttack[i] = new BossAD(new Vector(this.pos.x + 75, this.pos.y + 75), new Vector(0, 0), this.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1, this.screen);
         }
     }
 
