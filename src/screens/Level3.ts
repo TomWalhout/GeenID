@@ -32,7 +32,7 @@ class Level3 extends LevelScreen {
         this.clickedIcon();
         this.textbox.update();
         this.nextLevel();
-        this.storyCheck();
+        // this.storyCheck();
         this.storyText();
         this.wizard.update();
         // console.log(this.story);
@@ -57,19 +57,23 @@ class Level3 extends LevelScreen {
         }
     }
 
-    private storyCheck() {
+    private storyText() {
         //Checks for story beat
 
         if (this.story < 1) {
             this.story = this.story + 1;
         }
-    }
-
-    public storyText() {
-
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `W-Wacht! ${this.game.playerinfo[0]}!\nDat i-is een bug file\nIk denk dat we gehackt zijn\nWat je ook doet...\nGA NIET NAAR DE BUGFILE\n`, 400, 90); //1200 en 500
             // console.log(this.story);
         }
     }
+
+    // public storyText() {
+
+    //     if (this.story == 1) {
+    //         this.multilineText(this.game.ctx, `W-Wacht! ${this.game.playerinfo[0]}!\nDat i-is een bug file\nIk denk dat we gehackt zijn\nWat je ook doet...\nGA NIET NAAR DE BUGFILE\n`, 400, 90); //1200 en 500
+    //         // console.log(this.story);
+    //     }
+    // }
 }

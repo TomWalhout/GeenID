@@ -70,30 +70,59 @@ class Level2 extends LevelScreen {
         this.nextLevel();
         }
 
-    private storyCheck() {
-        //Checks for story beat
-        // let player = this.player.box();
-        // let wiz = this.wizard.box();
-    
-        if (this.story < 1) {
-            this.story = this.story + 1;
-        }
-    }
-    
-    private updateOtherThings() {
-        this.wizard.update();
-        if (this.story > 0) {
-            this.textbox.update();
-        }
-    }
-    
-    public storyText() {
-        if (this.story == 1) {
-            this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
-            // console.log(this.story);
-        } 
+        private storyCheck() {
+            if (this.story < 1) {
+                this.story = this.story + 1;
+            }
 
-        if (this.story == 2) {
-        }   
-    }
+            if (this.game.Lives == 4) {
+                this.story = 2;
+            } else if (this.game.lives == 3) {
+                this.story = 3;
+            } else if (this.game.lives == 2) {
+                this.story = 4;
+            } else if (this.game.lives == 1) {
+                this.story = 5;
+            }
+
+        }
+    
+
+    
+        private updateOtherThings() {
+            this.wizard.update();
+            // this.wizard.pos.x += Math.random() * 2 - 1; 
+            // this.wizard.pos.y += Math.random() * 2 - 1; 
+            if (this.story > 0) {
+                this.textbox.update();
+            }
+        }
+    
+    
+        public storyText() {
+
+            // const random1 = Math.random() * 2 - 1;
+            // const random2 = Math.random() * 4 - 2; 
+            // const random3 = Math.random() * 6 - 3;
+    
+            if (this.story == 1) {
+                this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
+                console.log(this.story);
+            } else if (this.story == 2) {
+                this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, 175, 220);
+            } else if (this.story == 3) {
+                this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}?\n`, 175, 220);
+                this.wizard.pos.x += Math.random() * 2 - 1; 
+                this.wizard.pos.y += Math.random() * 2 - 1; 
+            } else if (this.story == 4) {
+                this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}! luister je wel?\n`, 175, 220);
+                this.wizard.pos.x += Math.random() * 4 - 2; 
+                this.wizard.pos.y += Math.random() * 4 - 2; 
+            } else if (this.story == 5) {
+                this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}... g-gaat het wel?\n`, 175, 220);
+                this.wizard.pos.x += Math.random() * 6 - 3; 
+                this.wizard.pos.y += Math.random() * 6 - 3; 
+            }
+            
+        }
 }

@@ -68,12 +68,11 @@ class Level1 extends LevelScreen {
     }
 
     public storyText() {
-
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het gloole icoon.\n`, 1000, 500); //1200 en 500
             // console.log(this.story);
         } else if (this.story == 2) {
-            this.multilineText(this.game.ctx, 'Perfect!\nKlik nu op Fort.', 1000, 500); //1200 en 500
+            this.multilineText(this.game.ctx, 'Perfect!\nKlik nu op Fort.', 1000, 500); 
             this.icons[2].pos.y = 0;
             // console.log(this.story);
         } else if (this.story == 3) {
