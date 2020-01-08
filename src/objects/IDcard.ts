@@ -47,7 +47,7 @@ class IDcard extends GameObject {
 
     public get youGotRekt(): number {
         return this.lives;
-    }
+    }   
 
     public hurtScreen() {
         if (this.ouch == 8) {

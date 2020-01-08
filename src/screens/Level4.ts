@@ -48,7 +48,7 @@ class Level4 extends LevelScreen {
         this.timer();
         if (this.story < 2) {
             this.enemyCollision();
-        }       
+        }
     }
 
     public timer() {
