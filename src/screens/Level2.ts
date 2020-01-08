@@ -4,6 +4,8 @@ class Level2 extends LevelScreen {
 
     private wizard: Wizard;
     private textbox: GameObject;
+    private textXPos: number;
+    private textYPos: number;
 
     /**
      * Contructes the third level
@@ -17,6 +19,8 @@ class Level2 extends LevelScreen {
         this.programs[0].isOpen = true;
         this.wizard = new Wizard(new Vector(290, 300), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(50, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.textXPos = 175;
+        this.textYPos = 220;
 
         const adsFileNames: string[] = [
             './assets/textboxAndAds/ad1.png',
@@ -25,7 +29,7 @@ class Level2 extends LevelScreen {
 
         for (let i = 0; i < this.randomRoundedNumber(5, 7); i++) {
             const randonmIndex = this.randomRoundedNumber(0, adsFileNames.length)
-            this.ads[i] = new Ad (new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, adsFileNames[randonmIndex], 1, 1, 1.5) //150 is adWidth, 95 is adHeight + windowsBarHeight
+            this.ads[i] = new Ad (new Vector(this.randomNumber(100, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 195)), new Vector(0, 0), this.game.ctx, adsFileNames[randonmIndex], 1, 1, 1.5) //150 is adWidth, 95 is adHeight + windowsBarHeight
             this.ads[i].isOpen = true;           
         }
 
@@ -101,27 +105,37 @@ class Level2 extends LevelScreen {
     
         public storyText() {
 
-            // const random1 = Math.random() * 2 - 1;
-            // const random2 = Math.random() * 4 - 2; 
-            // const random3 = Math.random() * 6 - 3;
-    
+            // let shake = Math.random() * 2-1;
+            let x1 = Math.random() * 2-1;
+            let y1 = Math.random() * 2-1;
+            let x2 = Math.random() * 4-2;
+            let y2 = Math.random() * 4-2;
+            let x3 = Math.random() * 6-3;
+            let y3 = Math.random() * 6-3;
+
             if (this.story == 1) {
                 this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
                 console.log(this.story);
             } else if (this.story == 2) {
-                this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, 175, 220);
+                this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, this.textXPos, this.textYPos);
             } else if (this.story == 3) {
-                this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}?\n`, 175, 220);
-                this.wizard.pos.x += Math.random() * 2 - 1; 
-                this.wizard.pos.y += Math.random() * 2 - 1; 
+                this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}?\n`, this.textXPos += x1, this.textYPos += y1);
+                this.wizard.pos.x += x1; 
+                this.wizard.pos.y += y1; 
+                this.textbox.pos.x += x1;
+                this.textbox.pos.y += y1;
             } else if (this.story == 4) {
-                this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}! luister je wel?\n`, 175, 220);
-                this.wizard.pos.x += Math.random() * 4 - 2; 
-                this.wizard.pos.y += Math.random() * 4 - 2; 
+                this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}! luister je wel?\n`, this.textXPos += x2, this.textYPos += y2);
+                this.wizard.pos.x += x2; 
+                this.wizard.pos.y += y2; 
+                this.textbox.pos.x += x2;
+                this.textbox.pos.y += y2;
             } else if (this.story == 5) {
-                this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}... g-gaat het wel?\n`, 175, 220);
-                this.wizard.pos.x += Math.random() * 6 - 3; 
-                this.wizard.pos.y += Math.random() * 6 - 3; 
+                this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}... g-gaat het wel?\n`, this.textXPos += x3, this.textYPos += y3);
+                this.wizard.pos.x += x3; 
+                this.wizard.pos.y += y3; 
+                this.textbox.pos.x += x3;
+                this.textbox.pos.y += y3;
             }
             
         }
