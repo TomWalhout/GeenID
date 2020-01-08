@@ -580,13 +580,14 @@ class Player extends GameObject {
         this.hasSword = false;
         this.scale = scale;
         this.standsOnGround = false;
-        this.walljump = false;
+        this.walljumpTrigger = false;
     }
     update() {
         if (this.faceAnimation) {
             this.faceAnimation.draw();
         }
         super.update();
+        this.walljumpCd();
     }
     playerMove(canvas) {
         if (this.UserInput.isKeyDown(UserInput.KEY_RIGHT) && (this.pos.x + (this.animation.imageWidth * this.scale)) < canvas.width) {
@@ -612,13 +613,16 @@ class Player extends GameObject {
             this.vel.y -= 8;
             this.standing = false;
         }
-        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && !this.walljump && (this.pos.x < 2 || this.pos.x + this.animation.imageWidth > 1364)) {
-            this.vel.y -= 5;
+        if (this.UserInput.isKeyDown(UserInput.KEY_UP) && !this.walljumpUsed && !this.walljumpTrigger && (this.pos.x < 2 || this.pos.x + this.animation.imageWidth > 1364)) {
+            this.vel.y = -8;
             this.standing = false;
-            this.walljump = true;
+            this.walljumpTrigger = true;
+            this.walljumpUsed = true;
         }
         if (this.standing) {
-            this.walljump = false;
+            this.walljumpTrigger = true;
+            this.walljumpCooldown = 20;
+            this.walljumpUsed = false;
         }
         if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
             console.log('Hiyaa!');
@@ -626,6 +630,14 @@ class Player extends GameObject {
         if (this.UserInput.isKeyDown(UserInput.KEY_ENTER) && this.hasSword == false) {
             console.log('tadadADADAAAAAA');
             this.hasSword = true;
+        }
+    }
+    walljumpCd() {
+        if (!this.standing) {
+            this.walljumpCooldown--;
+        }
+        if (this.walljumpCooldown <= 0) {
+            this.walljumpTrigger = false;
         }
     }
     get standing() {
