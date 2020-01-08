@@ -16,7 +16,7 @@ class Level2 extends LevelScreen {
         let adsAmount = 5; // amount of ads
         for (let i = 0; i < adsAmount; i++) {
             
-            this.ads[i] = new Ad (new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad1.png', 1, 1, 1.5) //150 is adWidth, 95 is adHeight + windowsBarHeight
+            this.ads[i] = new Ad (new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/ad2.png', 1, 1, 1.5) //150 is adWidth, 95 is adHeight + windowsBarHeight
             this.ads[i].isOpen = true;
         }
 
