@@ -5,6 +5,7 @@
  * Screen where the user can play the game
  */
 class BossScreen extends LevelScreen {
+    
     private boss: Boss;
     private wizard: Wizard;
     private textbox: GameObject;
@@ -209,5 +210,4 @@ class BossScreen extends LevelScreen {
     public get Player(): Player {
         return this.player;
     }
-
 }

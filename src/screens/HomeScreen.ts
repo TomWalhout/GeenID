@@ -1,7 +1,6 @@
 /// <reference path="LevelScreen.ts"/>
 class HomeScreen extends LevelScreen{
     
-
     public constructor(game: Game) {
 
         super(game);

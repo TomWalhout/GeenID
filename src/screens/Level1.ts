@@ -81,8 +81,5 @@ class Level1 extends LevelScreen {
             this.icons[2].pos.y = 100;
             // console.log(this.story);
         }
-
     }
-    
-
 }

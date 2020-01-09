@@ -10,6 +10,7 @@ class IDcard extends GameObject {
     private invframes: number;
     private ouch: number;
     private ouchImage: GameObject;
+    
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, game: Game) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
@@ -36,6 +37,7 @@ class IDcard extends GameObject {
             this.ouch = 8; //length of screen
         }
     }
+
     public set youGotRekt(v: number) {
         if (this.invframes == 0) {
             this.lives = v;

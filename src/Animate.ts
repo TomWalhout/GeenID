@@ -1,4 +1,5 @@
 class Animate {
+
     private ctx: CanvasRenderingContext2D;
     private img: HTMLImageElement;
     private frameHeight: number;
@@ -9,6 +10,7 @@ class Animate {
     private counter: number;
     private scale: number;
     private mirror: boolean;
+    
     constructor(ctx: CanvasRenderingContext2D, path: string, noOfFrames: number, anispeed: number, object: GameObject, scale: number = 1) {
         this.ctx = ctx;
         // Load the image into the img var

@@ -78,8 +78,6 @@ class Level4 extends LevelScreen {
         if (this.story === 4) {
             this.text = this.multilineText(this.game.ctx, `De hacker is binnen!\nKijk uit ${this.game.playerinfo[0]}!`, 200, 450);
         }
-        
-
     }
 
     public storyAdvance() {

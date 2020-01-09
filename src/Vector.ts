@@ -1,4 +1,5 @@
 class Vector {
+    
     private xpos: number;
     private ypos: number;
     constructor(xpos = 0, ypos = 0) {

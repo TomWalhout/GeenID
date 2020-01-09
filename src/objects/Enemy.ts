@@ -1,6 +1,7 @@
 /// <reference path="./bossstuff/Attack.ts"/>
 
 class Enemy extends Attack {
+    
     protected ctx: CanvasRenderingContext2D;
     private health: number;
     private screen: GameScreen;

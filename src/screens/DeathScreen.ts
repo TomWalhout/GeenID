@@ -2,6 +2,7 @@
 /// <reference path="LevelScreen.ts"/>
 
 class DeathScreen extends LevelScreen {
+    
     private wizard: Wizard;
     private textbox: GameObject;
     

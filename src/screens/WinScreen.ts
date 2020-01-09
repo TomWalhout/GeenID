@@ -2,9 +2,11 @@
 /// <reference path="LevelScreen.ts"/>
 
 class WinScreen extends LevelScreen {
+
     private wizard: Wizard;
     private textbox: GameObject;
     private victory: GameObject;
+    
     public constructor(game: Game) {
         super(game);
         this.wizard = new Wizard(new Vector(50, 450), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 2);
