@@ -2,6 +2,7 @@
 /// <reference path="LevelScreen.ts"/>
 
 class DeathScreen extends LevelScreen {
+
     private wizard: Wizard;
     private textbox: GameObject;
     
@@ -20,15 +21,19 @@ class DeathScreen extends LevelScreen {
      * @param ctx the rendering context to draw on
      */
     public draw(ctx: CanvasRenderingContext2D) {
-        super.draw(ctx);
         this.wizard.update();
         this.textbox.update();
         this.storyText();
+        
+        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
+            this.game.switchScreen(new SelectionScreen(this.game));
+        }
+        super.draw(ctx);
     }
 
     public storyText() {
         if (this.story == 0) {
-            this.multilineText(this.game.ctx, `Helaas ${this.game.playerinfo[0]}!\nIk heb jouw ID gestolen.\n Als je het nog een\n keer wilt proberen\ndruk dan op F5.\n`, 630, 145); //1200 en 500
+            this.multilineText(this.game.ctx, `Helaas ${this.game.playerinfo[0]}!\nIk heb jouw ID gestolen.\n Als je het nog een\n keer wilt proberen\ndruk dan op ENTER.\n`, 630, 145); //1200 en 500
         }
     }
 }

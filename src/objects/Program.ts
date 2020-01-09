@@ -5,6 +5,7 @@ class Program extends GameObject {
     protected open: boolean;
     protected ctx: CanvasRenderingContext2D;
     private ads: boolean;
+    
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number, story: number) {
         super(pos, vel, ctx, path, frames, speed, scale, story);
         this.open = false;
@@ -60,7 +61,6 @@ class Program extends GameObject {
     public get storyFlag(): number {
         return this.story;
     }
-
 }
 
 //This is a small empty subclass, placing it here is fine

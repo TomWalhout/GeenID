@@ -2,7 +2,6 @@
 
 class Ad extends Program {
 
-
     private respawn: boolean;
 
     public constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, frames: number, speed: number, scale: number) {
@@ -20,7 +19,4 @@ class Ad extends Program {
     public set respawning(v: boolean) {
         this.respawn = v;
     }
-
-
-
 }

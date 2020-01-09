@@ -1,6 +1,7 @@
 /// <reference path="./GameObject.ts"/>
 
 class Boss extends GameObject {
+    
     protected ctx: CanvasRenderingContext2D;
     private screen: BossScreen;
     private nextAttack: boolean;
@@ -10,6 +11,7 @@ class Boss extends GameObject {
     private attackLimit: number;
     private game: Game;
     private healthbar: Healthbar;
+
     constructor(pos: Vector, vel: Vector, ctx: CanvasRenderingContext2D, path: string, screen: BossScreen, frames: number = 0, speed: number = 0, scale: number = 1, game: Game) {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.ctx = ctx;
@@ -26,9 +28,19 @@ class Boss extends GameObject {
 
     public update() {
         super.update();
-        this.drawBox();
         this.pos.x += Math.random() * 2 - 1;
         this.pos.y += Math.random() * 2 - 1;
+        if (this.pos.y < 0) {
+            this.pos.y = 0;
+        }
+        if (this.pos.y > this.game.canvas.height + this.animation.imageHeight) {
+            this.pos.y = this.game.canvas.height + this.animation.imageHeight;
+        }
+        if (this.pos.x < 0) {
+            this.pos.x = 0;
+        } if (this.pos.x >= this.game.canvas.width + this.animation.imageWidth) {
+            this.pos.x = this.game.canvas.width + this.animation.imageWidth;
+        }
         //if the attack is done or there is no longer any attack
         if (this.nextAttack || this.currentAttack.length === 0) {
             // Attack again
@@ -49,7 +61,6 @@ class Boss extends GameObject {
                 this.currentAttack.splice(i, 1);
             }
         }
-
         this.checkBossHealth();
     }
 
@@ -59,6 +70,7 @@ class Boss extends GameObject {
             this.game.switchScreen(new WinScreen(this.game));
         }
     }
+
     private newAttack() {
         this.attackTimer = 0;
         // This will become a list of attacks of which it will choose one
@@ -100,7 +112,6 @@ class Boss extends GameObject {
         }
     }
 
-
     private popUpOfDeath() {
         this.attackLimit = 500;
         for (let i = 0; i < 3; i++) {
@@ -112,16 +123,11 @@ class Boss extends GameObject {
         return this.currentAttack;
     }
 
-
     public get health(): number {
         return this.bossHealth;
     }
 
-
     public set health(v: number) {
         this.bossHealth = v;
     }
-
-
-
 }

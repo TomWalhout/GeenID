@@ -1,7 +1,6 @@
 /// <reference path="LevelScreen.ts"/>
 class HomeScreen extends LevelScreen{
     
-
     public constructor(game: Game) {
 
         super(game);
@@ -9,11 +8,11 @@ class HomeScreen extends LevelScreen{
     }
 
     public draw() {
-        super.draw(this.game.ctx);
         this.collide();
-
+        
         if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
             this.game.switchScreen(new SelectionScreen(this.game));
         }
+        super.draw(this.game.ctx);
     }
 }
