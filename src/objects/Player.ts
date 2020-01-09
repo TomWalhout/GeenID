@@ -3,7 +3,6 @@
 class Player extends GameObject {
 
     private UserInput: UserInput;
-    public hasSword: boolean;
     protected scale: number;
     protected standsOnGround: boolean;
     private faceAnimation: Animate;
@@ -17,7 +16,6 @@ class Player extends GameObject {
         super(pos, vel, ctx, path, frames, speed, scale)
         this.faceAnimation = new Animate(ctx, body, 1, 1, this, 1);
         this.UserInput = new UserInput;
-        this.hasSword = false;
         this.scale = scale
         this.standsOnGround = false;
         this.walljumpTrigger = false;
@@ -61,7 +59,7 @@ class Player extends GameObject {
 
         //wall jump
         if (this.UserInput.isKeyDown(UserInput.KEY_UP) && !this.walljumpUsed && !this.walljumpTrigger && (this.pos.x < 2 || this.pos.x + this.animation.imageWidth > 1364)) {
-            this.vel.y = -8 ;
+            this.vel.y = -8;
             this.standing = false;
             this.walljumpTrigger = true;
             this.walljumpUsed = true;
@@ -73,26 +71,14 @@ class Player extends GameObject {
             this.walljumpCooldown = 20;
             this.walljumpUsed = false;
         }
-
-
-        // Attack
-        if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
-            console.log('Hiyaa!');
-        }
-
-        // test
-        if (this.UserInput.isKeyDown(UserInput.KEY_ENTER) && this.hasSword == false) {
-            console.log('tadadADADAAAAAA')
-            this.hasSword = true;
-        }
     }
 
     // functie cooldown wall jump
     public walljumpCd() {
-        if(!this.standing) {
+        if (!this.standing) {
             this.walljumpCooldown--
         }
-        if(this.walljumpCooldown <= 0) {
+        if (this.walljumpCooldown <= 0) {
             this.walljumpTrigger = false
         }
     }

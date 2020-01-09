@@ -418,9 +418,20 @@ class Boss extends GameObject {
     }
     update() {
         super.update();
-        this.drawBox();
         this.pos.x += Math.random() * 2 - 1;
         this.pos.y += Math.random() * 2 - 1;
+        if (this.pos.y < 0) {
+            this.pos.y = 0;
+        }
+        if (this.pos.y > this.game.canvas.height + this.animation.imageHeight) {
+            this.pos.y = this.game.canvas.height + this.animation.imageHeight;
+        }
+        if (this.pos.x < 0) {
+            this.pos.x = 0;
+        }
+        if (this.pos.x >= this.game.canvas.width + this.animation.imageWidth) {
+            this.pos.x = this.game.canvas.width + this.animation.imageWidth;
+        }
         if (this.nextAttack || this.currentAttack.length === 0) {
             this.newAttack();
             this.nextAttack = false;
@@ -581,7 +592,6 @@ class Player extends GameObject {
         super(pos, vel, ctx, path, frames, speed, scale);
         this.faceAnimation = new Animate(ctx, body, 1, 1, this, 1);
         this.UserInput = new UserInput;
-        this.hasSword = false;
         this.scale = scale;
         this.standsOnGround = false;
         this.walljumpTrigger = false;
@@ -627,13 +637,6 @@ class Player extends GameObject {
             this.walljumpTrigger = true;
             this.walljumpCooldown = 20;
             this.walljumpUsed = false;
-        }
-        if (this.hasSword == true && this.UserInput.isKeyDown(UserInput.KEY_SPACE)) {
-            console.log('Hiyaa!');
-        }
-        if (this.UserInput.isKeyDown(UserInput.KEY_ENTER) && this.hasSword == false) {
-            console.log('tadadADADAAAAAA');
-            this.hasSword = true;
         }
     }
     walljumpCd() {
@@ -812,11 +815,11 @@ class LevelScreen extends GameScreen {
             this.id.update();
             this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[0], 20, new Vector(this.game.canvas.width - 50, 30), "right", "#000000");
             this.writeTextToCanvas(this.game.ctx, this.game.playerinfo[1], 20, new Vector(this.game.canvas.width - 50, 60), "right", "#000000");
-            if (this.id.youGotRekt > 1) {
-                this.writeTextToCanvas(this.game.ctx, `${this.id.youGotRekt} levens over`, 20, new Vector(this.game.canvas.width - 25, 90), "right", "#000000");
+            if (this.id.youGotRekt === 1) {
+                this.writeTextToCanvas(this.game.ctx, `${this.id.youGotRekt} leven over`, 20, new Vector(this.game.canvas.width - 25, 90), "right", "#000000");
             }
             else {
-                this.writeTextToCanvas(this.game.ctx, `${this.id.youGotRekt} leven over`, 20, new Vector(this.game.canvas.width - 25, 90), "right", "#000000");
+                this.writeTextToCanvas(this.game.ctx, `${this.id.youGotRekt} levens over`, 20, new Vector(this.game.canvas.width - 25, 90), "right", "#000000");
             }
         }
         for (let i = 0; i < this.programs.length; i++) {
@@ -912,7 +915,7 @@ class BossScreen extends LevelScreen {
     constructor(game) {
         super(game);
         document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
-        this.boss = new Boss(new Vector(600, 450), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
+        this.boss = new Boss(new Vector(600, 50), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
         this.player.pos = new Vector(this.game.canvas.width / 2 - this.player.ani.imageWidth / 2, this.game.canvas.height);
         this.wizard = new Wizard(new Vector(this.game.canvas.width / 2 - 25, 300), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/urawizardgandalf.png", 6, 10, 1);
         this.textbox = new GameObject(new Vector(this.game.canvas.width / 2 + 80, 170), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1);
@@ -920,7 +923,7 @@ class BossScreen extends LevelScreen {
         this.waveSpawned = false;
         this.tutorialEnemies = new Array;
         this.hasStoppedPlatform = false;
-        this.story = 5;
+        this.story = 0;
         this.platformTimer = 0;
         this.countdownTimer = 0;
     }
@@ -1294,7 +1297,7 @@ class Level3 extends LevelScreen {
         super(game);
         this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
         this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
-        this.icons[2] = new Icon(new Vector(1250, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 1.4);
+        this.icons[2] = new Icon(new Vector(1050, 25), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 1.4);
         this.programs[0] = new Program(new Vector(0, 500), new Vector(0, 0), this.game.ctx, './assets/windows/DEZEPC.png', 1, 1, 0.5, 0);
         this.programs[1] = new Program(new Vector(700, 300), new Vector(0, 0), this.game.ctx, './assets/windows/Spotify.png', 1, 1, 0.6, 0);
         this.programs[1].hasAds = true;
