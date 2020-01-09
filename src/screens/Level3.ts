@@ -14,7 +14,7 @@ class Level3 extends LevelScreen {
         super(game);
         // fill this boi up
         this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, '', 1, 1, 1.4, 1)
-        this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4)
+        this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/spoofy.png', 1, 1, 1.4)
         this.icons[2] = new Icon(new Vector(1250, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 1.4)
         this.icons[3] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4)
         this.programs[0] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
