@@ -28,6 +28,17 @@ class Boss extends GameObject {
         super.update();
         this.pos.x += Math.random() * 2 - 1;
         this.pos.y += Math.random() * 2 - 1;
+        if (this.pos.y < 0) {
+            this.pos.y = 0;
+        }
+        if (this.pos.y > this.game.canvas.height + this.animation.imageHeight) {
+            this.pos.y = this.game.canvas.height + this.animation.imageHeight;
+        }
+        if (this.pos.x < 0) {
+            this.pos.x = 0;
+        } if (this.pos.x >= this.game.canvas.width + this.animation.imageWidth) {
+            this.pos.x = this.game.canvas.width + this.animation.imageWidth;
+        }
         //if the attack is done or there is no longer any attack
         if (this.nextAttack || this.currentAttack.length === 0) {
             // Attack again
