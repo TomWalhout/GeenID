@@ -922,7 +922,7 @@ class LevelScreen extends GameScreen {
 class BossScreen extends LevelScreen {
     constructor(game) {
         super(game);
-        document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
+        document.body.style.backgroundImage = "url('./assets/xpZwartWit-bg.png')";
         this.boss = new Boss(new Vector(600, 50), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
         this.player.pos = new Vector(this.game.canvas.width / 2 - this.player.ani.imageWidth / 2, this.game.canvas.height);
         this.wizard = new Wizard(new Vector(this.game.canvas.width / 2 - 25, 300), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/urawizardgandalf.png", 6, 10, 1);
@@ -1098,10 +1098,10 @@ class DeathScreen extends LevelScreen {
     constructor(game) {
         super(game);
         this.wizard = new Wizard(new Vector(260, 200), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/hackerman.png', 1, 1, 1);
-        this.textbox = new GameObject(new Vector(500, 110), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.textbox = new GameObject(new Vector(500, 110), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox1.png', 1, 1, 1.3);
         this.textbox.mirror = true;
         this.story = 0;
-        document.body.style.backgroundImage = "url('./assets/HackerCodeBG.png')";
+        document.body.style.backgroundImage = "url('./assets/hacked-bg.png')";
     }
     draw(ctx) {
         this.wizard.update();
@@ -1180,7 +1180,7 @@ class Level1 extends LevelScreen {
     }
     storyText() {
         if (this.story == 1) {
-            this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het gloole icoon.\n`, 1000, 500);
+            this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het glooole icoon.\n`, 1000, 500);
             this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
         }
         else if (this.story == 2) {
@@ -1213,14 +1213,15 @@ class Level2 extends LevelScreen {
         this.textYPos = 220;
         const adsFileNames = [
             './assets/textboxAndAds/ad1.png',
-            './assets/textboxAndAds/ad2.png'
+            './assets/textboxAndAds/ad2.png',
+            './assets/textboxAndAds/ad3.png',
         ];
         for (let i = 0; i < this.randomRoundedNumber(5, 7); i++) {
             const randonmIndex = this.randomRoundedNumber(0, adsFileNames.length);
             this.ads[i] = new Ad(new Vector(this.randomNumber(100, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 195)), new Vector(0, 0), this.game.ctx, adsFileNames[randonmIndex], 1, 1, 1.5);
             this.ads[i].isOpen = true;
         }
-        this.icons[1] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
+        this.icons[1] = new Icon(new Vector(1250, 200), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/adblocker.png', 1, 1, 1, 0);
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
     }
     nextLevel() {
@@ -1285,7 +1286,6 @@ class Level2 extends LevelScreen {
         let y3 = Math.random() * 6 - 3;
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
-            console.log(this.story);
         }
         else if (this.story == 2) {
             this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, this.textXPos, this.textYPos);
@@ -1311,14 +1311,13 @@ class Level2 extends LevelScreen {
             this.textbox.pos.x += x3;
             this.textbox.pos.y += y3;
         }
-        this.multilineText(this.game.ctx, 'Gebruik de muur om een\nmuursprong te maken en\nhoger te springen!', 1200, 600);
     }
 }
 class Level3 extends LevelScreen {
     constructor(game) {
         super(game);
         this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, '', 1, 1, 1.4, 1);
-        this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4);
+        this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/spoofy.png', 1, 1, 1.4);
         this.icons[2] = new Icon(new Vector(1250, 200), new Vector(0, 0), this.game.ctx, './assets/icons/bugFile.png', 1, 1, 1.4);
         this.icons[3] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/DEZEPC.png', 1, 1, 1.4);
         this.programs[0] = new Program(new Vector(800, 300), new Vector(0, 0), this.game.ctx, '', 1, 1, 0.6, 0);
@@ -1377,7 +1376,7 @@ class Level4 extends LevelScreen {
         for (let i = 0; i < this.numberOfEnemies; i++) {
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
         }
-        this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
+        this.programs[0] = new Program(new Vector(400, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;
         this.programs[1] = new Program(new Vector(700, 400), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman2.png', 1, 1, 0.5, 0);
         this.programs[1].isOpen = true;
@@ -1396,6 +1395,7 @@ class Level4 extends LevelScreen {
         this.closeAds();
         this.closeProgram();
         this.clickedIcon();
+        super.draw(this.game.ctx);
         this.enemies.forEach(element => {
             element.update();
             element.enemyMove(this.game.canvas);
@@ -1404,7 +1404,6 @@ class Level4 extends LevelScreen {
         if (this.story < 2) {
             this.enemyCollision();
         }
-        super.draw(this.game.ctx);
     }
     timer() {
         if (this.timeInFrames > 0) {
@@ -1437,7 +1436,7 @@ class Level4 extends LevelScreen {
             this.story = 1;
         }
         if (this.story === 1) {
-            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/virusscanner.png', 1, 1, 1);
+            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/virusscanner.png', 1, 1, 1.4);
             let scanner = this.icons[0].box();
         }
         if (this.story === 1 && this.player.pos.x >= 1200) {

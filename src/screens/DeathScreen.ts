@@ -9,10 +9,10 @@ class DeathScreen extends LevelScreen {
     public constructor(game: Game) {
         super(game);
         this.wizard = new Wizard(new Vector(260, 200), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/hackerman.png', 1, 1, 1);
-        this.textbox = new GameObject(new Vector(500, 110), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.textbox = new GameObject(new Vector(500, 110), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox1.png', 1, 1, 1.3);
         this.textbox.mirror = true;
         this.story = 0;
-        document.body.style.backgroundImage = "url('./assets/HackerCodeBG.png')";
+        document.body.style.backgroundImage = "url('./assets/hacked-bg.png')";
     }
     /**
      * Let this screen draw itself and its gameobjects on the given rendering

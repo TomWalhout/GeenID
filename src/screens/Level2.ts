@@ -27,7 +27,8 @@ class Level2 extends LevelScreen {
 
         const adsFileNames: string[] = [
             './assets/textboxAndAds/ad1.png',
-            './assets/textboxAndAds/ad2.png'
+            './assets/textboxAndAds/ad2.png',
+            './assets/textboxAndAds/ad3.png',
         ]
 
         for (let i = 0; i < this.randomRoundedNumber(5, 7); i++) {
@@ -136,5 +137,5 @@ class Level2 extends LevelScreen {
             this.textbox.pos.x += x3;
             this.textbox.pos.y += y3;
         }
-        this.multilineText(this.game.ctx, 'Gebruik de muur om een\nmuursprong te maken en\nhoger te springen!', 1200, 600);    }
+    }
 }
