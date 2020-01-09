@@ -1217,7 +1217,6 @@ class Level2 extends LevelScreen {
         }
     }
     draw() {
-        super.draw(this.game.ctx);
         this.ads.forEach(element => {
             element.update();
         });
@@ -1226,6 +1225,7 @@ class Level2 extends LevelScreen {
         this.storyText();
         this.closeAds();
         this.nextLevel();
+        super.draw(this.game.ctx);
     }
     storyCheck() {
         if (this.story < 1) {
@@ -1285,6 +1285,7 @@ class Level2 extends LevelScreen {
             this.textbox.pos.x += x3;
             this.textbox.pos.y += y3;
         }
+        this.multilineText(this.game.ctx, 'Gebruik de muur om een\nmuursprong te maken en\nhoger te springen!', 1200, 600);
     }
 }
 class Level3 extends LevelScreen {
@@ -1339,14 +1340,14 @@ class Level4 extends LevelScreen {
         this.enemies = new Array;
         this.numberOfEnemies = 5;
         for (let i = 0; i < this.numberOfEnemies; i++) {
-<<<<<<< HEAD
-            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
-=======
-            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
->>>>>>> e693e14d2ebb0f7e48bc609ca8e06cbf9beee6ba
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
         }
         this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;
+        this.programs[1] = new Program(new Vector(700, 400), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman2.png', 1, 1, 0.5, 0);
+        this.programs[1].isOpen = true;
+        this.programs[2] = new Program(new Vector(150, 200), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman3.png', 1, 1, 0.6, 0);
+        this.programs[2].isOpen = true;
         this.story = 0;
         this.timeInFrames = 1000;
         this.wizard = new Wizard(new Vector(300, this.game.canvas.height - 145), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 10, 1);
@@ -1401,7 +1402,7 @@ class Level4 extends LevelScreen {
             this.story = 1;
         }
         if (this.story === 1) {
-            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/virusscanner.png', 1, 1, 0.3);
+            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/virusscanner.png', 1, 1, 1);
             let scanner = this.icons[0].box();
         }
         if (this.story === 1 && this.player.pos.x >= 1200) {
