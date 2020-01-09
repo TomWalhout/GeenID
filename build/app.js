@@ -418,6 +418,7 @@ class Boss extends GameObject {
     }
     update() {
         super.update();
+        this.drawBox();
         this.pos.x += Math.random() * 2 - 1;
         this.pos.y += Math.random() * 2 - 1;
         if (this.nextAttack || this.currentAttack.length === 0) {
@@ -911,7 +912,7 @@ class BossScreen extends LevelScreen {
     constructor(game) {
         super(game);
         document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
-        this.boss = new Boss(new Vector(600, 100), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
+        this.boss = new Boss(new Vector(600, 450), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
         this.player.pos = new Vector(this.game.canvas.width / 2 - this.player.ani.imageWidth / 2, this.game.canvas.height);
         this.wizard = new Wizard(new Vector(this.game.canvas.width / 2 - 25, 300), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/urawizardgandalf.png", 6, 10, 1);
         this.textbox = new GameObject(new Vector(this.game.canvas.width / 2 + 80, 170), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1);
@@ -919,7 +920,7 @@ class BossScreen extends LevelScreen {
         this.waveSpawned = false;
         this.tutorialEnemies = new Array;
         this.hasStoppedPlatform = false;
-        this.story = 0;
+        this.story = 5;
         this.platformTimer = 0;
         this.countdownTimer = 0;
     }

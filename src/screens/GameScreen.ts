@@ -74,11 +74,11 @@ class GameScreen {
             xoverlap = true;
         }
         if (a[2] < b[2] && a[3] > b[2] && a[3] < b[3]) {
-            //there is x-overlap
+            //there is y-overlap
             yoverlap = true;
         }
         if (a[2] > b[2] && a[2] < b[3]) {
-            //xoverlap
+            //yoverlap
             yoverlap = true;
         }
         return xoverlap && yoverlap;
