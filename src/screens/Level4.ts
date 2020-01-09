@@ -22,6 +22,11 @@ class Level4 extends LevelScreen {
 
         this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;
+        this.programs[1] = new Program(new Vector(700, 400), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman2.png', 1, 1, 0.5, 0);
+        this.programs[1].isOpen = true;
+        this.programs[2] = new Program(new Vector(150, 200), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman3.png', 1, 1, 0.6, 0);
+        this.programs[2].isOpen = true;
+        
 
         this.story = 0;
         this.timeInFrames = 1000; // timer

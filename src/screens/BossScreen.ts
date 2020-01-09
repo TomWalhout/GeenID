@@ -116,10 +116,12 @@ class BossScreen extends LevelScreen {
         }
 
         this.platformTimer++;
+
         for (let i = this.tutorialEnemies.length - 1; i >= 0; i--) {
             this.tutorialEnemies[i].update();
             if (this.tutorialEnemies[i].pos.y > this.game.canvas.height || this.platformTimer >= 250) {
                 this.tutorialEnemies.splice(i, 1);
+                this.platformTimer = 0;
             }
         }
 
