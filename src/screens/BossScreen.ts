@@ -12,6 +12,7 @@ class BossScreen extends LevelScreen {
     private tutorialEnemies: Array<GameObject>;
     private hasStoppedPlatform: boolean;
     private platformTimer: number;
+    private countdownTimer: number;
     /**
      * Construct a new GameScreen object.
      *
@@ -20,16 +21,17 @@ class BossScreen extends LevelScreen {
     public constructor(game: Game) {
         super(game);
         document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
-        this.boss = new Boss(new Vector(600, 100), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
+        this.boss = new Boss(new Vector(600, 450), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
         this.player.pos = new Vector(this.game.canvas.width / 2 - this.player.ani.imageWidth / 2, this.game.canvas.height);
-        this.wizard = new Wizard(new Vector(50, 120), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/urawizardgandalf.png", 6, 10, 1);
-        this.textbox = new GameObject(new Vector(150, 10), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1);
+        this.wizard = new Wizard(new Vector(this.game.canvas.width / 2 - 25, 300), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/urawizardgandalf.png", 6, 10, 1);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width / 2 + 80, 170), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1);
         this.textbox.mirror = true;
         this.waveSpawned = false;
         this.tutorialEnemies = new Array;
         this.hasStoppedPlatform = false;
-        this.story = 0;
+        this.story = 5;
         this.platformTimer = 0;
+        this.countdownTimer = 0;
     }
 
     /**
@@ -43,18 +45,35 @@ class BossScreen extends LevelScreen {
         if (this.story > 3) {
             this.boss.update();
         } else if (this.story === 0) {
-            this.phaseOne();
+            this.start();
         } else if (this.story === 1) {
+            this.phaseOne();
+        }
+        else if (this.story === 2) {
             this.phaseTwo();
         }
+        else if (this.story === 3) {
+            this.finalCountdown();
+        }
+    }
 
-
+    private start() {
+        this.wizard.update();
+        this.textbox.update();
+        this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}!\nPas op!\nDe Hacker gaat zo \naanvallen!`, this.textbox.pos.x + 100, this.textbox.pos.y + 25);
+        this.countdownTimer++;
+        if (this.countdownTimer >= 240) {
+            this.story++;
+            this.countdownTimer = 0;
+        }
     }
 
     private phaseOne() {
         this.wizard.update();
+        this.wizard.pos = new Vector(50, 120);
         this.textbox.update();
-        this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}!\nOntwijk de virussen \ndoor een muursprong \nte maken!`, 250, 35);
+        this.textbox.pos = new Vector(150, 10);
+        this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}!\nOntwijk de virussen \ndoor een muursprong \nte maken!`, this.textbox.pos.x + 100, this.textbox.pos.y + 25);
         if (!this.waveSpawned) {
             this.waveSpawned = true;
             //create enemies
@@ -105,16 +124,32 @@ class BossScreen extends LevelScreen {
 
         if (this.tutorialEnemies.length === 0) {
             if (this.hasStoppedPlatform) {
-                this.story = 10;
+                this.story++;
             } else {
                 this.waveSpawned = false;
             }
         }
     }
 
+    private finalCountdown() {
+
+        if (this.countdownTimer < 60) {
+            this.writeTextToCanvas(this.game.ctx, "3", 70, new Vector(this.game.canvas.width / 2, this.game.canvas.height / 2), "center", "#FFFFFF");
+        }
+        else if (this.countdownTimer < 120) {
+            this.writeTextToCanvas(this.game.ctx, "2", 70, new Vector(this.game.canvas.width / 2, this.game.canvas.height / 2), "center", "#FFFFFF");
+        }
+        else if (this.countdownTimer < 180) {
+            this.writeTextToCanvas(this.game.ctx, "1", 70, new Vector(this.game.canvas.width / 2, this.game.canvas.height / 2), "center", "#FFFFFF");
+        } else if (this.countdownTimer >= 180) {
+            this.story = 10;
+        }
+        this.countdownTimer++;
+    }
+
     public collide() {
         let player = this.player.box();
-        if (this.story > 1) {
+        if (this.story > 3) {
             let boss = this.boss.box();
             if (this.collides(boss, player)) {
                 this.boss.health = this.boss.health - 1;
@@ -123,14 +158,14 @@ class BossScreen extends LevelScreen {
             this.boink(player, this.boss.Attack);
             this.platformCollision(player, this.boss.Attack);
 
-        } else if (this.story === 0) {
+        } else if (this.story === 1) {
 
             this.tutorialEnemies.forEach(e => {
                 if (this.collides(player, e.box())) {
                     this.id.youGotRekt = this.id.youGotRekt - 1;
                 }
             })
-        } else if (this.story === 1) {
+        } else if (this.story === 2) {
             this.boink(player, this.tutorialEnemies);
             this.platformCollision(player, this.tutorialEnemies);
         }

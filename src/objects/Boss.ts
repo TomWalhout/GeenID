@@ -26,6 +26,7 @@ class Boss extends GameObject {
 
     public update() {
         super.update();
+        this.drawBox();
         this.pos.x += Math.random() * 2 - 1;
         this.pos.y += Math.random() * 2 - 1;
         //if the attack is done or there is no longer any attack
