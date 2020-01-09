@@ -24,11 +24,15 @@ class DeathScreen extends LevelScreen {
         this.wizard.update();
         this.textbox.update();
         this.storyText();
+
+        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
+            this.game.switchScreen(new SelectionScreen(this.game));
+        }
     }
 
     public storyText() {
         if (this.story == 0) {
-            this.multilineText(this.game.ctx, `Helaas ${this.game.playerinfo[0]}!\nIk heb jouw ID gestolen.\n Als je het nog een\n keer wilt proberen\ndruk dan op F5.\n`, 630, 145); //1200 en 500
+            this.multilineText(this.game.ctx, `Helaas ${this.game.playerinfo[0]}!\nIk heb jouw ID gestolen.\n Als je het nog een\n keer wilt proberen\ndruk dan op ENTER.\n`, 630, 145); //1200 en 500
         }
     }
 }

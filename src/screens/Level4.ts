@@ -17,14 +17,14 @@ class Level4 extends LevelScreen {
         this.numberOfEnemies = 5 //number of enemies
 
         for (let i = 0; i < this.numberOfEnemies; i++) {
-            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this); // 145 = enemyWidth, 190 = enemyHeight + windowsbarHeight
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this); // 145 = enemyWidth, 190 = enemyHeight + windowsbarHeight
         }
 
         this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;
 
         this.story = 0;
-        this.timeInFrames = 400; // timer
+        this.timeInFrames = 1000; // timer
         this.wizard = new Wizard(new Vector(300, this.game.canvas.height - 145), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 10, 1);
         this.textbox = new GameObject(new Vector(50, 400), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.5);
     }
@@ -41,8 +41,8 @@ class Level4 extends LevelScreen {
         this.closeProgram();
         this.clickedIcon();
         this.enemies.forEach(element => {
-            element.update();
-            element.enemyMove(this.game.canvas);
+            element.update()
+            element.enemyMove(this.game.canvas)
         })
         this.timer();
         if (this.story < 2) {
