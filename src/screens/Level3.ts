@@ -59,10 +59,8 @@ class Level3 extends LevelScreen {
         }
     }
 
-
     private storyText() {
         //Checks for story beat
-
         if (this.story < 2000) {
             this.story = this.story + 1;
         }
