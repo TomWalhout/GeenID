@@ -6,6 +6,7 @@ class Level2 extends LevelScreen {
     private textbox: GameObject;
     private textXPos: number;
     private textYPos: number;
+    private vortex: Boolean;
 
     /**
      * Contructes the third level
@@ -15,8 +16,10 @@ class Level2 extends LevelScreen {
     public constructor(game: Game) {
         super(game);
         // fill this boi up
-        this.programs[0] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
-        this.programs[0].isOpen = true;
+        this.programs[1] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
+        this.programs[1].isOpen = true;
+        this.programs[0] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, '', 1, 1, 1, 0);
+        this.icons[0] = new Icon(new Vector(1250, 150), new Vector(0, 0), this.game.ctx, './assets/icons/vortex.png', 5, 5, 1.4, 1);
         this.wizard = new Wizard(new Vector(290, 300), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(50, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
         this.textXPos = 175;
@@ -33,7 +36,7 @@ class Level2 extends LevelScreen {
             this.ads[i].isOpen = true;           
         }
 
-        this.icons[0] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
+        this.icons[1] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
         }
 
@@ -41,7 +44,7 @@ class Level2 extends LevelScreen {
         let player = this.player.box();
     
         // exit level 3
-        let file = this.icons[0].box(); // kruisje
+        let file = this.icons[1].box(); // kruisje
         if (this.collides(file, player)) {
             this.game.switchScreen(new Level3(this.game));
         }
