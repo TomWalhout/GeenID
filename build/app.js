@@ -1341,11 +1341,7 @@ class Level4 extends LevelScreen {
         this.enemies = new Array;
         this.numberOfEnemies = 5;
         for (let i = 0; i < this.numberOfEnemies; i++) {
-<<<<<<< HEAD
-            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
-=======
-            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
->>>>>>> e693e14d2ebb0f7e48bc609ca8e06cbf9beee6ba
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
         }
         this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;
