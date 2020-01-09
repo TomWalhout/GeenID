@@ -22,11 +22,11 @@ class WinScreen extends LevelScreen {
      * @param ctx the rendering context to draw on
      */
     public draw(ctx: CanvasRenderingContext2D) {
-        super.draw(ctx);
         this.victory.update();
         this.wizard.update();
         this.textbox.update();
         this.storyText();
+        super.draw(ctx);
     }
 
     public storyText() {
