@@ -30,13 +30,12 @@ class IDcard extends GameObject {
             this.game.switchScreen(new DeathScreen(this.game));
         }
         //only update to new image when necessary, not every frame
-        if (this.lives < this.prevlives && this.lives > 1) {
+        if (this.lives < this.prevlives && this.lives >= 1) {
             this.prevlives--;
             this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 1.5);
             this.ouch = 8; //length of screen
         }
     }
-
     public set youGotRekt(v: number) {
         if (this.invframes == 0) {
             this.lives = v;
@@ -47,6 +46,11 @@ class IDcard extends GameObject {
 
     public get youGotRekt(): number {
         return this.lives;
+    }   
+
+
+    public set Prev(v: number) {
+        this.prevlives = v;
     }
 
     public hurtScreen() {

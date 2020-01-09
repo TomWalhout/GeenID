@@ -26,6 +26,7 @@ class Boss extends GameObject {
 
     public update() {
         super.update();
+        this.drawBox();
         this.pos.x += Math.random() * 2 - 1;
         this.pos.y += Math.random() * 2 - 1;
         //if the attack is done or there is no longer any attack
@@ -103,7 +104,7 @@ class Boss extends GameObject {
     private popUpOfDeath() {
         this.attackLimit = 500;
         for (let i = 0; i < 3; i++) {
-            this.currentAttack[i] = new BossAD(new Vector(this.pos.x + 75, this.pos.y + 75), new Vector(0, 0), this.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1, this.screen);
+            this.currentAttack[i] = new BossAD(new Vector(this.pos.x + 75, this.pos.y + 75), new Vector(0, 0), this.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1, this.screen, true);
         }
     }
 

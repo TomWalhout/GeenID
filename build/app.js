@@ -418,6 +418,7 @@ class Boss extends GameObject {
     }
     update() {
         super.update();
+        this.drawBox();
         this.pos.x += Math.random() * 2 - 1;
         this.pos.y += Math.random() * 2 - 1;
         if (this.nextAttack || this.currentAttack.length === 0) {
@@ -483,7 +484,7 @@ class Boss extends GameObject {
     popUpOfDeath() {
         this.attackLimit = 500;
         for (let i = 0; i < 3; i++) {
-            this.currentAttack[i] = new BossAD(new Vector(this.pos.x + 75, this.pos.y + 75), new Vector(0, 0), this.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1, this.screen);
+            this.currentAttack[i] = new BossAD(new Vector(this.pos.x + 75, this.pos.y + 75), new Vector(0, 0), this.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1, this.screen, true);
         }
     }
     get Attack() {
@@ -541,7 +542,7 @@ class IDcard extends GameObject {
         if (this.lives <= 0) {
             this.game.switchScreen(new DeathScreen(this.game));
         }
-        if (this.lives < this.prevlives && this.lives > 1) {
+        if (this.lives < this.prevlives && this.lives >= 1) {
             this.prevlives--;
             this.animation = new Animate(this.ctx, `./assets/idcard/idCard${this.lives}.png`, 1, 1, this, 1.5);
             this.ouch = 8;
@@ -556,6 +557,9 @@ class IDcard extends GameObject {
     }
     get youGotRekt() {
         return this.lives;
+    }
+    set Prev(v) {
+        this.prevlives = v;
     }
     hurtScreen() {
         if (this.ouch == 8) {
@@ -676,15 +680,15 @@ class Wizard extends GameObject {
     }
 }
 class BossAD extends Attack {
-    constructor(pos, vel, ctx, path, frames, speed, scale, screen) {
+    constructor(pos, vel, ctx, path, frames, speed, scale, screen, bossSpawned) {
         super(pos, vel, ctx, path, frames, speed, scale);
-        this.setSpeed();
-        this.player = screen.Player;
-        this.doCollision = false;
+        if (bossSpawned) {
+            this.setSpeed();
+        }
     }
     setSpeed() {
         this.vel.x = (Math.random() * 2 - 1) * 5;
-        this.vel.y = (Math.random()) * 5;
+        this.vel.y = Math.random() * 5;
     }
     update() {
         super.update();
@@ -908,25 +912,146 @@ class BossScreen extends LevelScreen {
     constructor(game) {
         super(game);
         document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
-        this.boss = new Boss(new Vector(600, 100), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
-        this.Player.pos = new Vector(this.game.canvas.width / 2 - this.player.ani.imageWidth / 2, this.game.canvas.height);
+        this.boss = new Boss(new Vector(600, 450), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
+        this.player.pos = new Vector(this.game.canvas.width / 2 - this.player.ani.imageWidth / 2, this.game.canvas.height);
+        this.wizard = new Wizard(new Vector(this.game.canvas.width / 2 - 25, 300), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/urawizardgandalf.png", 6, 10, 1);
+        this.textbox = new GameObject(new Vector(this.game.canvas.width / 2 + 80, 170), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1);
+        this.textbox.mirror = true;
+        this.waveSpawned = false;
+        this.tutorialEnemies = new Array;
+        this.hasStoppedPlatform = false;
+        this.story = 5;
+        this.platformTimer = 0;
+        this.countdownTimer = 0;
     }
     draw(ctx) {
         super.draw(ctx);
-        this.boss.update();
+        if (this.story > 3) {
+            this.boss.update();
+        }
+        else if (this.story === 0) {
+            this.start();
+        }
+        else if (this.story === 1) {
+            this.phaseOne();
+        }
+        else if (this.story === 2) {
+            this.phaseTwo();
+        }
+        else if (this.story === 3) {
+            this.finalCountdown();
+        }
+    }
+    start() {
+        this.wizard.update();
+        this.textbox.update();
+        this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}!\nPas op!\nDe Hacker gaat zo \naanvallen!`, this.textbox.pos.x + 100, this.textbox.pos.y + 25);
+        this.countdownTimer++;
+        if (this.countdownTimer >= 240) {
+            this.story++;
+            this.countdownTimer = 0;
+        }
+    }
+    phaseOne() {
+        this.wizard.update();
+        this.wizard.pos = new Vector(50, 120);
+        this.textbox.update();
+        this.textbox.pos = new Vector(150, 10);
+        this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}!\nOntwijk de virussen \ndoor een muursprong \nte maken!`, this.textbox.pos.x + 100, this.textbox.pos.y + 25);
+        if (!this.waveSpawned) {
+            this.waveSpawned = true;
+            for (let i = 0; i < 5; i++) {
+                this.tutorialEnemies[i] = new Enemy(new Vector(this.game.ctx.canvas.width + 300, this.game.ctx.canvas.height - i * 80 - 50), new Vector(-5, 0), this.game.ctx, "./assets/enemiesAndAllies/Enemy.png", this);
+            }
+        }
+        for (let i = this.tutorialEnemies.length - 1; i >= 0; i--) {
+            this.tutorialEnemies[i].update();
+            if (this.tutorialEnemies[i].pos.x < -175) {
+                this.tutorialEnemies.splice(i, 1);
+            }
+        }
+        if (this.tutorialEnemies.length == 0) {
+            if (this.id.youGotRekt == 5) {
+                this.story++;
+            }
+            else {
+                this.id.youGotRekt = 5;
+                this.id.Prev = this.id.youGotRekt;
+            }
+            this.waveSpawned = false;
+        }
+    }
+    phaseTwo() {
+        this.wizard.update();
+        this.textbox.update();
+        this.multilineText(this.game.ctx, `Goed bezig!\nProbeer nu eens op\neen van deze \nplatforms te springen!`, 250, 35);
+        if (!this.waveSpawned) {
+            this.waveSpawned = true;
+            for (let i = 0; i < 3; i++) {
+                this.tutorialEnemies[i] = new BossAD(new Vector(i * 150 + 450, -10), new Vector(0, 6), this.game.ctx, "./assets/textboxAndAds/ad1.png", 1, 1, 1, this, false);
+            }
+        }
+        this.platformTimer++;
+        for (let i = this.tutorialEnemies.length - 1; i >= 0; i--) {
+            this.tutorialEnemies[i].update();
+            if (this.tutorialEnemies[i].pos.y > this.game.canvas.height || this.platformTimer >= 250) {
+                this.tutorialEnemies.splice(i, 1);
+            }
+        }
+        if (this.tutorialEnemies.length === 0) {
+            if (this.hasStoppedPlatform) {
+                this.story++;
+            }
+            else {
+                this.waveSpawned = false;
+            }
+        }
+    }
+    finalCountdown() {
+        if (this.countdownTimer < 60) {
+            this.writeTextToCanvas(this.game.ctx, "3", 70, new Vector(this.game.canvas.width / 2, this.game.canvas.height / 2), "center", "#FFFFFF");
+        }
+        else if (this.countdownTimer < 120) {
+            this.writeTextToCanvas(this.game.ctx, "2", 70, new Vector(this.game.canvas.width / 2, this.game.canvas.height / 2), "center", "#FFFFFF");
+        }
+        else if (this.countdownTimer < 180) {
+            this.writeTextToCanvas(this.game.ctx, "1", 70, new Vector(this.game.canvas.width / 2, this.game.canvas.height / 2), "center", "#FFFFFF");
+        }
+        else if (this.countdownTimer >= 180) {
+            this.story = 10;
+        }
+        this.countdownTimer++;
     }
     collide() {
-        let boss = this.boss.box();
         let player = this.player.box();
-        if (this.collides(boss, player)) {
-            this.boss.health = this.boss.health - 1;
+        if (this.story > 3) {
+            let boss = this.boss.box();
+            if (this.collides(boss, player)) {
+                this.boss.health = this.boss.health - 1;
+            }
+            this.boink(player, this.boss.Attack);
+            this.platformCollision(player, this.boss.Attack);
         }
-        if (this.boss.Attack) {
-            this.boss.Attack.forEach(e => {
-                let attack = e.box();
-                if (this.collides(player, attack)) {
+        else if (this.story === 1) {
+            this.tutorialEnemies.forEach(e => {
+                if (this.collides(player, e.box())) {
+                    this.id.youGotRekt = this.id.youGotRekt - 1;
+                }
+            });
+        }
+        else if (this.story === 2) {
+            this.boink(player, this.tutorialEnemies);
+            this.platformCollision(player, this.tutorialEnemies);
+        }
+    }
+    boink(player, array) {
+        if (array) {
+            array.forEach(e => {
+                let hitbox = e.box();
+                if (this.collides(player, hitbox)) {
                     if (e instanceof BossAD) {
                         e.vel = new Vector(0, 0);
+                        this.hasStoppedPlatform = true;
                     }
                     else {
                         this.id.youGotRekt = this.id.youGotRekt - 1;
@@ -934,12 +1059,14 @@ class BossScreen extends LevelScreen {
                 }
             });
         }
+    }
+    platformCollision(player, array) {
         let playerbottom = [player[0], player[1], player[3], player[3] + 2];
         let onground = false;
-        this.boss.Attack.forEach(program => {
-            let programbox = program.box();
-            let upperbox = [programbox[0], programbox[1], programbox[2], programbox[2] + 10];
-            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing) {
+        array.forEach(platform => {
+            let platformbox = platform.box();
+            let upperbox = [platformbox[0], platformbox[1], platformbox[2], platformbox[2] + 10];
+            if (this.collides(playerbottom, upperbox) && this.player.vel.y > 0 && !this.player.standing && platform instanceof BossAD) {
                 onground = true;
             }
             if (onground) {
@@ -958,12 +1085,22 @@ class BossScreen extends LevelScreen {
 class DeathScreen extends LevelScreen {
     constructor(game) {
         super(game);
-        this.wizard = new Wizard(new Vector(300, 0), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 8);
-        document.body.style.backgroundImage = "url('./assets/verloren.png')";
+        this.wizard = new Wizard(new Vector(260, 200), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/hackerman.png', 1, 1, 1);
+        this.textbox = new GameObject(new Vector(500, 110), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.textbox.mirror = true;
+        this.story = 0;
+        document.body.style.backgroundImage = "url('./assets/HackerCodeBG.png')";
     }
     draw(ctx) {
         super.draw(ctx);
         this.wizard.update();
+        this.textbox.update();
+        this.storyText();
+    }
+    storyText() {
+        if (this.story == 0) {
+            this.multilineText(this.game.ctx, `Helaas ${this.game.playerinfo[0]}!\nIk heb jouw ID gestolen.\n Als je het nog een\n keer wilt proberen\ndruk dan op F5.\n`, 630, 145);
+        }
     }
 }
 class HomeScreen extends LevelScreen {
@@ -1046,13 +1183,15 @@ class Level2 extends LevelScreen {
         this.programs[0].isOpen = true;
         this.wizard = new Wizard(new Vector(290, 300), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(50, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.textXPos = 175;
+        this.textYPos = 220;
         const adsFileNames = [
             './assets/textboxAndAds/ad1.png',
             './assets/textboxAndAds/ad2.png'
         ];
         for (let i = 0; i < this.randomRoundedNumber(5, 7); i++) {
             const randonmIndex = this.randomRoundedNumber(0, adsFileNames.length);
-            this.ads[i] = new Ad(new Vector(this.randomNumber(0, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 95)), new Vector(0, 0), this.game.ctx, adsFileNames[randonmIndex], 1, 1, 1.5);
+            this.ads[i] = new Ad(new Vector(this.randomNumber(100, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 195)), new Vector(0, 0), this.game.ctx, adsFileNames[randonmIndex], 1, 1, 1.5);
             this.ads[i].isOpen = true;
         }
         this.icons[0] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
@@ -1092,6 +1231,18 @@ class Level2 extends LevelScreen {
         if (this.story < 1) {
             this.story = this.story + 1;
         }
+        if (this.game.Lives == 4) {
+            this.story = 2;
+        }
+        else if (this.game.lives == 3) {
+            this.story = 3;
+        }
+        else if (this.game.lives == 2) {
+            this.story = 4;
+        }
+        else if (this.game.lives == 1) {
+            this.story = 5;
+        }
     }
     updateOtherThings() {
         this.wizard.update();
@@ -1100,10 +1251,39 @@ class Level2 extends LevelScreen {
         }
     }
     storyText() {
+        let x1 = Math.random() * 2 - 1;
+        let y1 = Math.random() * 2 - 1;
+        let x2 = Math.random() * 4 - 2;
+        let y2 = Math.random() * 4 - 2;
+        let x3 = Math.random() * 6 - 3;
+        let y3 = Math.random() * 6 - 3;
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
+            console.log(this.story);
         }
-        if (this.story == 2) {
+        else if (this.story == 2) {
+            this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, this.textXPos, this.textYPos);
+        }
+        else if (this.story == 3) {
+            this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}?\n`, this.textXPos += x1, this.textYPos += y1);
+            this.wizard.pos.x += x1;
+            this.wizard.pos.y += y1;
+            this.textbox.pos.x += x1;
+            this.textbox.pos.y += y1;
+        }
+        else if (this.story == 4) {
+            this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}! luister je wel?\n`, this.textXPos += x2, this.textYPos += y2);
+            this.wizard.pos.x += x2;
+            this.wizard.pos.y += y2;
+            this.textbox.pos.x += x2;
+            this.textbox.pos.y += y2;
+        }
+        else if (this.story == 5) {
+            this.multilineText(this.game.ctx, `${this.game.playerinfo[0]}... g-gaat het wel?\n`, this.textXPos += x3, this.textYPos += y3);
+            this.wizard.pos.x += x3;
+            this.wizard.pos.y += y3;
+            this.textbox.pos.x += x3;
+            this.textbox.pos.y += y3;
         }
     }
 }
@@ -1128,7 +1308,6 @@ class Level3 extends LevelScreen {
         this.clickedIcon();
         this.textbox.update();
         this.nextLevel();
-        this.storyCheck();
         this.storyText();
         this.wizard.update();
     }
@@ -1145,12 +1324,10 @@ class Level3 extends LevelScreen {
             this.game.switchScreen(new Level4(this.game));
         }
     }
-    storyCheck() {
+    storyText() {
         if (this.story < 1) {
             this.story = this.story + 1;
         }
-    }
-    storyText() {
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `W-Wacht! ${this.game.playerinfo[0]}!\nDat i-is een bug file\nIk denk dat we gehackt zijn\nWat je ook doet...\nGA NIET NAAR DE BUGFILE\n`, 400, 90);
         }
@@ -1162,7 +1339,11 @@ class Level4 extends LevelScreen {
         this.enemies = new Array;
         this.numberOfEnemies = 5;
         for (let i = 0; i < this.numberOfEnemies; i++) {
+<<<<<<< HEAD
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+=======
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(0.5, 3), this.randomNumber(0.5, 3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this);
+>>>>>>> e693e14d2ebb0f7e48bc609ca8e06cbf9beee6ba
         }
         this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;

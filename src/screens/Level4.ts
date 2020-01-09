@@ -17,7 +17,7 @@ class Level4 extends LevelScreen {
         this.numberOfEnemies = 5 //number of enemies
 
         for (let i = 0; i < this.numberOfEnemies; i++) {
-            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(0, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 95)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this); // 145 = enemyWidth, 190 = enemyHeight + windowsbarHeight
+            this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this); // 145 = enemyWidth, 190 = enemyHeight + windowsbarHeight
         }
 
         this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
@@ -30,8 +30,8 @@ class Level4 extends LevelScreen {
     }
 
     public draw() {
-        // story
         super.draw(this.game.ctx);
+        // story
         this.wizard.update();
         this.textbox.update();
         this.storyText();
