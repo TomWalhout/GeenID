@@ -91,10 +91,7 @@ class Level2 extends LevelScreen {
         } else if (this.game.lives == 1) {
             this.story = 5;
         }
-
     }
-
-
 
     private updateOtherThings() {
         this.wizard.update();
@@ -104,7 +101,6 @@ class Level2 extends LevelScreen {
             this.textbox.update();
         }
     }
-
 
     public storyText() {
 
@@ -118,7 +114,7 @@ class Level2 extends LevelScreen {
 
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
-            console.log(this.story);
+            // console.log(this.story);
         } else if (this.story == 2) {
             this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, this.textXPos, this.textYPos);
         } else if (this.story == 3) {
@@ -140,6 +136,5 @@ class Level2 extends LevelScreen {
             this.textbox.pos.x += x3;
             this.textbox.pos.y += y3;
         }
-
         this.multilineText(this.game.ctx, 'Gebruik de muur om een\nmuursprong te maken en\nhoger te springen!', 1200, 600);    }
 }
