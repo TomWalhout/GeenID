@@ -20,7 +20,7 @@ class Level4 extends LevelScreen {
             this.enemies[i] = new Enemy(new Vector(this.randomRoundedNumber(150, this.game.canvas.width - 145), this.randomRoundedNumber(0, this.game.canvas.height - 195)), new Vector(this.randomNumber(-0.5, -3), this.randomNumber(-0.5, -3)), this.game.ctx, './assets/enemiesAndAllies/Enemy.png', this); // 145 = enemyWidth, 190 = enemyHeight + windowsbarHeight
         }
 
-        this.programs[0] = new Program(new Vector(500, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
+        this.programs[0] = new Program(new Vector(400, 500), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman.png', 1, 1, 0.3, 0);
         this.programs[0].isOpen = true;
         this.programs[1] = new Program(new Vector(700, 400), new Vector(0, 0), this.game.ctx, './assets/programs/hackerman2.png', 1, 1, 0.5, 0);
         this.programs[1].isOpen = true;
@@ -44,6 +44,7 @@ class Level4 extends LevelScreen {
         this.closeAds();
         this.closeProgram();
         this.clickedIcon();
+        super.draw(this.game.ctx);
         this.enemies.forEach(element => {
             element.update()
             element.enemyMove(this.game.canvas)
@@ -52,7 +53,6 @@ class Level4 extends LevelScreen {
         if (this.story < 2) {
             this.enemyCollision();
         }
-        super.draw(this.game.ctx);
     }
 
     public timer() {

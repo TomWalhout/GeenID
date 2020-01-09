@@ -36,7 +36,7 @@ class Level2 extends LevelScreen {
             this.ads[i].isOpen = true;
         }
 
-        this.icons[1] = new Icon(new Vector(1342, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/Kruisje.png', 1, 1, 1, 0);
+        this.icons[1] = new Icon(new Vector(1250, 200), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/adblocker.png', 1, 1, 1, 0);
         document.body.style.backgroundImage = "url('./assets/programs/GloooleLevel.png')";
     }
 
