@@ -87,7 +87,7 @@ class Level4 extends LevelScreen {
             //step 1, virusscanner appears
         }
         if (this.story === 1) {
-            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/virusscanner.png', 1, 1, 0.3)
+            this.icons[0] = new Icon(new Vector(this.game.canvas.width - 100, 500), new Vector(0, 0), this.game.ctx, './assets/icons/virusscanner.png', 1, 1, 1.4)
             let scanner = this.icons[0].box();
             // if (this.collides(this.player.box(), scanner)) {
             //     this.game.switchScreen(new BossScreen(this.game))
