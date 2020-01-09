@@ -1061,10 +1061,13 @@ class DeathScreen extends LevelScreen {
         this.wizard.update();
         this.textbox.update();
         this.storyText();
+        if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
+            this.game.switchScreen(new SelectionScreen(this.game));
+        }
     }
     storyText() {
         if (this.story == 0) {
-            this.multilineText(this.game.ctx, `Helaas ${this.game.playerinfo[0]}!\nIk heb jouw ID gestolen.\n Als je het nog een\n keer wilt proberen\ndruk dan op F5.\n`, 630, 145);
+            this.multilineText(this.game.ctx, `Helaas ${this.game.playerinfo[0]}!\nIk heb jouw ID gestolen.\n Als je het nog een\n keer wilt proberen\ndruk dan op ENTER.\n`, 630, 145);
         }
     }
 }
@@ -1224,7 +1227,6 @@ class Level2 extends LevelScreen {
         let y3 = Math.random() * 6 - 3;
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
-            console.log(this.story);
         }
         else if (this.story == 2) {
             this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, this.textXPos, this.textYPos);
@@ -1506,12 +1508,24 @@ class SelectionScreen extends GameScreen {
 class WinScreen extends LevelScreen {
     constructor(game) {
         super(game);
-        this.wizard = new Wizard(new Vector(300, 0), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 8);
-        document.body.style.backgroundImage = "url('./assets/gewonnen-bg.png')";
+        this.wizard = new Wizard(new Vector(50, 450), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 2);
+        this.textbox = new GameObject(new Vector(199, 350), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
+        this.textbox.mirror = true;
+        this.victory = new GameObject(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/gewonnen2-bg.png', 1, 1, 0.5, 0);
+        this.story = 0;
+        document.body.style.backgroundImage = "url('./assets/xp-bg.png')";
     }
     draw(ctx) {
         super.draw(ctx);
+        this.victory.update();
         this.wizard.update();
+        this.textbox.update();
+        this.storyText();
+    }
+    storyText() {
+        if (this.story == 0) {
+            this.multilineText(this.game.ctx, `Geweldig ${this.game.playerinfo[0]}!\nJe hebt gewonnen, gewelidig\ngedaan. Ik wist wel dat je\nhet kon!\nJe identiteit is nu veilig.`, 326, 389);
+        }
     }
 }
 //# sourceMappingURL=app.js.map
