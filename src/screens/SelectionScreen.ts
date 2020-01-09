@@ -77,8 +77,8 @@ class SelectionScreen extends GameScreen {
         this.drawButtons();
 
         if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER) && this.next > 60) {
-            this.game.playerinfo[0] = prompt("Wacht even! Wat is je naam?", "Squary");
-            this.game.playerinfo[1] = prompt("En hoe oud ben je?", "10") + " jaar";
+            this.game.playerinfo[0] = prompt("Wacht even! Wat is je naam?", "Squary").substr(0, 16);
+            this.game.playerinfo[1] = prompt("En hoe oud ben je?", "10").substr(0, 3) + " jaar";
             this.game.squary = this.FaceOptions[this.counter].path;
             this.game.bodySquary = this.BodyOptions[this.bodyCounter].path;
             this.game.Lives = 5;
