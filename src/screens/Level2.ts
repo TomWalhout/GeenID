@@ -66,7 +66,6 @@ class Level2 extends LevelScreen {
     }
   
     public draw() {
-        super.draw(this.game.ctx);
         this.ads.forEach(element => {
             element.update()
         })        
@@ -75,6 +74,7 @@ class Level2 extends LevelScreen {
         this.storyText();
         this.closeAds();
         this.nextLevel();
+        super.draw(this.game.ctx);
         }
 
     private storyCheck() {

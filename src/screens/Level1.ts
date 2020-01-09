@@ -37,8 +37,7 @@ class Level1 extends LevelScreen {
         this.clickedIcon();
         this.storyCheck();
         this.storyText();
-        console.log(this.story);
-
+        // console.log(this.story);
         super.draw(this.game.ctx);
     }
 

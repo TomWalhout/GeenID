@@ -5,7 +5,7 @@
  * Screen where the user can play the game
  */
 class BossScreen extends LevelScreen {
-    
+
     private boss: Boss;
     private wizard: Wizard;
     private textbox: GameObject;
@@ -42,7 +42,6 @@ class BossScreen extends LevelScreen {
      * @param ctx the rendering context to draw on
      */
     public draw(ctx: CanvasRenderingContext2D) {
-        super.draw(ctx);
         if (this.story > 3) {
             this.boss.update();
         } else if (this.story === 0) {
@@ -56,6 +55,7 @@ class BossScreen extends LevelScreen {
         else if (this.story === 3) {
             this.finalCountdown();
         }
+        super.draw(ctx);
     }
 
     private start() {

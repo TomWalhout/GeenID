@@ -29,7 +29,6 @@ class Level3 extends LevelScreen {
     }
 
     public draw() {
-        super.draw(this.game.ctx);
         this.closeAds();
         this.closeProgram();
         this.clickedIcon();
@@ -38,6 +37,7 @@ class Level3 extends LevelScreen {
         this.storyText();
         this.wizard.update();
         // console.log(this.story);
+        super.draw(this.game.ctx);
     }
 
     private updateOtherThings() {
