@@ -33,7 +33,7 @@ class WinScreen extends LevelScreen {
 
     public storyText() {
         if (this.story == 0) {
-            this.multilineText(this.game.ctx, `Geweldig ${this.game.playerinfo[0]}!\nJe hebt gewonnen, gewelidig\ngedaan. Ik wist wel dat je\nhet kon!\nJe identiteit is nu veilig.`, 326, 389); //1200 en 500
+            this.multilineText(this.game.ctx, `Geweldig ${this.game.playerinfo[0]}!\nJe hebt gewonnen, goed\ngedaan. Ik wist wel dat je\nhet kon!\nJe identiteit is nu veilig.`, 326, 389); //1200 en 500
         }
     }
 }

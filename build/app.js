@@ -66,6 +66,27 @@ class Game {
             this.currentScreen.listen(this.input);
             requestAnimationFrame(this.loop);
             this.currentScreen.adjust(this);
+            if (this.userInput.isKeyDown(UserInput.KEY_1)) {
+                this.switchScreen(new Level1(this));
+            }
+            if (this.userInput.isKeyDown(UserInput.KEY_2)) {
+                this.switchScreen(new Level2(this));
+            }
+            if (this.userInput.isKeyDown(UserInput.KEY_3)) {
+                this.switchScreen(new Level3(this));
+            }
+            if (this.userInput.isKeyDown(UserInput.KEY_4)) {
+                this.switchScreen(new Level4(this));
+            }
+            if (this.userInput.isKeyDown(UserInput.KEY_5)) {
+                this.switchScreen(new BossScreen(this));
+            }
+            if (this.userInput.isKeyDown(UserInput.KEY_6)) {
+                this.switchScreen(new DeathScreen(this));
+            }
+            if (this.userInput.isKeyDown(UserInput.KEY_7)) {
+                this.switchScreen(new WinScreen(this));
+            }
         };
         this.canvas = canvasId;
         this.canvas.width = 1366;
@@ -221,6 +242,8 @@ UserInput.KEY_2 = 50;
 UserInput.KEY_3 = 51;
 UserInput.KEY_4 = 52;
 UserInput.KEY_5 = 53;
+UserInput.KEY_6 = 54;
+UserInput.KEY_7 = 55;
 class Vector {
     constructor(xpos = 0, ypos = 0) {
         this.xpos = xpos;
@@ -913,7 +936,6 @@ class BossScreen extends LevelScreen {
         this.countdownTimer = 0;
     }
     draw(ctx) {
-        super.draw(ctx);
         if (this.story > 3) {
             this.boss.update();
         }
@@ -929,6 +951,7 @@ class BossScreen extends LevelScreen {
         else if (this.story === 3) {
             this.finalCountdown();
         }
+        super.draw(ctx);
     }
     start() {
         this.wizard.update();
@@ -1080,13 +1103,13 @@ class DeathScreen extends LevelScreen {
         document.body.style.backgroundImage = "url('./assets/HackerCodeBG.png')";
     }
     draw(ctx) {
-        super.draw(ctx);
         this.wizard.update();
         this.textbox.update();
         this.storyText();
         if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
             this.game.switchScreen(new SelectionScreen(this.game));
         }
+        super.draw(ctx);
     }
     storyText() {
         if (this.story == 0) {
@@ -1100,11 +1123,11 @@ class HomeScreen extends LevelScreen {
         this.icons[0] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/finalHomeScreen.png', 2, 50, 1.5);
     }
     draw() {
-        super.draw(this.game.ctx);
         this.collide();
         if (this.game.userInput.isKeyDown(UserInput.KEY_ENTER)) {
             this.game.switchScreen(new SelectionScreen(this.game));
         }
+        super.draw(this.game.ctx);
     }
 }
 class Level1 extends LevelScreen {
@@ -1129,7 +1152,6 @@ class Level1 extends LevelScreen {
         this.clickedIcon();
         this.storyCheck();
         this.storyText();
-        console.log(this.story);
         super.draw(this.game.ctx);
     }
     storyCheck() {
@@ -1262,6 +1284,7 @@ class Level2 extends LevelScreen {
         let y3 = Math.random() * 6 - 3;
         if (this.story == 1) {
             this.multilineText(this.game.ctx, `Oh nee...\n Het lijkt erop dat Glooogle\nvol zit met nep advertenties.\nKlik op de kruisjes\nom ze weg te halen`, 175, 180);
+            console.log(this.story);
         }
         else if (this.story == 2) {
             this.multilineText(this.game.ctx, `Niet aanraken!\nje verliest je levens`, this.textXPos, this.textYPos);
@@ -1307,7 +1330,6 @@ class Level3 extends LevelScreen {
         this.vortex = false;
     }
     draw() {
-        super.draw(this.game.ctx);
         this.closeAds();
         this.closeProgram();
         this.clickedIcon();
@@ -1315,6 +1337,7 @@ class Level3 extends LevelScreen {
         this.nextLevel();
         this.storyText();
         this.wizard.update();
+        super.draw(this.game.ctx);
     }
     updateOtherThings() {
         this.wizard.update();
@@ -1365,7 +1388,6 @@ class Level4 extends LevelScreen {
         this.textbox = new GameObject(new Vector(50, 400), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.5);
     }
     draw() {
-        super.draw(this.game.ctx);
         this.wizard.update();
         this.textbox.update();
         this.storyText();
@@ -1381,6 +1403,7 @@ class Level4 extends LevelScreen {
         if (this.story < 2) {
             this.enemyCollision();
         }
+        super.draw(this.game.ctx);
     }
     timer() {
         if (this.timeInFrames > 0) {
@@ -1573,7 +1596,7 @@ class WinScreen extends LevelScreen {
     }
     storyText() {
         if (this.story == 0) {
-            this.multilineText(this.game.ctx, `Geweldig ${this.game.playerinfo[0]}!\nJe hebt gewonnen, gewelidig\ngedaan. Ik wist wel dat je\nhet kon!\nJe identiteit is nu veilig.`, 326, 389);
+            this.multilineText(this.game.ctx, `Geweldig ${this.game.playerinfo[0]}!\nJe hebt gewonnen, goed\ngedaan. Ik wist wel dat je\nhet kon!\nJe identiteit is nu veilig.`, 326, 389);
         }
     }
 }
