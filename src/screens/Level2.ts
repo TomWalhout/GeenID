@@ -19,7 +19,7 @@ class Level2 extends LevelScreen {
         this.programs[1] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, './transparentBreed.png', 1, 1, 1, 0);
         this.programs[1].isOpen = true;
         this.programs[0] = new Program(new Vector(293, 479), new Vector(0, 0), this.game.ctx, '', 1, 1, 1, 0);
-        this.icons[0] = new Icon(new Vector(1250, 150), new Vector(0, 0), this.game.ctx, './assets/icons/vortex.png', 5, 5, 1.4, 1);
+        this.icons[0] = new Icon(new Vector(1240, 165), new Vector(0, 0), this.game.ctx, './assets/icons/vortex.png', 5, 10, 1.2, 1);
         this.wizard = new Wizard(new Vector(290, 300), new Vector(0, 0), this.game.ctx, './assets/enemiesAndAllies/urawizardgandalf.png', 6, 20, 1);
         this.textbox = new GameObject(new Vector(50, 150), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
         this.textXPos = 175;
@@ -33,7 +33,7 @@ class Level2 extends LevelScreen {
 
         for (let i = 0; i < this.randomRoundedNumber(5, 7); i++) {
             const randonmIndex = this.randomRoundedNumber(0, adsFileNames.length)
-            this.ads[i] = new Ad(new Vector(this.randomNumber(100, this.game.canvas.width - 150), this.randomNumber(0, this.game.canvas.height - 195)), new Vector(0, 0), this.game.ctx, adsFileNames[randonmIndex], 1, 1, 1.5) //150 is adWidth, 95 is adHeight + windowsBarHeight
+            this.ads[i] = new Ad(new Vector(this.randomNumber(100, this.game.canvas.width - 300), this.randomNumber(0, this.game.canvas.height - 195)), new Vector(0, 0), this.game.ctx, adsFileNames[randonmIndex], 1, 1, 1.5) //150 is adWidth, 95 is adHeight + windowsBarHeight
             this.ads[i].isOpen = true;
         }
 

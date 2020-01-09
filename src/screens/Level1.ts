@@ -72,19 +72,19 @@ class Level1 extends LevelScreen {
 
     public storyText() {
         if (this.story == 1) {
-            this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het glooole icoon.\n`, 1000, 500); 
+            this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nIk ben de Install Wizard\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het glooole icoon.\n`, 1000, 490); 
             this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
         } else if (this.story == 2) {
-            this.multilineText(this.game.ctx, 'Perfect!\nKlik nu op Fort.', 1000, 500); 
+            this.multilineText(this.game.ctx, 'Perfect!\nKlik nu op Fort.', 1000, 520); 
             this.icons[1] = new Icon(new Vector(0, 0), new Vector(0, 0), this.game.ctx, './assets/icons/fort.png', 1, 1, 1.4, 1)
             this.icons[2].pos.y = 0;
         } else if (this.story == 3) {
-            this.multilineText(this.game.ctx, 'Spring nu naar\nhet Glooole programma', 1000, 400); 
+            this.multilineText(this.game.ctx, 'Kijk een magisch portaal\nis geopend\nSpring nu naar\nhet Glooole programma', 1000, 395); 
             this.textbox = new GameObject(new Vector(this.game.canvas.width - 500, this.game.canvas.height - 420), new Vector(0, 0), this.game.ctx, './assets/textboxAndAds/textbox2.png', 1, 1, 1.3);
             this.icons[2].pos.y = 100;
             if (!this.vortex) {
                 this.vortex = true;
-                this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/vortex.png', 5, 5, 1.4, 1);
+                this.icons[0] = new Icon(new Vector(-10, 85), new Vector(0, 0), this.game.ctx, './assets/icons/vortex.png', 5, 10, 1, 1);
                 this.icons[3] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
             }
         }

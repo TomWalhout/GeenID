@@ -74,7 +74,7 @@ class Level3 extends LevelScreen {
 
         if (!this.vortex) {
             this.vortex = true;
-            this.icons[0] = new Icon(new Vector(1220, 175), new Vector(0, 0), this.game.ctx, './assets/icons/vortex.png', 5, 5, 1.4, 1);
+            this.icons[0] = new Icon(new Vector(1230, 175), new Vector(0, 0), this.game.ctx, './assets/icons/vortex2.png', 5, 10, 1.2, 1);
         }
     }
 }
