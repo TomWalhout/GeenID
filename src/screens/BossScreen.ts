@@ -21,7 +21,7 @@ class BossScreen extends LevelScreen {
      */
     public constructor(game: Game) {
         super(game);
-        document.body.style.backgroundImage = "url('./assets/backgroundblack.png')";
+        document.body.style.backgroundImage = "url('./assets/xpZwartWit-bg.png')";
         this.boss = new Boss(new Vector(600, 50), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/hackerman.png", this, 1, 1, .5, game);
         this.player.pos = new Vector(this.game.canvas.width / 2 - this.player.ani.imageWidth / 2, this.game.canvas.height);
         this.wizard = new Wizard(new Vector(this.game.canvas.width / 2 - 25, 300), new Vector(0, 0), this.game.ctx, "./assets/enemiesAndAllies/urawizardgandalf.png", 6, 10, 1);

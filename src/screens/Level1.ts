@@ -72,7 +72,7 @@ class Level1 extends LevelScreen {
 
     public storyText() {
         if (this.story == 1) {
-            this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het gloole icoon.\n`, 1000, 500); 
+            this.multilineText(this.game.ctx, `Welkom ${this.game.playerinfo[0]}!\nLaten we de wonderen\nvan het internet bekijken.\nKlik op de het glooole icoon.\n`, 1000, 500); 
             this.icons[0] = new Icon(new Vector(0, 100), new Vector(0, 0), this.game.ctx, './assets/icons/gloole.png', 1, 1, 1.4, 1);
         } else if (this.story == 2) {
             this.multilineText(this.game.ctx, 'Perfect!\nKlik nu op Fort.', 1000, 500); 
